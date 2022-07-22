@@ -1,0 +1,74 @@
+import React from 'react';
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { DetailsDataProvider } from './app/context/useDetailsData';
+import Routes from './app/Navigation/Routes';
+import Drawer from './app/Screens/Drawer';
+
+
+const App = () => {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+        {/* <Drawer/> */}
+      <DetailsDataProvider>
+        <Drawer />
+      </DetailsDataProvider>
+    </SafeAreaView>
+  )
+}
+
+export default App
+
+const styles = StyleSheet.create({})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import * as React from 'react';
+// import { Button, View } from 'react-native';
+// import { createDrawerNavigator } from '@react-navigation/drawer';
+// import { NavigationContainer } from '@react-navigation/native';
+
+// function HomeScreen({ navigation }) {
+//   return (
+//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Button
+//         onPress={() => navigation.navigate('Notifications')}
+//         title="Go to notifications"
+//       />
+//     </View>
+//   );
+// }
+
+// function NotificationsScreen({ navigation }) {
+//   return (
+//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Button onPress={() => navigation.goBack()} title="Go back home" />
+//     </View>
+//   );
+// }
+
+// const Drawer = createDrawerNavigator();
+
+// export default function App() {
+//   return (
+//     <NavigationContainer>
+//       <Drawer.Navigator useLegacyImplementation initialRouteName="Home">
+//         <Drawer.Screen name="Home" component={HomeScreen} />
+//         <Drawer.Screen name="Notifications" component={NotificationsScreen} />
+//       </Drawer.Navigator>
+//     </NavigationContainer>
+//   );
+// }
