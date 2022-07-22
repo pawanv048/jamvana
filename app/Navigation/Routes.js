@@ -1,20 +1,45 @@
 import * as React from 'react';
-import { Button, Image } from 'react-native';
+import { Text, Image, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Home, Detail } from '../Screens';
 import navigationStrings from '../Constants/navigationStrings';
-import Drawer from '../Screens/Drawer'
-
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+
+function Agreements({ navigation }) {
+            return (
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text>Agreements Screen</Text>
+              </View>
+            );
+          }
+
+
+function Root() {
+  return (
+    <Drawer.Navigator>
+      <Drawer.Screen name="Home" component={Home} />
+      <Drawer.Screen name="Agreements" component={Agreements} />
+    </Drawer.Navigator>
+  );
+}
 
 function Routes() {
   return (
-    <Stack.Navigator initialRouteName={navigationStrings.HOME} screenOptions={{ headerShown: true }}>
-      <Stack.Screen name={navigationStrings.HOME} component={Home}/>
-      <Stack.Screen name={navigationStrings.DETAIL} component={Detail} />
-    </Stack.Navigator>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='Home'>
+        <Stack.Screen
+          name="Root"
+          component={Root}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="Detail" component={Detail} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
