@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import useDetailsData from '../context/useDetailsData';
 import moment from 'moment-timezone';
+import * as Strings from '../Constants/strings';
 import { 
   StyleSheet, 
   Text, 
@@ -11,6 +12,7 @@ import {
   TextInput, 
   ScrollView 
 } from 'react-native';
+
 const ReleaseScreen = () => {
 
   const { data, setData } = useDetailsData();
@@ -61,22 +63,22 @@ const ReleaseScreen = () => {
       <ScrollView style={{margin: 15}}>
         <View style={{ flex: 1 }}>
           <View style={{ margin: 15 }}>
-            <Text>ReleaseScreen "{data[0]?.Release?.Release_Id}"</Text>
-            <Text>Release PrimaryArtist "{data[0]?.Release?.Release_PrimaryArtist}"</Text>
-            <Text>Release DisplayArtist "{data[0]?.Release?.Release_DisplayArtist}"</Text>
-            <Text>Release ReleaseTitle "{data[0]?.Release?.Release_ReleaseTitle}"</Text>
-            <Text>Release Label "{data[0]?.Release?.Release_Label}"</Text>
-            <Text>Release MainGenre "{data[0]?.Release?.Release_MainGenre}"</Text>
-            <Text>Release SubGenre "{data[0]?.Release?.Release_SubGenre}"</Text>
-            <Text>Release Date "{moment(new Date(data[0]?.Release?.Date)).format('DD-MM-YYYY')}"</Text>
-            <Text>Release ReleaseType "{data[0]?.Release?.Release_ReleaseType}"</Text>
-            <Text>Composer "{data[0]?.Release?.Composer}"</Text>
-            <Text>Release Orchestra "{data[0]?.Release?.Orchestra}"</Text>
-            <Text>Release Arranger "{data[0]?.Release?.Arranger}"</Text>
-            <Text>Release Actor "{data[0]?.Release?.Actor}"</Text>
-            <Text>Release Lyricist "{data[0]?.Release?.Lyricist}"</Text>
-            <Text>Release Checked "{data[0]?.Release?.Checked}"</Text>
-            <Text>Release LanguageCode "{data[0]?.Release?.LanguageCode}"</Text>
+            <Text>{Strings.t4} {data[0]?.Release?.Release_Id}</Text>
+            <Text>{Strings.t5} {data[0]?.Release?.Release_PrimaryArtist}</Text>
+            <Text>{Strings.t6} "{data[0]?.Release?.Release_DisplayArtist}"</Text>
+            <Text>{Strings.t7} "{data[0]?.Release?.Release_ReleaseTitle}"</Text>
+            <Text>{Strings.t8}"{data[0]?.Release?.Release_Label}"</Text>
+            <Text>{Strings.t9}"{data[0]?.Release?.Release_MainGenre}"</Text>
+            <Text>{Strings.t10}"{data[0]?.Release?.Release_SubGenre}"</Text>
+            <Text>{Strings.t11}"{moment(new Date(data[0]?.Release?.Date)).format('DD-MM-YYYY')}"</Text>
+            <Text>{Strings.t12}"{data[0]?.Release?.Release_ReleaseType}"</Text>
+            <Text>{Strings.t13}"{data[0]?.Release?.Composer}"</Text>
+            <Text>{Strings.t14}"{data[0]?.Release?.Orchestra}"</Text>
+            <Text>{Strings.t15}"{data[0]?.Release?.Arranger}"</Text>
+            <Text>{Strings.t16}"{data[0]?.Release?.Actor}"</Text>
+            <Text>{Strings.t17}"{data[0]?.Release?.Lyricist}"</Text>
+            <Text>{Strings.t18} "{data[0]?.Release?.Checked}"</Text>
+            <Text>{Strings.t19}"{data[0]?.Release?.LanguageCode}"</Text>
           </View>
           <View style={styles.releaseBtn}>
             <TouchableOpacity
@@ -86,16 +88,16 @@ const ReleaseScreen = () => {
                  " "
                 )}  
             >
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>Approve</Text>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t20}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.reject}
               onPress={() => setShowModal(!showModal)}
             >
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>Reject</Text>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t21}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.delete}>
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>Delete</Text>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t22}</Text>
             </TouchableOpacity>
           </View>
           {/* User Feedback */}
@@ -150,7 +152,7 @@ const ModalFunction = ({ showModal, setShowModal, onPress }) => {
                 paddingLeft: 20,
                 paddingRight: 20,
               }}>
-              Save
+              {Strings.t41}
             </Text>
           </TouchableOpacity>
 
@@ -159,7 +161,7 @@ const ModalFunction = ({ showModal, setShowModal, onPress }) => {
             onPress={() => {
               setShowModal(!showModal);
             }}>
-            <Text style={{ color: 'white', padding: 15,  }}>Dismiss</Text>
+            <Text style={{ color: 'white', padding: 15,  }}>{Strings.t42}</Text>
           </TouchableOpacity>
         </View>
       </View>

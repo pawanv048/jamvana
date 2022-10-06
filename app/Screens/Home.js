@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-//library to format date
 import API from '../apis/API';
 import moment from 'moment-timezone';
+import * as Strings from '../Constants/strings';
 
 
 const Home = ({navigation, route}) => {
@@ -86,13 +86,14 @@ const Home = ({navigation, route}) => {
                     fontSize: 18,
                     //fontFamily: 'Roboto-Italic',
                   }}>
-                  Release Title : {item.Release_ReleaseTitle}
+                    
+                  {Strings.t1} {item.Release_ReleaseTitle}
                   {'\n'}
                   {'\n'}
-                  Release Artist : {item.Release_PrimaryArtist}
+                  {Strings.t2} {item.Release_PrimaryArtist}
                   {'\n'}
                   {'\n'}
-                  Release Date: {moment(new Date(item?.Release_ReleaseDate)).format("DD-MM-YYYY")}
+                  {Strings.t3} {moment(new Date(item?.Release_ReleaseDate)).format("DD-MM-YYYY")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -104,14 +105,3 @@ const Home = ({navigation, route}) => {
 };
 
 export default Home;
-
-
-// {isLoading ? (
-//   <View style={{ alignItems: 'center', justifyContent: 'center'}}>
-//     <ActivityIndicator size="small" color='black' />
-//   </View>
-// ) : (
-
-// )}
-
-

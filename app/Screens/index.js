@@ -5,6 +5,8 @@ import TrackScreen from './TrackScreen';
 import ShopScreen from './ShopScreen';
 import ExclusiveScreen from './ExclusiveScreen';
 import Agreements from './Agreements';
+import ReleaseForm from './releaseForm';
+import AudioTracks from './audioTracks';
 
 export {
     Home,
@@ -13,5 +15,7 @@ export {
     TrackScreen,
     ShopScreen,
     ExclusiveScreen,
-    Agreements
+    Agreements,
+    ReleaseForm,
+    AudioTracks
 }

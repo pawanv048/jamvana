@@ -2,6 +2,7 @@ import {StyleSheet, Text, View, FlatList} from 'react-native';
 import React from 'react';
 import useDetailsData from '../context/useDetailsData';
 import moment from 'moment-timezone';
+import * as Strings from '../Constants/strings';
 
 const TrackScreen = () => {
   const {data, setData} = useDetailsData();
@@ -13,26 +14,26 @@ const TrackScreen = () => {
       data={data}
       renderItem={({item}) => (
         <View style={{ margin: 15}}>
-          <Text>Track Disc: {item?.Tracks?.Track_Disc}</Text>
-          <Text>Track Track: {item?.Tracks?.Track_Track}</Text>
-          <Text>Track Artist: "{item?.Tracks?.Track_Artist}"</Text>
-          <Text>Track DisplayArtist: "{item?.Tracks?.Track_DisplayArtist}"</Text>
+          <Text>{Strings.t23} {item?.Tracks?.Track_Disc}</Text>
+          <Text>{Strings.t24} {item?.Tracks?.Track_Track}</Text>
+          <Text>{Strings.t25} "{item?.Tracks?.Track_Artist}"</Text>
+          <Text>{Strings.t26} "{item?.Tracks?.Track_DisplayArtist}"</Text>
           {/* <Text>Track Title: "{data[0]?.Tracks?.Track_Title}"</Text> */}
-          <Text>Track Title : {item?.Tracks?.Track_Title}</Text>
-          <Text>Track MixVersion: "{item?.Tracks?.Track_MixVersion}"</Text>
-          <Text>Track Remixer: "{item?.Tracks?.Track_Remixer}"</Text>
-          <Text>Track MainGenre: "{item?.Tracks?.Track_MainGenre}"</Text>
-          <Text>Track SubGenre: "{item?.Tracks?.Track_SubGenre}"</Text>
-          <Text>Track ISRC: "{item?.Tracks?.Track_ISRC}"</Text>
-          <Text>Track AlbumOnly: "{item?.Tracks?.Track_AlbumOnly}"</Text>
+          <Text>{Strings.t27} {item?.Tracks?.Track_Title}</Text>
+          <Text>{Strings.t28} "{item?.Tracks?.Track_MixVersion}"</Text>
+          <Text>{Strings.t29} "{item?.Tracks?.Track_Remixer}"</Text>
+          <Text>{Strings.t30} "{item?.Tracks?.Track_MainGenre}"</Text>
+          <Text>{Strings.t31} "{item?.Tracks?.Track_SubGenre}"</Text>
+          <Text>{Strings.t32} "{item?.Tracks?.Track_ISRC}"</Text>
+          <Text>{Strings.t33} "{item?.Tracks?.Track_AlbumOnly}"</Text>
           {/* <Text>Track AudioFile: "{item?.Tracks?.Track_AudioFile}"</Text> */}
-          <Text>Track FeaturedArtist: "{item?.Tracks?.Track_FeaturedArtist}"</Text>
-          <Text>Track Date "{moment(new Date(item?.Tracks?.Track_Date)).format('DD-MM-YYYY')}"</Text>
-          <Text>Track Explicit: "{item?.Tracks?.Track_Explicit}"</Text>
-          <Text>Track Orchestra: "{item?.Tracks?.Orchestra}"</Text>
-          <Text>Track Conductor: "{item?.Tracks?.Conductor}"</Text>
-          <Text>Track Actor: "{item?.Tracks?.Actor}"</Text>
-          <Text>Track Arranger: "{item?.Tracks?.Arranger}"</Text>
+          <Text>{Strings.t34} "{item?.Tracks?.Track_FeaturedArtist}"</Text>
+          <Text>{Strings.t35} "{moment(new Date(item?.Tracks?.Track_Date)).format('DD-MM-YYYY')}"</Text>
+          <Text>{Strings.t36} "{item?.Tracks?.Track_Explicit}"</Text>
+          <Text>{Strings.t37} "{item?.Tracks?.Orchestra}"</Text>
+          <Text>{Strings.t38} "{item?.Tracks?.Conductor}"</Text>
+          <Text>{Strings.t39} "{item?.Tracks?.Actor}"</Text>
+          <Text>{Strings.t40} "{item?.Tracks?.Arranger}"</Text>
         </View>
       )}
     />

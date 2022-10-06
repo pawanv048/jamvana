@@ -1,13 +1,14 @@
 import React,{useState, useEffect} from 'react';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {
-    ReleaseScreen,
-    TrackScreen,
-    ShopScreen,
-    ExclusiveScreen
-} from '../Screens/index.js';
 import useDetailsData from '../context/useDetailsData.js';
+ import 'react-native-gesture-handler';
+import {
+  ReleaseScreen,
+  TrackScreen,
+  ShopScreen,
+  ExclusiveScreen
+} from '../Screens/index.js';
 
 const Tabs = createMaterialTopTabNavigator();
 
