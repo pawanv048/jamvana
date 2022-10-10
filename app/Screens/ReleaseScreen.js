@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import useDetailsData from '../context/useDetailsData';
 import moment from 'moment-timezone';
 import * as Strings from '../Constants/strings';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  TouchableOpacity, 
-  Alert, 
-  Modal, 
-  TextInput, 
-  ScrollView 
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+  Modal,
+  TextInput,
+  ScrollView
 } from 'react-native';
 
 const ReleaseScreen = () => {
@@ -18,19 +18,19 @@ const ReleaseScreen = () => {
   const { data, setData } = useDetailsData();
   const [showModal, setShowModal] = useState(false)
   const [headline, setHeadline] = useState('')
-  
 
-  const postUser = (status,comment) => {
-    
+
+  const postUser = (status, comment) => {
+
     const requestOptions = {
       method: 'POST',
-      headers:{'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         "ReleaseId": data[0]?.Release?.Release_Id,
         "Status": status,
-         "Comment": `${comment}`
+        "Comment": `${comment}`
       }),
-      
+
     };
 
     fetch(
@@ -44,10 +44,10 @@ const ReleaseScreen = () => {
           'Release Id: ' +
           data[0]?.Release?.Release_Id +
           `\n status : ${status}`
-          +'\n'+
-          
+          + '\n' +
+
           // 'comment : ' +
-           comment,
+          comment,
           [{ t: 'ok', onPress: () => console.log('ok pressed') }],
         );
       })
@@ -60,7 +60,7 @@ const ReleaseScreen = () => {
 
   return (
     <React.Fragment>
-      <ScrollView style={{margin: 15}}>
+      <ScrollView style={{ margin: 15 }}>
         <View style={{ flex: 1 }}>
           <View style={{ margin: 15 }}>
             <Text>{Strings.t4} {data[0]?.Release?.Release_Id}</Text>
@@ -83,10 +83,10 @@ const ReleaseScreen = () => {
           <View style={styles.releaseBtn}>
             <TouchableOpacity
               style={styles.accept}
-                onPress={() => postUser(
-                 true,
-                 " "
-                )}  
+              onPress={() => postUser(
+                true,
+                " "
+              )}
             >
               <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t20}</Text>
             </TouchableOpacity>
@@ -114,7 +114,6 @@ const ReleaseScreen = () => {
       </ScrollView>
     </React.Fragment>
   )
-
 }
 
 
@@ -125,7 +124,7 @@ const ModalFunction = ({ showModal, setShowModal, onPress }) => {
       animationType={'slide'}
       transparent={true}
       visible={showModal}
-    onRequestClose={() => showModal(false)}
+      onRequestClose={() => showModal(false)}
     >
       <View style={{ alignItems: 'center', top: 300 }}>
         <View style={styles.modalView}>
@@ -142,8 +141,8 @@ const ModalFunction = ({ showModal, setShowModal, onPress }) => {
               top: 47,
               borderRadius: 10,
             }}
-            onPress={() => onPress(false, "comment: "+headline)}
-          
+            onPress={() => onPress(false, "comment: " + headline)}
+
           >
             <Text
               style={{
@@ -161,7 +160,7 @@ const ModalFunction = ({ showModal, setShowModal, onPress }) => {
             onPress={() => {
               setShowModal(!showModal);
             }}>
-            <Text style={{ color: 'white', padding: 15,  }}>{Strings.t42}</Text>
+            <Text style={{ color: 'white', padding: 15, }}>{Strings.t42}</Text>
           </TouchableOpacity>
         </View>
       </View>
