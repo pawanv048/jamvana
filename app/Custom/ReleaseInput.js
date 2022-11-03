@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
       })
    },
    inputTxt: {
-      height: 50
+      height: 50,
    },
    formTxt: {
       marginBottom: 9,

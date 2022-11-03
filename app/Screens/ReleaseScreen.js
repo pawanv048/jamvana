@@ -60,26 +60,26 @@ const ReleaseScreen = () => {
 
   return (
     <React.Fragment>
-      <ScrollView style={{ margin: 15 }}>
+      <ScrollView style={{ margin: 15, }}>
         <View style={{ flex: 1 }}>
-          <View style={{ margin: 15 }}>
+          
             <Text>{Strings.t4} {data[0]?.Release?.Release_Id}</Text>
             <Text>{Strings.t5} {data[0]?.Release?.Release_PrimaryArtist}</Text>
-            <Text>{Strings.t6} "{data[0]?.Release?.Release_DisplayArtist}"</Text>
-            <Text>{Strings.t7} "{data[0]?.Release?.Release_ReleaseTitle}"</Text>
-            <Text>{Strings.t8}"{data[0]?.Release?.Release_Label}"</Text>
-            <Text>{Strings.t9}"{data[0]?.Release?.Release_MainGenre}"</Text>
-            <Text>{Strings.t10}"{data[0]?.Release?.Release_SubGenre}"</Text>
-            <Text>{Strings.t11}"{moment(new Date(data[0]?.Release?.Date)).format('DD-MM-YYYY')}"</Text>
-            <Text>{Strings.t12}"{data[0]?.Release?.Release_ReleaseType}"</Text>
-            <Text>{Strings.t13}"{data[0]?.Release?.Composer}"</Text>
-            <Text>{Strings.t14}"{data[0]?.Release?.Orchestra}"</Text>
-            <Text>{Strings.t15}"{data[0]?.Release?.Arranger}"</Text>
-            <Text>{Strings.t16}"{data[0]?.Release?.Actor}"</Text>
-            <Text>{Strings.t17}"{data[0]?.Release?.Lyricist}"</Text>
-            <Text>{Strings.t18} "{data[0]?.Release?.Checked}"</Text>
-            <Text>{Strings.t19}"{data[0]?.Release?.LanguageCode}"</Text>
-          </View>
+            <Text>{Strings.t6} {data[0]?.Release?.Release_DisplayArtist}</Text>
+            <Text>{Strings.t7} {data[0]?.Release?.Release_ReleaseTitle}</Text>
+            <Text>{Strings.t8} {data[0]?.Release?.Release_Label}</Text>
+            <Text>{Strings.t9} {data[0]?.Release?.Release_MainGenre}</Text>
+            <Text>{Strings.t10} {data[0]?.Release?.Release_SubGenre}</Text>
+            <Text>{Strings.t11} {moment(new Date(data[0]?.Release?.Date)).format('DD-MM-YYYY')}</Text>
+            <Text>{Strings.t12} {data[0]?.Release?.Release_ReleaseType}</Text>
+            <Text>{Strings.t13} {data[0]?.Release?.Composer}</Text>
+            <Text>{Strings.t14} {data[0]?.Release?.Orchestra}</Text>
+            <Text>{Strings.t15} {data[0]?.Release?.Arranger}</Text>
+            <Text>{Strings.t16} {data[0]?.Release?.Actor}</Text>
+            <Text>{Strings.t17} {data[0]?.Release?.Lyricist}</Text>
+            <Text>{Strings.t18}  {data[0]?.Release?.Checked}</Text>
+            <Text>{Strings.t19} {data[0]?.Release?.LanguageCode}</Text>
+          
           <View style={styles.releaseBtn}>
             <TouchableOpacity
               style={styles.accept}

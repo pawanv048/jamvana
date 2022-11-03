@@ -49,7 +49,7 @@ const ModalPicker = (props) => {
     )
 }
 
-export default ModalPicker
+export default ModalPicker 
 
 const styles = StyleSheet.create({
     container: {

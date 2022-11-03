@@ -27,61 +27,30 @@ const Agreements = () => {
       onSuccess: val => {
         setData(val?.Data)
         // console.log('Agreement data ==>', val?.Data)
+        setLoading(false)
       },
       onError: val => console.log('ERROR:', val),
     });
-    setLoading(false);
+    setLoading(true);
   }
-
-
-//   async function makerequest({index}) {
-
-//     const pdf = data.map(function (name) {
-//       return name.Userid;
-//     });
-//     console.log(pdf);
-
-//     try {
-//         //console.log('Button clicked')
-//         const res = await fetch(`https://musicdistributionsystem.com/members/Agreements/Agreement_${pdf[index]}.pdf`)
-//         //error handling
-//         if(!res.ok){
-//             throw Error(res.statusText)
-//         }
-//         console.log(res)
-//         const data = await res.text()
-//         console.log("pddfffff....",data)
-//         //set data here
-//     } catch (error) {
-//         console.log(error)
-//     }
-
-// }
 
   useEffect(() => {
     getAgreementsData();  
   },[]);
 
-
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator/>
+      </View>
+    );
+  }
 
   function renderAgreementsList() {
 
-    // const pdf = data.map(function (name) {
-    //   return name.Userid;
-    // })
-
     const pdf = data.map(({Userid}) => Userid)
-    // console.log('fjdlkfjd', pdf)
 
     const renderItem = ({ item, index }) => {
-
-      if (isLoading) {
-        return (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'red' }}>
-            <ActivityIndicator />
-          </View>
-        );
-      }
 
       return (
         <View style={{
@@ -111,10 +80,7 @@ const Agreements = () => {
             backgroundColor: '#8D8DAA',
             padding: 8,
             borderRadius: 4
-          }}
-            //Linking.openURL(`https://musicdistributionsystem.com/members/Agreements/Agreement_${pdf[index]}.pdf`)
-            //onPress={()=> console.log('pdf data=....',pdf[index])}
-            
+          }}         
             onPress={() => Linking.openURL(`https://musicdistributionsystem.com/members/Agreements/Agreement_${pdf[index]}.pdf`)}
           >
             <Text>{Strings.t46}</Text>
@@ -129,6 +95,7 @@ const Agreements = () => {
           data={data}
           keyExtractor={item => `${item.Userid}`}
           renderItem={renderItem}
+          //style={{backgroundColor: 'red'}}
         />
       </View>
     )

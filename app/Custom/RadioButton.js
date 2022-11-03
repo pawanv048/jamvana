@@ -4,7 +4,7 @@ import { COLORS, SIZES } from '../Constants/theme';
 
 
 const RadioButton = ({ onPress, selected, children }) => {
-    console.log('selected', selected)
+    //console.log('select button',selected)
     return (
         <View style={styles.radioButtonContainer}>
             <TouchableOpacity onPress={onPress} style={styles.radioButton}>
@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
      },
      radioButtonText: {
         fontSize: 16,
-        marginLeft: 16,
-        
+        marginLeft: 16  
      }
 })

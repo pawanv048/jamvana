@@ -1,10 +1,19 @@
 import * as React from 'react';
-import { Text, Image, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Home, Detail, Agreements, ReleaseForm, AudioTracks } from '../Screens';
-import navigationStrings from '../Constants/navigationStrings';
+import { 
+  Home, 
+  Detail, 
+  Agreements, 
+  ReleaseForm, 
+  AudioTracks, 
+  SelectTerritories,DigitalProvider,
+  AdditionalOption,
+  Testing,
+  AddNewArtist
+} from '../Screens';
+
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -15,7 +24,7 @@ function Root() {
     <Drawer.Navigator>
       <Drawer.Screen name="Home" component={Home} options={{title: 'Releases'}}/>
       <Drawer.Screen name="Agreements" component={Agreements} />
-      <Drawer.Screen name="releaseForm" component={ReleaseForm} options={{title: 'ReleaseForm'}}/>
+      <Drawer.Screen name="releaseForm" component={ReleaseForm} options={{title: 'Release Form'}}/>
     </Drawer.Navigator>
   );
 }
@@ -31,6 +40,11 @@ function Routes() {
         />
         <Stack.Screen name="Detail" component={Detail} />
         <Stack.Screen name="audioTracks" component={AudioTracks} options={{headerShown: false}}/>
+        <Stack.Screen name='SelectTerritories' component={SelectTerritories} options={{title: 'country'}}/>
+        <Stack.Screen name='DigitalProvider' component={DigitalProvider} options={{title: 'Provider'}}/>
+        <Stack.Screen name='AdditionalOption' component={AdditionalOption} options={{title: 'Add Options'}}/>
+        <Stack.Screen name='testing' component={Testing} />
+        <Stack.Screen name='AddNewArtist' component={AddNewArtist} options={{title: 'New Artist'}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
