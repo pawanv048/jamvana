@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 
-const OPTION = ['English', 'Hindi', 'Punjabi']
+const OPTION = ['English', 'Hindi', 'Punjabi','Madrasi', 'Protogish']
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 

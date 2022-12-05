@@ -10,6 +10,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Strings from '../Constants/strings';
 import SelectList from 'react-native-dropdown-select-list';
 import DatePicker from 'react-native-datepicker';
+import { LogBox } from 'react-native';
+
 //import DatePicker from 'react-native-date-picker';  // Need to use this further
 
 
@@ -43,10 +45,18 @@ const ReleaseForm = ({ navigation }) => {
   const [showInfo, setShowInfo] = useState(false)
   const [selected, setSelected] = useState('');
   const [selectedSubGenre, setSelectedSubGenre] = useState('');
-  const [date, setDate] = useState('');
+
+  // Release Date
+  const [date, setDate] = useState(new Date())
+  const [open, setOpen] = useState(false)
   // storing image path
   const [filePath, setFilePath] = useState({});
 
+
+  useEffect(() => {
+    LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
+    LogBox.ignoreLogs(['componentWillReceiveProps has been renamed, and is not recommended for use']);
+  }, [])
 
   // Permission for gallery
   const requestExternalWritePermission = async () => {
@@ -633,29 +643,40 @@ const ReleaseForm = ({ navigation }) => {
               borderColor: 'grey',
               height: 50,
               borderRadius: 5,
-              backgroundColor: '#EBEBEB'
+              backgroundColor: '#EBEBEB',
+              justifyContent: 'center'
             }}
           >
+            
             <DatePicker
-              date={date}
+              modal
               mode='date'
+              open={open}
+              date={date}
               placeholder='Select date'
-              format='MM/DD/YYYY'
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
+              confirmBtnText='Confirm'
+              cancelBtnText='Cancel'
 
+              format='MM/DD/YYYY'
+              customStyles={{
                 dateIcon: {
-                  display: 'none',
+                  display: 'none'
                 },
                 dateInput: {
                   height: 50,
-                  marginTop: 10,
-                  borderWidth: 0.1
-                },
+                  //marginTop: 10,
+                  borderWidth: 0,
+                }
               }}
               onDateChange={(date) => {
                 setDate(date);
+              }}
+              onConfirm={(date) => {
+                setOpen(false)
+                setDate(date)
+              }}
+              onCancel={() => {
+                setOpen(false)
               }}
             />
           </View>
@@ -849,7 +870,6 @@ const ReleaseForm = ({ navigation }) => {
         </View>
       )}
     </View>
-
   )
 }
 

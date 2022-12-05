@@ -11,7 +11,9 @@ import {
   Image,
   FlatList,
   Alert,
+
 } from 'react-native';
+
 import AudioTrackInput from '../Custom/AudioTrackInput';
 import icons from '../Constants/icons';
 import RadioButton from '../Custom/RadioButton';
@@ -19,23 +21,43 @@ import * as Strings from '../Constants/strings';
 import CheckBox from '@react-native-community/checkbox';
 import SelectList from 'react-native-dropdown-select-list';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CustomBar } from '../Custom/CustomComponent';
 
+
+// import Sound Component
+import Sound from 'react-native-sound';
+import VedioPlayer from 'react-native-video';
 import DocumentPicker from 'react-native-document-picker';
+import * as Progress from 'react-native-progress';
+// import VideoPlayer from 'react-native-video-controls';
+
 
 const AudioTracks = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
 
-
   const [loading, setLoading] = useState(false);
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [selected, setSelected] = useState('');
+  // const [progress, setProgress] = useState(0)
 
   //remixer
   const [textInput, setTextInput] = useState('');
   const [todos, setTodos] = useState([]);
 
+  // handle play pause event
+  const [isSelected, setisSelected] = useState(false)
+  const [isPlay, setisPlay] = useState(true);
+  const [audioTime, setAudioTime] = useState({
+    currentTime: 0,
+    endTime: 1
+  });
+
+  //const [isPlaying, setShowPause] = useState(false)
+  //const playBackState = usePlaybackState();
+
   useEffect(() => {
     getTodosFromUserDevice();
+    //setupPlayer();
   }, []);
 
   // radio button category
@@ -75,7 +97,7 @@ const AudioTracks = ({ navigation }) => {
   const Separator = () => <View style={styles.separator} />;
 
   //  save remixer useffect
-  
+
   // useEffect(() => {
   //   saveTodoToUserDevice(todos);
   // }, [todos]);
@@ -127,6 +149,9 @@ const AudioTracks = ({ navigation }) => {
     );
   };
 
+
+
+
   // Add remixer
   const addRemixer = () => {
     if (textInput == '') {
@@ -142,14 +167,7 @@ const AudioTracks = ({ navigation }) => {
     }
   };
 
-  const saveTodoToUserDevice = async todos => {
-    try {
-      const stringifyTodos = JSON.stringify(todos);
-      await AsyncStorage.setItem('todos', stringifyTodos);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
 
   const markRemixerComplete = todoId => {
     const newTodosItem = todos.map(item => {
@@ -170,7 +188,7 @@ const AudioTracks = ({ navigation }) => {
 
   // Audio file selection handler
   const [fileResponse, setFileResponse] = useState([]);
-
+  // console.log('show FileResp ==>', fileResponse)
 
   const handleSingleDocumentSelection = React.useCallback(async () => {
     try {
@@ -203,6 +221,8 @@ const AudioTracks = ({ navigation }) => {
     }
   }, []);
 
+
+
   //Audio file Multiple selection handler
   const [multipleFiles, setMultipleFiles] = useState([]);
 
@@ -215,12 +235,12 @@ const AudioTracks = ({ navigation }) => {
       });
       for (const res of results) {
         // printing the logs
-        console.log(
-          res.uri,
-          res.type, // mime type
-          res.name,
-          res.size
-        );
+        // console.log(
+        //   res.uri,
+        //   res.type, // mime type
+        //   res.name,
+        //   res.size
+        // );
       }
       //Setting the state to show the multiple file attributes
       setMultipleFiles(results)
@@ -228,7 +248,7 @@ const AudioTracks = ({ navigation }) => {
       //Handle any exception (if any)
       if (DocumentPicker.isCancel(err)) {
         // if document cancel 
-        alert('Cancle from multiple docs')
+        alert('Empty Selection')
       } else {
         // For Unknown Error
         alert('Unknown Error: ' + JSON.stringify(err));
@@ -240,6 +260,21 @@ const AudioTracks = ({ navigation }) => {
 
 
   function renderAudioView() {
+
+    const timeformate = (timeInSeconds) => {
+      const digit = n => (n < 10 ? `0${n}` : `${n}`);
+      const sec = digit(Math.floor(timeInSeconds % 60));
+      const min = digit(Math.floor((timeInSeconds / 60) % 60));
+      return `${min}:${sec}`
+    }
+
+    const handleAudioTrackPress = (index) => {
+      if(isSelected != index){
+        console.log(index)
+        //setisPlay(false)
+      }
+    }
+
     return (
       <View>
         <View style={styles.audioview}>
@@ -251,64 +286,212 @@ const AudioTracks = ({ navigation }) => {
             onPress={() => setLoading(true)}>
             <Text style={styles.addtxt}>Add New</Text>
           </TouchableOpacity>
-          {/* select audio files */}
-          <View>
-            {fileResponse.map((file, index) => (
-              <View
-                key={index.toString()}
-                style={{
-                  backgroundColor: 'lightgrey',
-                  marginHorizontal: SIZES.padding2 * 2,
-                  padding: 5
-                }}
-              >
-                <Text style={styles.uri}>File Name: {file?.name}</Text>
-                <Text
-                  //key={index.toString()}
-                  style={styles.uri}
-                  numberOfLines={1}
-                  ellipsizeMode={'middle'}>
-                  File Url: {file?.uri}
-                </Text>
-                <Text style={styles.uri}>File Type: {file?.type}</Text>
-                <Text style={styles.uri}>File size (kb): {file.size}</Text>
-              </View>
-            ))}
-          </View>
+
+          {/* Upload Single Tracks */}
           <TouchableOpacity
             onPress={handleSingleDocumentSelection}
             style={styles.addNewBtn}>
             <Text style={styles.addtxt}>{Strings.SingleTrack}</Text>
           </TouchableOpacity>
-          {multipleFiles.map((file, index) => (
-            <View
-              key={index.toString()}
-              style={{
-                backgroundColor: 'lightgrey',
-                marginHorizontal: SIZES.padding2 * 2,
-                padding: 5
-              }}
-            >
-              <Text style={styles.uri}>File Name: {file?.name}</Text>
-              <Text
-                //key={index.toString()}
-                style={styles.uri}
-                numberOfLines={1}
-                ellipsizeMode={'middle'}>
-                File Url: {file?.uri}
-              </Text>
-              <Text style={styles.uri}>File Type: {file?.type}</Text>
-              <Text style={styles.uri}>File size (kb): {file.size}</Text>
-            </View>
-          ))}
+
+          {/* Upload Multiple Tracks */}
           <TouchableOpacity
             onPress={selectMultipleFiles}
             style={styles.addNewBtn}>
             <Text style={styles.addtxt}>{Strings.MultiTrack}</Text>
           </TouchableOpacity>
-          <View style={styles.input}>
-            <TextInput style={styles.inputArea} />
+          <View>
+            {/* select audio files */}
+
+            {/* single Track */}
+            {fileResponse.map((file, index) => (
+              <View
+                key={index.toString()}
+                style={{
+                  //backgroundColor: 'lightgrey',
+                  marginHorizontal: SIZES.padding2 * 2,
+                  padding: 5,
+                  borderWidth: 1.2,
+                  borderColor: 'blue'
+                }}
+              >
+                <Text style={styles.uri}>File Name: {file?.name}</Text>
+                {/* <Text
+                  //key={index.toString()}
+                  style={styles.uri}
+                  numberOfLines={1}
+                  ellipsizeMode={'middle'}>
+                  File Url: {file?.uri}
+                </Text> */}
+
+                <Text style={styles.uri}>File Type: {file?.type}</Text>
+                {/* <Text style={styles.uri}>File size (kb): {file.size}</Text> */}
+
+                {/*Single player container*/}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: 10
+                  }}>
+
+                  {isPlay ? (
+                    <TouchableOpacity onPress={() => setisPlay(false)}
+                      style={{
+                        
+                        backgroundColor: 'grey',
+                        height: 40,
+                        width: 40,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginRight: 15
+                      }}
+                    >
+                      <Image source={icons.play}
+                        style={{ height: 30, width: 30 }}
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={() => setisPlay(true)}
+                      style={{
+                        backgroundColor: 'grey',
+                        height: 40,
+                        width: 40,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginRight: 15
+                      }}
+                    >
+                      <Image source={icons.pause}
+                        style={{ height: 30, width: 30 }}
+                      />
+                    </TouchableOpacity>
+                  )}
+                  <VedioPlayer
+                    source={{ uri: file.uri }}
+                    //style={{ width: 20, height: 20, alignSelf: 'center', backgroundColor: 'red' }}
+                    audioOnly={true}
+                    paused={isPlay}
+                    onLoad={(data) => setAudioTime({ ...audioTime, endTime: data.duration })}
+                    onProgress={(data) => setAudioTime({ ...audioTime, currentTime: data.currentTime })}
+                    repeat={true}
+                    volume={4}
+
+                  // style={{
+                  //   width: SIZES.width / 6,
+                  //   backgroundColor: 'red'
+                  // }}
+                  //onBuffer={(data) =>console.log(data)}
+                  />
+                  <View>
+                    {/* 
+                      sometime show error(not working properly)
+                      see what thay have accept as a value
+                      // 
+                     */}
+                    <View style={{ width: '65%' }}>
+                      <Progress.Bar
+                        progress={audioTime.currentTime / audioTime.endTime}
+                        //progress={0.2}
+                        width={120}
+                        height={20}
+                        color='rgb(0,177,44)'
+                        animated={true}
+                        animationType='spring'
+                        indeterminateAnimationDuration={50}
+                        borderRadius={0}
+                      // collapsable={true} 
+                      />
+                    </View>
+
+                    <View style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                      <Text>{timeformate(audioTime.currentTime)}</Text>
+                      <Text>{timeformate(audioTime.endTime)}</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            ))}
+
+            {/* Multiple Tracks upload */}
+
+
+            {multipleFiles.map((item, index) => (
+
+              <View
+                key={index.toString()}
+                style={{
+                  backgroundColor: 'lightgrey',
+                  marginHorizontal: SIZES.padding2 * 2,
+                  padding: 5,
+                  marginVertical: SIZES.padding * 0.5
+                }}
+              >
+                <Text style={styles.uri}>File Name: {item?.name}</Text>
+                {/* <Text style={styles.uri}>File Name: {item.uri}</Text> */}
+
+                {/* music container */}
+                <VedioPlayer
+                  key={(index) => `${index}`}
+                  source={{ uri: item.uri }}
+                  audioOnly={true}
+                  paused={isPlay}
+                  onLoad={(data) => setAudioTime({ ...audioTime, endTime: data.duration })}
+                  onProgress={(data) => setAudioTime({ ...audioTime, currentTime: data.currentTime })}
+                  repeat={true}
+                  volume={4}
+                />
+                <View
+                  key={index.toString()}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: 10
+                  }}>
+                
+                  {isPlay ? (
+                    <TouchableOpacity onPress={handleAudioTrackPress}
+                      key={index.toString()}
+                      style={{
+                        backgroundColor: 'grey',
+                        height: 40,
+                        width: 40,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginRight: 15
+                      }}
+                    >
+                      <Image source={icons.play}
+                        style={{ height: 30, width: 30 }}
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={handleAudioTrackPress}
+                      key={index.toString()}
+                      style={{
+                        backgroundColor: 'grey',
+                        height: 40,
+                        width: 40,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginRight: 15
+                      }}
+                    >
+                      <Image source={icons.pause}
+                        style={{ height: 30, width: 30 }}
+                      />
+                    </TouchableOpacity>
+                  )}
+                </View>
+
+              </View>
+            ))}
           </View>
+
+          {/* Release Form Navigation*/}
           <View
             style={{
               flexDirection: 'row',
@@ -324,6 +507,7 @@ const AudioTracks = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => navigation.navigate('SelectTerritories')}
+              //onPress={() => navigation.navigate('testing')}
               style={styles.addNewBtn}
             >
               <Text style={[styles.addtxt, { paddingHorizontal: SIZES.padding }]}>
@@ -331,11 +515,13 @@ const AudioTracks = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           </View>
+
         </View>
       </View>
     );
   };
 
+  // audio url: https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3
   return (
     <View style={{ flex: 1 }}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -517,7 +703,6 @@ const AudioTracks = ({ navigation }) => {
                       value={textInput}
                       onChangeText={text => setTextInput(text)}
                     />
-
                   </View>
                   <View
                     style={{
@@ -604,6 +789,8 @@ const AudioTracks = ({ navigation }) => {
   );
 };
 
+
+
 export default AudioTracks;
 
 const styles = StyleSheet.create({
@@ -630,19 +817,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   input: {
-    height: 50,
+    height: SIZES.height / 7,
     borderWidth: 0.4,
     borderColor: 'grey',
     marginHorizontal: SIZES.padding2 * 2,
     marginVertical: SIZES.padding,
     //backgroundColor: 'red'
   },
-  inputArea: {
-    width: '80%',
-    height: 50,
-    //backgroundColor: 'yellow',
-    paddingLeft: 20,
-  },
+
   previousBtn: {
     backgroundColor: COLORS.primary,
     padding: 20,

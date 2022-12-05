@@ -5,10 +5,14 @@ import { COLORS, SIZES } from '../Constants/theme';
 import RadioButton from '../Custom/RadioButton';
 import * as Strings from '../Constants/strings';
 
+import { useForm } from "react-hook-form";
 
 
 
 const AddNewArtist = () => {
+
+  const { control, handleSubmit, formState: { error } } = useForm();
+  console.log(error)
 
   // radio button category
   const [onClickYes, setOnClickYes] = useState(false)
@@ -23,7 +27,6 @@ const AddNewArtist = () => {
     { id: 1, value: false, name: `${Strings.ylink}`, selected: false },
     { id: 2, value: false, name: `${Strings.nlink}`, selected: false },
   ]);
- 
 
   // radion button items
   const onRadioBtnPress = (item) => {
@@ -87,15 +90,62 @@ const AddNewArtist = () => {
           <Text style={styles.artistDetailTxt}>{Strings.artist_detail}</Text>
         </View>
         <View style={{ marginVertical: SIZES.padding * 3 }}>
-          <CustomInput title='Artist Name: ' keyboardType='default' />
-          <CustomInput title='Email:' keyboardType='email-address' />
-          <CustomInput title='Soundcloud:' keyboardType='default' />
-          <CustomInput title='Twitter:' keyboardType='url' />
-          <CustomInput title='Facebook:' keyboardType='url' />
-          <CustomInput title='Instagram:' keyboardType='url' />
-          <CustomInput title='YouTube:' keyboardType='url' />
-          <CustomInput title='Bandcamp:' keyboardType='url' />
-          <CustomInput title='Website:' keyboardType='url' />
+          <CustomInput
+            control={control}
+            title='Artist Name'
+            name='artistname'
+            keyboardType='default'
+            rules={{ required: 'Please Enter Artist Name' }}
+          />
+          <CustomInput
+            control={control}
+            title='Email:'
+            name="Email"
+            keyboardType='email-address'
+          //rules={{required: 'Please Input Email'}}
+          />
+          <CustomInput
+            control={control}
+            title='Soundcloud:'
+            name="Soundcloud"
+            keyboardType='default'
+          />
+          <CustomInput
+            control={control}
+            title='Twitter:'
+            name="Twitter"
+            keyboardType='url'
+          />
+          <CustomInput
+            control={control}
+            title='Facebook:'
+            name="Facebook"
+            keyboardType='url'
+          />
+          <CustomInput
+            control={control}
+            title='Instagram:'
+            name="Instagram"
+            keyboardType='url'
+          />
+          <CustomInput
+            control={control}
+            title='YouTube:'
+            name="YouTube"
+            keyboardType='url'
+          />
+          <CustomInput
+            control={control}
+            title='Bandcamp:'
+            name="Bandcamp"
+            keyboardType='url'
+          />
+          <CustomInput
+            control={control}
+            title='Website:'
+            name="Website"
+            keyboardType='url'
+          />
         </View>
       </View>
     )
@@ -164,7 +214,7 @@ const AddNewArtist = () => {
                   </Text>
                   <Text>4) Paste link above</Text>
                   <Text>5) Click
-                    <Text style={{fontWeight: 'bold'}}> Verify Artist Link</Text>
+                    <Text style={{ fontWeight: 'bold' }}> Verify Artist Link</Text>
                   </Text>
                 </View>
               </View>
@@ -222,7 +272,7 @@ const AddNewArtist = () => {
                 >
                   <TextInput style={{ backgroundColor: 'white', width: '60%' }}
                     onFocus={() => setisActive(true)}
-                    onBlur={() => setisActive(false)}
+                    //onBlur={() => setisActive(false)}
                     placeholder='Enter Artist Link'
                     autoCapitalize={false}
                     autoCorrect={false}
@@ -237,11 +287,11 @@ const AddNewArtist = () => {
                   <Text>1) Find your artist page</Text>
                   <Text>2) Click the three dots</Text>
                   <Text>
-                    3) Press <Text style={{ fontWeight: 'bold' }}>Share Artist > Copy Link</Text>
+                    3) Press <Text style={{ fontWeight: 'bold' }}>{Strings.shareartist}</Text>
                   </Text>
                   <Text>4) Paste link Above</Text>
                   <Text>5) Click
-                    <Text style={{fontWeight: 'bold'}}> Verify Artist Link</Text>
+                    <Text style={{ fontWeight: 'bold' }}> Verify Artist Link</Text>
                   </Text>
                 </View>
 
@@ -251,7 +301,7 @@ const AddNewArtist = () => {
                   <Text>2) Copy the URL</Text>
                   <Text>4) Paste the link above</Text>
                   <Text>5) Click
-                    <Text style={{fontWeight: 'bold'}}> Verify Artist Link</Text>
+                    <Text style={{ fontWeight: 'bold' }}> Verify Artist Link</Text>
                   </Text>
                 </View>
               </View>
@@ -263,10 +313,14 @@ const AddNewArtist = () => {
     )
   };
 
-  function renderSaveBtn(){
-    return(
-      <View style={{marginVertical: SIZES .padding * 2}}>
-        <TouchableOpacity style={styles.saveBtn} activeOpacity={0.4}>
+  const onSaveArtistPressed = data => {
+    console.log(data);
+  }
+
+  function renderSaveBtn() {
+    return (
+      <View style={{ marginVertical: SIZES.padding * 2 }}>
+        <TouchableOpacity onPress={handleSubmit(onSaveArtistPressed)} style={styles.saveBtn} activeOpacity={0.4}>
           <Text style={styles.saveTxt}>Save Artist</Text>
         </TouchableOpacity>
       </View>

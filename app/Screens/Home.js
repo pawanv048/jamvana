@@ -8,12 +8,14 @@ import {
   TouchableOpacity,
   Platform,
   Animated,
-  StyleSheet
+  StyleSheet,
+
 } from 'react-native';
 import API from '../apis/API';
 import moment from 'moment-timezone';
 import * as Strings from '../Constants/strings';
-import {COLORS, SIZES} from '../Constants/theme'
+import { COLORS, SIZES } from '../Constants/theme';
+import axios from 'axios';
 
 const Home = ({ navigation, route }) => {
   const [isLoading, setLoading] = useState(true);
@@ -26,7 +28,6 @@ const Home = ({ navigation, route }) => {
       );
 
       //console.log('ReleaseId123=', detailsData?.Release_Id);
-
       const json = await resp.json();
       setData(json.Data);
       // console.log('fetchDetailsUsingReleaseId12=', JSON.stringify(json.Data));
@@ -36,6 +37,7 @@ const Home = ({ navigation, route }) => {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     getAllReleases();
@@ -49,8 +51,7 @@ const Home = ({ navigation, route }) => {
     );
   }
 
-  function renderHomeReleaseItem({ item, index }) {
-
+  function renderHomeReleaseItem({ item }) {
     return (
       <View
         style={{
@@ -59,14 +60,13 @@ const Home = ({ navigation, route }) => {
           backgroundColor: '#1B1A17',
           marginBottom: 10,
           borderRadius: 15,
-          
-        }}>
 
+        }}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Detail', { data: item })}
         >
           <Text style={styles.releaseTxt}>{Strings.t1} {item.Release_ReleaseTitle}</Text>
-          <Text style={[styles.releaseTxt, {marginVertical: SIZES.padding * 2}]}>{Strings.t2} {item.Release_PrimaryArtist}</Text>
+          <Text style={[styles.releaseTxt, { marginVertical: SIZES.padding * 2 }]}>{Strings.t2} {item.Release_PrimaryArtist}</Text>
           <Text style={styles.releaseTxt}>{Strings.t3} {moment(new Date(item?.Release_ReleaseDate)).format("DD-MM-YYYY")}</Text>
         </TouchableOpacity>
       </View>
@@ -80,7 +80,7 @@ const Home = ({ navigation, route }) => {
         showsVerticalScrollIndicator={true}
         keyExtractor={({ Release_Id }) => Release_Id}
         renderItem={renderHomeReleaseItem}
-        contentContainerStyle={{padding: SIZES.padding * 2}}
+        contentContainerStyle={{ padding: SIZES.padding * 2 }}
       />
     </SafeAreaView>
   );
