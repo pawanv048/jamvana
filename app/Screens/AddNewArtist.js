@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 
 
 
-const AddNewArtist = () => {
+const AddNewArtist = ({navigation}) => {
 
   const { control, handleSubmit, formState: { error } } = useForm();
   console.log(error)
@@ -62,7 +62,7 @@ const AddNewArtist = () => {
     return (
       <View>
         <TouchableOpacity
-          onPress={() => console.log('Artist Screen')}
+          onPress={() => navigation.navigate('artistDetails')}
           style={{
             backgroundColor: COLORS.black,
             padding: 20,

@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Platform,
-  Animated,
   StyleSheet,
 
 } from 'react-native';
@@ -26,7 +25,6 @@ const Home = ({ navigation, route }) => {
       const resp = await fetch(
         'http://84.16.239.66/api/Release/GetAllReleases',
       );
-
       //console.log('ReleaseId123=', detailsData?.Release_Id);
       const json = await resp.json();
       setData(json.Data);

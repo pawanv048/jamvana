@@ -11,6 +11,68 @@ import * as Strings from '../Constants/strings';
 import SelectList from 'react-native-dropdown-select-list';
 import DatePicker from 'react-native-datepicker';
 import { LogBox } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
+
+
+
+import SelectBox from 'react-native-multi-selectbox';
+import { xorBy } from 'lodash';
+const PRIMARY_ARTIST = [
+  {
+    item: 'Juventus',
+    id: 'JUVE',
+  },
+  {
+    item: 'Real Madrid',
+    id: 'RM',
+  },
+  {
+    item: 'Barcelona',
+    id: 'BR',
+  },
+  {
+    item: 'PSG',
+    id: 'PSG',
+  },
+  {
+    item: 'FC Bayern Munich',
+    id: 'FBM',
+  },
+  {
+    item: 'Manchester United FC',
+    id: 'MUN',
+  },
+  {
+    item: 'Manchester City FC',
+    id: 'MCI',
+  },
+  {
+    item: 'Everton FC',
+    id: 'EVE',
+  },
+  {
+    item: 'Tottenham Hotspur FC',
+    id: 'TOT',
+  },
+  {
+    item: 'Chelsea FC',
+    id: 'CHE',
+  },
+  {
+    item: 'Liverpool FC',
+    id: 'LIV',
+  },
+  {
+    item: 'Arsenal FC',
+    id: 'ARS',
+  },
+
+  {
+    item: 'Leicester City FC',
+    id: 'LEI',
+  },
+]
+
 
 //import DatePicker from 'react-native-date-picker';  // Need to use this further
 
@@ -30,8 +92,8 @@ import {
   Alert
 } from 'react-native';
 
+LogBox.ignoreAllLogs();//Ignore all log notifications
 //Import Image Picker
-import { launchImageLibrary } from 'react-native-image-picker';
 
 const ReleaseForm = ({ navigation }) => {
 
@@ -46,17 +108,18 @@ const ReleaseForm = ({ navigation }) => {
   const [selected, setSelected] = useState('');
   const [selectedSubGenre, setSelectedSubGenre] = useState('');
 
+  //choose primary artist
+  const [selectedTeams, setSelectedTeams] = useState([])
+  function onMultiChange() {
+    return (item) => setSelectedTeams(xorBy(selectedTeams, [item], 'id'))
+  }
+
   // Release Date
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
   // storing image path
   const [filePath, setFilePath] = useState({});
 
-
-  useEffect(() => {
-    LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
-    LogBox.ignoreLogs(['componentWillReceiveProps has been renamed, and is not recommended for use']);
-  }, [])
 
   // Permission for gallery
   const requestExternalWritePermission = async () => {
@@ -500,7 +563,7 @@ const ReleaseForm = ({ navigation }) => {
               }}>
               Choose Primary Artist:
             </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('AddNewArtist')}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate('AddNewArtist')}>
               <Text
                 style={{
                   marginHorizontal: SIZES.padding * 1.2,
@@ -511,14 +574,64 @@ const ReleaseForm = ({ navigation }) => {
                   textDecorationLine: 'underline',
                 }}>Add New Artist
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
-          <ReleaseInput
-            placeholder='Select Some Option'
-            //multiline={true}
-            numberOfLines={2}
-            maxLength={200}
-          />
+          <View style={{marginHorizontal: SIZES.padding * 0.5}}>
+            <SelectBox
+              label=" "
+              options={PRIMARY_ARTIST}
+              selectedValues={selectedTeams}
+              onMultiSelect={onMultiChange()}
+              onTapClose={onMultiChange()}
+              isMulti
+              hideInputFilter={true}
+              containerStyle={{
+                backgroundColor: COLORS.white,
+                //alignItems: 'center',
+                width: '95%',
+                borderWidth: 1,
+                marginLeft: SIZES.padding,
+                height: 55,
+                borderRadius: 5,
+                paddingHorizontal: 10,
+                paddingVertical: 30,               
+              }}              
+              //inputFilterContainerStyle={{backgroundColor: '#000'}}
+              //inputFilterStyle={{fontSize: 21}}
+              labelStyle={{ 
+                fontSize: 10,
+                // margin: 20
+              }}
+              optionsLabelStyle={{
+                fontSize: 17,
+                paddingHorizontal: SIZES.padding * 2
+              }}
+              optionContainerStyle={{
+                backgroundColor: '#fff',
+                width: '94%',
+                //borderWidth: 1,
+                marginLeft: SIZES.padding,  
+              }}
+              multiOptionContainerStyle={{ 
+                backgroundColor: COLORS.primary,
+                //marginHorizontal: 0
+                //borderWidth: 1,
+                //borderColor: 'red'
+               }}
+              multiOptionsLabelStyle={{ 
+                fontSize: 15,
+                fontWeight: 'bold',                
+              }}
+              multiListEmptyLabelStyle={{ fontSize: 15 }}
+              listEmptyLabelStyle={{ color: 'red' }}
+              //selectedItemStyle={{ color: 'red' }}
+              arrowIconColor={COLORS.primary}
+              searchIconColor={COLORS.primary}
+              toggleIconColor={COLORS.primary}
+              listEmptyText='NO ARTIST FOUND'
+            />
+          </View>
+
         </View>
 
 
@@ -647,7 +760,7 @@ const ReleaseForm = ({ navigation }) => {
               justifyContent: 'center'
             }}
           >
-            
+
             <DatePicker
               modal
               mode='date'
@@ -700,7 +813,8 @@ const ReleaseForm = ({ navigation }) => {
 
         <TouchableOpacity
           style={styles.nextBtn}
-          onPress={() => navigation.navigate('audioTracks')}
+          // onPress={() => navigation.navigate('audioTracks')}
+          onPress={() => navigation.navigate('testing')}
         >
           <Text style={styles.nextTxt}>Next</Text>
         </TouchableOpacity>

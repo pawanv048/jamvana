@@ -12,6 +12,7 @@ import DigitalProvider from './DigitalProvider';
 import AdditionalOption from './AdditionalOption';
 import Testing from './testing';
 import AddNewArtist from './AddNewArtist';
+import ArtistDetails from './artistDetails';
 
 export {
     Home,
@@ -27,5 +28,6 @@ export {
     DigitalProvider,
     AdditionalOption,
     Testing,
-    AddNewArtist
+    AddNewArtist,
+    ArtistDetails
 }

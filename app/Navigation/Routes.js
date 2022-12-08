@@ -11,7 +11,8 @@ import {
   SelectTerritories,DigitalProvider,
   AdditionalOption,
   Testing,
-  AddNewArtist
+  AddNewArtist,
+  ArtistDetails
 } from '../Screens';
 
 
@@ -45,6 +46,7 @@ function Routes() {
         <Stack.Screen name='AdditionalOption' component={AdditionalOption} options={{title: 'Add Options'}}/>
         <Stack.Screen name='testing' component={Testing} />
         <Stack.Screen name='AddNewArtist' component={AddNewArtist} options={{title: 'New Artist'}}/>
+        <Stack.Screen name='artistDetails' component={ArtistDetails} options={{title: 'Artist Detail'}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
