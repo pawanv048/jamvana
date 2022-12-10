@@ -13,7 +13,7 @@ import {
   ScrollView
 } from 'react-native';
 
-const ReleaseScreen = () => {
+const ReleaseScreen = ({navigation}) => {
 
   const { data, setData } = useDetailsData();
   const [showModal, setShowModal] = useState(false)
@@ -98,6 +98,9 @@ const ReleaseScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.delete}>
               <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t22}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('releaseForm',{data: data[0]})}>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>EDIT</Text>
             </TouchableOpacity>
           </View>
           {/* User Feedback */}

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { COLORS, SIZES } from '../Constants/theme';
+import React, {useState, useEffect} from 'react';
+import {COLORS, SIZES} from '../Constants/theme';
 import {
   StyleSheet,
   Text,
@@ -11,7 +11,6 @@ import {
   Image,
   FlatList,
   Alert,
-
 } from 'react-native';
 
 import AudioTrackInput from '../Custom/AudioTrackInput';
@@ -21,8 +20,7 @@ import * as Strings from '../Constants/strings';
 import CheckBox from '@react-native-community/checkbox';
 import SelectList from 'react-native-dropdown-select-list';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CustomBar } from '../Custom/CustomComponent';
-
+import {CustomBar} from '../Custom/CustomComponent';
 
 // import Sound Component
 import Sound from 'react-native-sound';
@@ -31,9 +29,8 @@ import DocumentPicker from 'react-native-document-picker';
 import * as Progress from 'react-native-progress';
 // import VideoPlayer from 'react-native-video-controls';
 
-
-const AudioTracks = ({ navigation }) => {
-  const { height, width } = useWindowDimensions();
+const AudioTracks = ({navigation}) => {
+  const {height, width} = useWindowDimensions();
 
   const [loading, setLoading] = useState(false);
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
@@ -45,12 +42,15 @@ const AudioTracks = ({ navigation }) => {
   const [todos, setTodos] = useState([]);
 
   // handle play pause event
-  const [isSelected, setisSelected] = useState(false)
+  const [isSelected, setisSelected] = useState(false);
   const [isPlay, setisPlay] = useState(true);
   const [audioTime, setAudioTime] = useState({
     currentTime: 0,
-    endTime: 1
+    endTime: 1,
   });
+
+  const [isPlayIndex, setIsPlayIndex] = useState('');
+
 
   //const [isPlaying, setShowPause] = useState(false)
   //const playBackState = usePlaybackState();
@@ -62,21 +62,21 @@ const AudioTracks = ({ navigation }) => {
 
   // radio button category
   const [choose, setchoose] = useState([
-    { id: 1, value: false, name: 'Yes', selected: false },
-    { id: 2, value: false, name: 'No', selected: false },
+    {id: 1, value: false, name: 'Yes', selected: false},
+    {id: 2, value: false, name: 'No', selected: false},
   ]);
 
   const data = [
-    { key: '1', value: 'item_1' },
-    { key: '2', value: 'item_2' },
+    {key: '1', value: 'item_1'},
+    {key: '2', value: 'item_2'},
   ];
 
   // radion button items
   const onRadioBtnPress = item => {
     let updatedState = choose.map(isLikedItem =>
       isLikedItem.id === item.id
-        ? { ...isLikedItem, selected: true }
-        : { ...isLikedItem, selected: false },
+        ? {...isLikedItem, selected: true}
+        : {...isLikedItem, selected: false},
     );
     setchoose(updatedState);
   };
@@ -102,20 +102,20 @@ const AudioTracks = ({ navigation }) => {
   //   saveTodoToUserDevice(todos);
   // }, [todos]);
 
-
-  const ListItem = ({ todo }) => {
+  const ListItem = ({todo}) => {
     return (
-      <View style={{ flexDirection: 'row' }}>
-        <View style={{
-          width: '80%',
-          height: 50,
-          backgroundColor: '#fff',
-          borderRadius: 5,
-          marginVertical: SIZES.padding * 0.3,
-          justifyContent: 'center',
-          //alignItems: 'center'
-          paddingLeft: SIZES.padding
-        }}>
+      <View style={{flexDirection: 'row'}}>
+        <View
+          style={{
+            width: '80%',
+            height: 50,
+            backgroundColor: '#fff',
+            borderRadius: 5,
+            marginVertical: SIZES.padding * 0.3,
+            justifyContent: 'center',
+            //alignItems: 'center'
+            paddingLeft: SIZES.padding,
+          }}>
           <Text
             style={{
               fontWeight: 'bold',
@@ -140,7 +140,7 @@ const AudioTracks = ({ navigation }) => {
           )}
 
           <TouchableOpacity
-            style={[styles.remixerInputBtn, { marginHorizontal: 10 }]}
+            style={[styles.remixerInputBtn, {marginHorizontal: 10}]}
             onPress={() => deleteRemixer(todo.id)}>
             <Text style={styles.remixerTxt}>-</Text>
           </TouchableOpacity>
@@ -148,9 +148,6 @@ const AudioTracks = ({ navigation }) => {
       </View>
     );
   };
-
-
-
 
   // Add remixer
   const addRemixer = () => {
@@ -167,12 +164,10 @@ const AudioTracks = ({ navigation }) => {
     }
   };
 
-  
-
   const markRemixerComplete = todoId => {
     const newTodosItem = todos.map(item => {
       if (item.id == todoId) {
-        return { ...item, completed: true };
+        return {...item, completed: true};
       }
       return item;
     });
@@ -221,8 +216,6 @@ const AudioTracks = ({ navigation }) => {
     }
   }, []);
 
-
-
   //Audio file Multiple selection handler
   const [multipleFiles, setMultipleFiles] = useState([]);
 
@@ -231,7 +224,7 @@ const AudioTracks = ({ navigation }) => {
       const results = await DocumentPicker.pick({
         type: [DocumentPicker.types.audio],
         allowMultiSelection: true,
-        transitionStyle: 'coverVertical'
+        transitionStyle: 'coverVertical',
       });
       for (const res of results) {
         // printing the logs
@@ -243,37 +236,34 @@ const AudioTracks = ({ navigation }) => {
         // );
       }
       //Setting the state to show the multiple file attributes
-      setMultipleFiles(results)
+      setMultipleFiles(results);
     } catch (err) {
       //Handle any exception (if any)
       if (DocumentPicker.isCancel(err)) {
-        // if document cancel 
-        alert('Empty Selection')
+        // if document cancel
+        alert('Empty Selection');
       } else {
         // For Unknown Error
         alert('Unknown Error: ' + JSON.stringify(err));
         throw err;
       }
     }
-  }, [])
-
-
+  }, []);
 
   function renderAudioView() {
-
-    const timeformate = (timeInSeconds) => {
+    const timeformate = timeInSeconds => {
       const digit = n => (n < 10 ? `0${n}` : `${n}`);
       const sec = digit(Math.floor(timeInSeconds % 60));
       const min = digit(Math.floor((timeInSeconds / 60) % 60));
-      return `${min}:${sec}`
-    }
+      return `${min}:${sec}`;
+    };
 
-    const handleAudioTrackPress = (index) => {
-      if(isSelected != index){
-        console.log(index)
+    const handleAudioTrackPress = index => {
+      if (isSelected != index) {
+        console.log(index);
         //setisPlay(false)
       }
-    }
+    };
 
     return (
       <View>
@@ -312,9 +302,8 @@ const AudioTracks = ({ navigation }) => {
                   marginHorizontal: SIZES.padding2 * 2,
                   padding: 5,
                   borderWidth: 1.2,
-                  borderColor: 'blue'
-                }}
-              >
+                  borderColor: 'blue',
+                }}>
                 <Text style={styles.uri}>File Name: {file?.name}</Text>
                 {/* <Text
                   //key={index.toString()}
@@ -332,56 +321,63 @@ const AudioTracks = ({ navigation }) => {
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    padding: 10
+                    padding: 10,
                   }}>
-
                   {isPlay ? (
-                    <TouchableOpacity onPress={() => setisPlay(false)}
+                    <TouchableOpacity
+                      onPress={() => setisPlay(false)}
                       style={{
-                        
                         backgroundColor: 'grey',
                         height: 40,
                         width: 40,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginRight: 15
-                      }}
-                    >
-                      <Image source={icons.play}
-                        style={{ height: 30, width: 30 }}
+                        marginRight: 15,
+                      }}>
+                      <Image
+                        source={icons.play}
+                        style={{height: 30, width: 30}}
                       />
                     </TouchableOpacity>
                   ) : (
-                    <TouchableOpacity onPress={() => setisPlay(true)}
+                    <TouchableOpacity
+                      onPress={() => setisPlay(true)}
                       style={{
                         backgroundColor: 'grey',
                         height: 40,
                         width: 40,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginRight: 15
-                      }}
-                    >
-                      <Image source={icons.pause}
-                        style={{ height: 30, width: 30 }}
+                        marginRight: 15,
+                      }}>
+                      <Image
+                        source={icons.pause}
+                        style={{height: 30, width: 30}}
                       />
                     </TouchableOpacity>
                   )}
                   <VedioPlayer
-                    source={{ uri: file.uri }}
+                    source={{uri: file.uri}}
                     //style={{ width: 20, height: 20, alignSelf: 'center', backgroundColor: 'red' }}
                     audioOnly={true}
                     paused={isPlay}
-                    onLoad={(data) => setAudioTime({ ...audioTime, endTime: data.duration })}
-                    onProgress={(data) => setAudioTime({ ...audioTime, currentTime: data.currentTime })}
+                    onLoad={data =>
+                      setAudioTime({...audioTime, endTime: data.duration})
+                    }
+                    onProgress={data =>
+                      setAudioTime({
+                        ...audioTime,
+                        currentTime: data.currentTime,
+                      })
+                    }
                     repeat={true}
                     volume={4}
 
-                  // style={{
-                  //   width: SIZES.width / 6,
-                  //   backgroundColor: 'red'
-                  // }}
-                  //onBuffer={(data) =>console.log(data)}
+                    // style={{
+                    //   width: SIZES.width / 6,
+                    //   backgroundColor: 'red'
+                    // }}
+                    //onBuffer={(data) =>console.log(data)}
                   />
                   <View>
                     {/* 
@@ -389,25 +385,26 @@ const AudioTracks = ({ navigation }) => {
                       see what thay have accept as a value
                       // 
                      */}
-                    <View style={{ width: '65%' }}>
+                    <View style={{width: '65%'}}>
                       <Progress.Bar
                         progress={audioTime.currentTime / audioTime.endTime}
                         //progress={0.2}
                         width={120}
                         height={20}
-                        color='rgb(0,177,44)'
+                        color="rgb(0,177,44)"
                         animated={true}
-                        animationType='spring'
+                        animationType="spring"
                         indeterminateAnimationDuration={50}
                         borderRadius={0}
-                      // collapsable={true} 
+                        // collapsable={true}
                       />
                     </View>
 
-                    <View style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
                       <Text>{timeformate(audioTime.currentTime)}</Text>
                       <Text>{timeformate(audioTime.endTime)}</Text>
                     </View>
@@ -418,77 +415,83 @@ const AudioTracks = ({ navigation }) => {
 
             {/* Multiple Tracks upload */}
 
-
-            {multipleFiles.map((item, index) => (
-
-              <View
-                key={index.toString()}
-                style={{
-                  backgroundColor: 'lightgrey',
-                  marginHorizontal: SIZES.padding2 * 2,
-                  padding: 5,
-                  marginVertical: SIZES.padding * 0.5
-                }}
-              >
-                <Text style={styles.uri}>File Name: {item?.name}</Text>
-                {/* <Text style={styles.uri}>File Name: {item.uri}</Text> */}
-
-                {/* music container */}
-                <VedioPlayer
-                  key={(index) => `${index}`}
-                  source={{ uri: item.uri }}
-                  audioOnly={true}
-                  paused={isPlay}
-                  onLoad={(data) => setAudioTime({ ...audioTime, endTime: data.duration })}
-                  onProgress={(data) => setAudioTime({ ...audioTime, currentTime: data.currentTime })}
-                  repeat={true}
-                  volume={4}
-                />
+            {multipleFiles.map((item, index) => {
+              return (
                 <View
                   key={index.toString()}
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    padding: 10
+                    backgroundColor: 'lightgrey',
+                    marginHorizontal: SIZES.padding2 * 2,
+                    padding: 5,
+                    marginVertical: SIZES.padding * 0.5,
                   }}>
-                
-                  {isPlay ? (
-                    <TouchableOpacity onPress={handleAudioTrackPress}
-                      key={index.toString()}
-                      style={{
-                        backgroundColor: 'grey',
-                        height: 40,
-                        width: 40,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginRight: 15
-                      }}
-                    >
-                      <Image source={icons.play}
-                        style={{ height: 30, width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={handleAudioTrackPress}
-                      key={index.toString()}
-                      style={{
-                        backgroundColor: 'grey',
-                        height: 40,
-                        width: 40,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginRight: 15
-                      }}
-                    >
-                      <Image source={icons.pause}
-                        style={{ height: 30, width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  )}
-                </View>
+                  <Text style={styles.uri}>File Name: {item?.name}</Text>
+                  {/* <Text style={styles.uri}>File Name: {item.uri}</Text> */}
 
-              </View>
-            ))}
+                  {/* music container */}
+                  <VedioPlayer
+                    key={index => `${index}`}
+                    source={{uri: item.uri}}
+                    audioOnly={true}
+                    paused={!(isPlayIndex === index)}
+                    onLoad={data =>
+                      setAudioTime({...audioTime, endTime: data.duration})
+                    }
+                    onProgress={data =>
+                      setAudioTime({
+                        ...audioTime,
+                        currentTime: data.currentTime,
+                      })
+                    }
+                    repeat={true}
+                    volume={4}
+                  />
+                  <View
+                    key={index.toString()}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      padding: 10,
+                    }}>
+                    {isPlayIndex === index ? (
+                      <TouchableOpacity
+                        onPress={() => setIsPlayIndex('')}
+                        key={index.toString()}
+                        style={{
+                          backgroundColor: 'grey',
+                          height: 40,
+                          width: 40,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginRight: 15,
+                        }}>
+                        <Image
+                          source={icons.play}
+                          style={{height: 30, width: 30}}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() => setIsPlayIndex(index)}
+                        key={index.toString()}
+                        style={{
+                          backgroundColor: 'grey',
+                          height: 40,
+                          width: 40,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginRight: 15,
+                        }}>
+                        <Image
+                          source={icons.pause}
+                          style={{height: 30, width: 30}}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </View>
+              );
+            })}
           </View>
 
           {/* Release Form Navigation*/}
@@ -508,30 +511,28 @@ const AudioTracks = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => navigation.navigate('SelectTerritories')}
               //onPress={() => navigation.navigate('testing')}
-              style={styles.addNewBtn}
-            >
-              <Text style={[styles.addtxt, { paddingHorizontal: SIZES.padding }]}>
+              style={styles.addNewBtn}>
+              <Text style={[styles.addtxt, {paddingHorizontal: SIZES.padding}]}>
                 Next
               </Text>
             </TouchableOpacity>
           </View>
-
         </View>
       </View>
     );
-  };
+  }
 
   // audio url: https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {renderAudioView()}
       </ScrollView>
       {loading && (
-        <View style={[styles.container, { height, width }]}>
+        <View style={[styles.container, {height, width}]}>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: height / 6 }}
+            contentContainerStyle={{paddingBottom: height / 6}}
             scrollsToTop={false}
             bounces={false}>
             <View
@@ -559,7 +560,7 @@ const AudioTracks = ({ navigation }) => {
 
               <AudioTrackInput
                 text="Disc*:"
-              //onChangeText={(text) =>}
+                //onChangeText={(text) =>}
               />
 
               {/* Artist */}
@@ -659,7 +660,11 @@ const AudioTracks = ({ navigation }) => {
                   }}>
                   {Strings.audiofile}
                 </Text>
-                <TouchableOpacity style={[styles.addNewBtn, { marginHorizontal: SIZES.padding * 1.5 }]}>
+                <TouchableOpacity
+                  style={[
+                    styles.addNewBtn,
+                    {marginHorizontal: SIZES.padding * 1.5},
+                  ]}>
                   <Text style={styles.saveTxt}>Select Tracks</Text>
                 </TouchableOpacity>
               </View>
@@ -682,7 +687,7 @@ const AudioTracks = ({ navigation }) => {
                     color: COLORS.white,
                     fontSize: 18,
                     fontWeight: 'bold',
-                    marginVertical: SIZES.padding * 0.2
+                    marginVertical: SIZES.padding * 0.2,
                   }}>
                   OR Enter Remixer(s):
                 </Text>
@@ -694,7 +699,7 @@ const AudioTracks = ({ navigation }) => {
                 <View
                   style={{
                     flexDirection: 'row',
-                    marginVertical: SIZES.padding * 0.3
+                    marginVertical: SIZES.padding * 0.3,
                   }}>
                   <View style={styles.inputContainer}>
                     <TextInput
@@ -711,7 +716,7 @@ const AudioTracks = ({ navigation }) => {
                       justifyContent: 'center',
                     }}>
                     <TouchableOpacity
-                      style={[styles.remixerInputBtn, { marginHorizontal: 10 }]}
+                      style={[styles.remixerInputBtn, {marginHorizontal: 10}]}
                       onPress={addRemixer}>
                       <Text style={styles.remixerTxt}>+</Text>
                     </TouchableOpacity>
@@ -732,11 +737,14 @@ const AudioTracks = ({ navigation }) => {
               <AudioTrackInput text="Publisher:" />
               {/* ISRC */}
               <View style={styles.irscView}>
-                <Text style={{
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  fontSize: 20
-                }}>{Strings.isrc}</Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: 20,
+                  }}>
+                  {Strings.isrc}
+                </Text>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -747,7 +755,9 @@ const AudioTracks = ({ navigation }) => {
                       onPress={() => onRadioBtnPress(item)}
                       selected={item.selected}
                       key={item.id}>
-                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>{item.name}</Text>
+                      <Text style={{color: '#fff', fontWeight: 'bold'}}>
+                        {item.name}
+                      </Text>
                     </RadioButton>
                   ))}
                 </View>
@@ -757,7 +767,7 @@ const AudioTracks = ({ navigation }) => {
                 style={{
                   marginHorizontal: SIZES.padding * 2,
                 }}>
-                <Text style={[styles.addNewTxt, { marginVertical: 10 }]}>
+                <Text style={[styles.addNewTxt, {marginVertical: 10}]}>
                   Explicit
                 </Text>
                 <CheckBox
@@ -778,7 +788,7 @@ const AudioTracks = ({ navigation }) => {
               </View>
 
               {/* Save */}
-              <TouchableOpacity style={[styles.addNewBtn, { marginTop: 25 }]}>
+              <TouchableOpacity style={[styles.addNewBtn, {marginTop: 25}]}>
                 <Text style={styles.saveTxt}>Save</Text>
               </TouchableOpacity>
             </View>
@@ -788,8 +798,6 @@ const AudioTracks = ({ navigation }) => {
     </View>
   );
 };
-
-
 
 export default AudioTracks;
 
@@ -909,5 +917,5 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     //paddingHorizontal: SIZES.padding * 2.4,
     fontSize: 13,
-  }
-})
+  },
+});

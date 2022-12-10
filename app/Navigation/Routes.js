@@ -47,6 +47,7 @@ function Routes() {
         <Stack.Screen name='testing' component={Testing} />
         <Stack.Screen name='AddNewArtist' component={AddNewArtist} options={{title: 'New Artist'}}/>
         <Stack.Screen name='artistDetails' component={ArtistDetails} options={{title: 'Artist Detail'}}/>
+        <Stack.Screen name="releaseForm" component={ReleaseForm} options={{title: 'Release Form'}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

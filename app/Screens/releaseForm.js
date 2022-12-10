@@ -95,13 +95,14 @@ import {
 LogBox.ignoreAllLogs();//Ignore all log notifications
 //Import Image Picker
 
-const ReleaseForm = ({ navigation }) => {
+const ReleaseForm = ({route, navigation }) => {
+  const releaseData = route?.params?.data
 
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [selectLabel, setSelectLabel] = useState('ITEM_1')
   const [isModalVisible, setisModalVisible] = useState(false);
   const [isModalLabelVisible, setisModalLabelVisible] = useState(false);
-  const [value, onChangeText] = useState('');
+  const [value, setValue] = useState(`${releaseData?.ChooseShops?.Release_Id || ''}`);
   const [description, setdescription] = useState('Distributed by Jamvana - www.Jamvana.com')
   const [loadingLabel, setLoadingLabel] = useState(false)
   const [showInfo, setShowInfo] = useState(false)
@@ -372,7 +373,7 @@ const ReleaseForm = ({ navigation }) => {
         <ReleaseInput
           text='Display Artists (optional):'
           value={value}
-          onChangeText={text => onChangeText(text)}
+          onChangeText={text => setValue(text)}
         />
 
         {/* Remixer */}
@@ -813,8 +814,8 @@ const ReleaseForm = ({ navigation }) => {
 
         <TouchableOpacity
           style={styles.nextBtn}
-          // onPress={() => navigation.navigate('audioTracks')}
-          onPress={() => navigation.navigate('testing')}
+           onPress={() => navigation.navigate('audioTracks')}
+         // onPress={() => navigation.navigate('testing')}
         >
           <Text style={styles.nextTxt}>Next</Text>
         </TouchableOpacity>
