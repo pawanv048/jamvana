@@ -16,7 +16,7 @@ import * as Strings from '../Constants/strings';
 import { COLORS, SIZES } from '../Constants/theme';
 import axios from 'axios';
 
-const Home = ({ navigation, route }) => {
+const Home = ({ navigation }) => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
@@ -36,6 +36,13 @@ const Home = ({ navigation, route }) => {
     }
   };
 
+  // const makeRequest = async () => {
+  //   try {
+  //     API
+  //   } catch (error) {
+      
+  //   }
+  // }
 
   useEffect(() => {
     getAllReleases();
@@ -76,7 +83,7 @@ const Home = ({ navigation, route }) => {
       <FlatList
         data={data}
         showsVerticalScrollIndicator={true}
-        keyExtractor={({ Release_Id }) => Release_Id}
+        keyExtractor={(item) => `${item.Release_Id}`}
         renderItem={renderHomeReleaseItem}
         contentContainerStyle={{ padding: SIZES.padding * 2 }}
       />

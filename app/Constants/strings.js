@@ -1,17 +1,20 @@
 export const appName = '';
 export const email = '';
+
+// RELEASE SCREEN TEXT
+
 export const t1 = 'Release Title :';
 export const t2 = 'Release Artist :';
 export const t3 = 'Release Date :';
 export const t4 = 'Release Id :';
 export const t5 = 'Release PrimaryArtist :';
 export const t6 = 'Release DisplayArtist :';
-export const t7 = 'Release ReleaseTitle';
+export const t7 = 'Release Title:';
 export const t8 = 'Release Label:';
 export const t9 = 'Release MainGenre:';
 export const t10 = 'Release SubGenre: ';
 export const t11 = 'Release Date:';
-export const t12 = 'Release ReleaseType';
+export const t12 = 'Release Type:';
 export const t13 = 'Composer:';
 export const t14 = 'Orchestra:';
 export const t15 = 'Arranger:';
@@ -22,6 +25,15 @@ export const t19 = 'LanguageCode:';
 export const t20 = 'Approve';
 export const t21 = 'Reject';
 export const t22 = 'Delete';
+
+// REJECT MODEL TEXT
+
+export const t41 = 'Save';
+export const t42 = 'Dismiss';
+
+
+// TRACK SCREEN TEXT
+
 export const t23 = 'Track Disc:';
 export const t24 = 'Track Track:';
 export const t25 = 'Track Artist:';
@@ -40,8 +52,10 @@ export const t37 = 'Track Orchestra:';
 export const t38 = 'Track Conductor:';
 export const t39 = 'Track Actor:';
 export const t40 = 'Track Arranger:';
-export const t41 = 'Save';
-export const t42 = 'Dismiss';
+
+
+// EXCLUSIVE SCREEN TEXT
+
 export const t43 = 'ExclusiveOn:';
 export const t44 = 'ExclusiveFor:';
 export const t45 = 'PreOrders:';

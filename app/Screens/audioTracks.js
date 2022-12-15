@@ -39,6 +39,7 @@ const AudioTracks = ({ navigation }) => {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [selected, setSelected] = useState('');
   // const [progress, setProgress] = useState(0)
+  const [isPlayIndex, setIsPlayIndex] = useState('');
 
   //remixer
   const [textInput, setTextInput] = useState('');
@@ -167,7 +168,7 @@ const AudioTracks = ({ navigation }) => {
     }
   };
 
-  
+
 
   const markRemixerComplete = todoId => {
     const newTodosItem = todos.map(item => {
@@ -269,7 +270,7 @@ const AudioTracks = ({ navigation }) => {
     }
 
     const handleAudioTrackPress = (index) => {
-      if(isSelected != index){
+      if (isSelected != index) {
         console.log(index)
         //setisPlay(false)
       }
@@ -338,7 +339,7 @@ const AudioTracks = ({ navigation }) => {
                   {isPlay ? (
                     <TouchableOpacity onPress={() => setisPlay(false)}
                       style={{
-                        
+
                         backgroundColor: 'grey',
                         height: 40,
                         width: 40,
@@ -416,8 +417,8 @@ const AudioTracks = ({ navigation }) => {
               </View>
             ))}
 
-            {/* Multiple Tracks upload */}
 
+            {/* Multiple Tracks upload */}
 
             {multipleFiles.map((item, index) => (
 
@@ -438,7 +439,7 @@ const AudioTracks = ({ navigation }) => {
                   key={(index) => `${index}`}
                   source={{ uri: item.uri }}
                   audioOnly={true}
-                  paused={isPlay}
+                  paused={!(isPlayIndex === index)}
                   onLoad={(data) => setAudioTime({ ...audioTime, endTime: data.duration })}
                   onProgress={(data) => setAudioTime({ ...audioTime, currentTime: data.currentTime })}
                   repeat={true}
@@ -451,25 +452,9 @@ const AudioTracks = ({ navigation }) => {
                     alignItems: 'center',
                     padding: 10
                   }}>
-                
-                  {isPlay ? (
-                    <TouchableOpacity onPress={handleAudioTrackPress}
-                      key={index.toString()}
-                      style={{
-                        backgroundColor: 'grey',
-                        height: 40,
-                        width: 40,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginRight: 15
-                      }}
-                    >
-                      <Image source={icons.play}
-                        style={{ height: 30, width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={handleAudioTrackPress}
+
+                  {isPlayIndex === index ? (
+                    <TouchableOpacity onPress={() => setIsPlayIndex('')}
                       key={index.toString()}
                       style={{
                         backgroundColor: 'grey',
@@ -484,7 +469,24 @@ const AudioTracks = ({ navigation }) => {
                         style={{ height: 30, width: 30 }}
                       />
                     </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={() => setIsPlayIndex(index)}
+                      key={index.toString()}
+                      style={{
+                        backgroundColor: 'grey',
+                        height: 40,
+                        width: 40,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginRight: 15
+                      }}
+                    >
+                      <Image source={icons.play}
+                        style={{ height: 30, width: 30 }}
+                      />
+                    </TouchableOpacity>
                   )}
+                 
                 </View>
 
               </View>
