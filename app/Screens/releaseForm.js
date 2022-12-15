@@ -173,7 +173,7 @@ const ReleaseForm = ({ route, navigation }) => {
     //alert('no label found')
     console.log('error')
   }
-  //const datay = JSON.parse(lableData)
+  //const datay = JSON.parse(lGit pull origin mainableData)
   // 
   // const datay1 = JSON.parse(lableData)
   // console.log(datay1)
