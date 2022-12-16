@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import ReleaseInput from '../Custom/ReleaseInput';
-import { COLORS, SIZES } from '../Constants/theme';
+import {COLORS, SIZES} from '../Constants/theme';
 import icons from '../Constants/icons';
-import { Picker } from '@react-native-picker/picker';
+import {Picker} from '@react-native-picker/picker';
 import RadioButton from '../Custom/RadioButton';
 import ModalPicker from '../Custom/ModalPicker';
 import LabelModalPicker from '../Custom/LabelModalPicker';
@@ -10,14 +10,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Strings from '../Constants/strings';
 import SelectList from 'react-native-dropdown-select-list';
 import DatePicker from 'react-native-datepicker';
-import { LogBox } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
+import {LogBox} from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
 import useDetailsData from '../context/useDetailsData';
 import API from '../apis/API';
 
-
 import SelectBox from 'react-native-multi-selectbox';
-import { xorBy } from 'lodash';
+import {xorBy} from 'lodash';
 const PRIMARY_ARTIST = [
   {
     item: 'Juventus',
@@ -72,8 +71,7 @@ const PRIMARY_ARTIST = [
     item: 'Leicester City FC',
     id: 'LEI',
   },
-]
-
+];
 
 //import DatePicker from 'react-native-date-picker';  // Need to use this further
 
@@ -89,54 +87,75 @@ import {
   useWindowDimensions,
   TextInput,
   ScrollView,
-  Alert
+  Alert,
 } from 'react-native';
 
-LogBox.ignoreAllLogs();//Ignore all log notifications
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 //Import Image Picker
 
-const ReleaseForm = ({ route, navigation }) => {
-  const releaseData = route?.params?.data
-  //console.log('show releasedata=>>',releaseData)
+const ReleaseForm = ({route, navigation}) => {
+  const releaseData = route?.params?.data;
+  //console.log('show releasedata=>>', releaseData);
   //  const { itemId } = route.params;
 
   const [selectedLanguage, setSelectedLanguage] = useState('English');
-  const [selectLabel, setSelectLabel] = useState('ITEM_1')
+  const [selectLabel, setSelectLabel] = useState('ITEM_1');
   const [isModalVisible, setisModalVisible] = useState(false);
   const [isModalLabelVisible, setisModalLabelVisible] = useState(false);
   // const [value, setValue] = useState(getDetails("Release_ReleaseTitle"));
-  const [description, setdescription] = useState('Distributed by Jamvana - www.Jamvana.com')
-  const [loadingLabel, setLoadingLabel] = useState(false)
-  const [showInfo, setShowInfo] = useState(false)
+  const [description, setdescription] = useState(
+    'Distributed by Jamvana - www.Jamvana.com',
+  );
+  const [loadingLabel, setLoadingLabel] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   const [selected, setSelected] = useState('');
 
   //Get Particular Data
-  const [displayArtist, setDisplayArtist] = useState(`${(releaseData?.Release?.Release_DisplayArtist || '')}`);
-  const [remixer, setRemixer] = useState(`${(releaseData?.Release?.Remixer || '')}`)
-  const [orchestra, setOrchestra] = useState(`${(releaseData?.Release?.Orchestra || '')}`)
-  const [actor, setActor] = useState(`${(releaseData?.Release?.Actor || '')}`)
-  const [lyricist, setLyricist] = useState(`${(releaseData?.Release?.Lyricist || '')}`)
-  const [featureArtist, setFeatureArtist] = useState(`${(releaseData?.Release?.Release_FeaturedArtist || '')}`)
-  const [composer, setComposer] = useState(`${(releaseData?.Release?.Composer || '')}`)
-  const [arranger, setArranger] = useState(`${(releaseData?.Release?.Arranger || '')}`)
-  const [conductor, setConductor] = useState(`${(releaseData?.Release?.Conductor || '')}`)
-  const [releaseTitle, setReleaseTitle] = useState(`${(releaseData?.Release?.Release_ReleaseTitle || '')}`)
-  const [copyRights, setCopyRights] = useState(`${(releaseData?.Release?.Copyrights || '')}`)
+  const [displayArtist, setDisplayArtist] = useState(
+    `${releaseData?.Release?.Release_DisplayArtist || ''}`,
+  );
+  const [remixer, setRemixer] = useState(
+    `${releaseData?.Release?.Remixer || ''}`,
+  );
+  const [orchestra, setOrchestra] = useState(
+    `${releaseData?.Release?.Orchestra || ''}`,
+  );
+  const [actor, setActor] = useState(`${releaseData?.Release?.Actor || ''}`);
+  const [lyricist, setLyricist] = useState(
+    `${releaseData?.Release?.Lyricist || ''}`,
+  );
+  const [featureArtist, setFeatureArtist] = useState(
+    `${releaseData?.Release?.Release_FeaturedArtist || ''}`,
+  );
+  const [composer, setComposer] = useState(
+    `${releaseData?.Release?.Composer || ''}`,
+  );
+  const [arranger, setArranger] = useState(
+    `${releaseData?.Release?.Arranger || ''}`,
+  );
+  const [conductor, setConductor] = useState(
+    `${releaseData?.Release?.Conductor || ''}`,
+  );
+  const [releaseTitle, setReleaseTitle] = useState(
+    `${releaseData?.Release?.Release_ReleaseTitle || ''}`,
+  );
+  const [copyRights, setCopyRights] = useState(
+    `${releaseData?.Release?.Copyrights || ''}`,
+  );
 
   //choose primary artist
-  const [selectedTeams, setSelectedTeams] = useState([])
+  const [selectedTeams, setSelectedTeams] = useState([]);
 
   function onMultiChange() {
-    return (item) => setSelectedTeams(xorBy(selectedTeams, [item], 'id'))
+    return item => setSelectedTeams(xorBy(selectedTeams, [item], 'id'));
   }
 
   // Release Date
-  const [date, setDate] = useState(new Date())
-  const [open, setOpen] = useState(false)
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
   // storing image path
   const [filePath, setFilePath] = useState({});
 
-  
   // Permission for gallery
   const requestExternalWritePermission = async () => {
     if (Platform.OS === 'android') {
@@ -158,40 +177,36 @@ const ReleaseForm = ({ route, navigation }) => {
     } else return true;
   };
 
-  const [lableData, setLableData] = useState([])
+  const [lableData, setLableData] = useState([]);
 
   // console.log('labelid', lableData.map((userid) => userid))
   //console.log('test =>', lableData)
 
-
   let test1;
   //const key = lableList?.Label_Id
-  
+
   let list = [];
 
   if (lableData.length > 0) {
-    const dataLbl = JSON.parse(lableData)
+    const dataLbl = JSON.parse(lableData);
     //key = dataLbl.map((lableLt) => (lableLt?.Label_Id))
-    test1 = dataLbl.map((lableList) => (lableList))
-
+    test1 = dataLbl.map(lableList => lableList);
 
     test1.forEach(element => {
-      console.log('show id:', element.Label_Id)
-      list.push({ key: element.Label_Id, value: element.Label_Name });
+      console.log('show id:', element.Label_Id);
+      list.push({key: element.Label_Id, value: element.Label_Name});
     });
 
-    var a= list.findIndex(x=>x.key==2077);
-    console.log('IndexValue',a);
-    console.log('value:', list[a].value)
+    var a = list.findIndex(x => x.key == 2077);
+    console.log('IndexValue', a);
+    // console.log('value:', list[a].value)
     //console.log(test1)
-
   } else {
     //alert('no label found')
-    console.log('')
+    console.log('');
   }
 
-  
-  //const datay = JSON.parse(lGit pull origin mainableData) 
+  //const datay = JSON.parse(lGit pull origin mainableData)
   // const datay1 = JSON.parse(lableData)
   // console.log(datay1)
   // //const datay = lableData.map((item) => item);
@@ -201,46 +216,46 @@ const ReleaseForm = ({ route, navigation }) => {
   //a691efb4-04bc-4349-9ba4-0103abc0de70
   //dbe6deea-a4de-4adb-a2db-ec1b050f04a6
 
-  const userReleaseId = releaseData?.Release?.User_Id
+  const userReleaseId = releaseData?.Release?.User_Id;
 
   //console.log('userid=>>',userReleaseId)
 
   const getUserLableData = async () => {
     //console.log('calling api')
     //GET request
-    await fetch(`http://84.16.239.66/api/GetLableByUserId?UserId=${userReleaseId}`, {
-      method: 'GET',
-      // headers: {
-      //   'Accept': 'application/json',
-      //   'Content-Type': 'application/json'
-      // },
-      //Request Type
-    })
-      .then((response) => response.json())
+    await fetch(
+      `http://84.16.239.66/api/GetLableByUserId?UserId=${userReleaseId}`,
+      {
+        method: 'GET',
+        // headers: {
+        //   'Accept': 'application/json',
+        //   'Content-Type': 'application/json'
+        // },
+        //Request Type
+      },
+    )
+      .then(response => response.json())
       //If response is in json then in success
-      .then((responseJson) => {
+      .then(responseJson => {
         //Success
         setLableData(JSON.stringify(responseJson.Data));
         //console.log(JSON.stringify(responseJson));
         ///console.log('base64 -> ', JSON.stringify(responseJson.Data[0].Label_Name));
       })
       //If response is not in json then in error
-      .catch((error) => {
+      .catch(error => {
         //Error
         alert(JSON.stringify(error));
         console.error(error);
       });
   };
 
-
-
   useEffect(() => {
-    getUserLableData()
-  }, [])
-
+    getUserLableData();
+  }, []);
 
   // Select File from gallery
-  const chooseFile = async (type) => {
+  const chooseFile = async type => {
     let options = {
       mediaType: type,
       maxWidth: 300,
@@ -250,7 +265,7 @@ const ReleaseForm = ({ route, navigation }) => {
     let isStoragePermitted = await requestExternalWritePermission();
     if (isStoragePermitted) {
       try {
-        launchImageLibrary(options, (response) => {
+        launchImageLibrary(options, response => {
           console.log('Response = ', response);
 
           if (response.didCancel) {
@@ -276,73 +291,72 @@ const ReleaseForm = ({ route, navigation }) => {
           setFilePath(response.assets[0]);
         });
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   };
 
-
-  const { width, height } = useWindowDimensions();
+  const {width, height} = useWindowDimensions();
 
   // radion button liked category
   const [isLiked, setIsLiked] = useState([
-    { id: 1, value: true, name: "Release", selected: false },
-    { id: 2, value: false, name: "Album", selected: false },
-    { id: 3, value: false, name: "Mix", selected: false }
+    {id: 1, value: true, name: 'Release', selected: false},
+    {id: 2, value: false, name: 'Album', selected: false},
+    {id: 3, value: false, name: 'Mix', selected: false},
   ]);
 
   // radio button category
-  const [onClickYes, setOnClickYes] = useState(false)
+  const [onClickYes, setOnClickYes] = useState(false);
   const [choose, setchoose] = useState([
-    { id: 1, value: false, name: "Yes", selected: false },
-    { id: 2, value: false, name: "No", selected: false },
+    {id: 1, value: false, name: 'Yes', selected: false},
+    {id: 2, value: false, name: 'No', selected: false},
   ]);
 
   // SubGene data
   const subGenedata = [
-    { key: '1', value: 'Acapellas' },
-    { key: '2', value: '2 Step' },
-    { key: '3', value: 'Acid' },
+    {key: '1', value: 'Acapellas'},
+    {key: '2', value: '2 Step'},
+    {key: '3', value: 'Acid'},
   ];
 
   // Parental warning data
   const data = [
-    { key: '1', value: 'NotExplicit' },
-    { key: '2', value: 'Explicit' },
-    { key: '3', value: 'ExplicitContentEdited' },
+    {key: '1', value: 'NotExplicit'},
+    {key: '2', value: 'Explicit'},
+    {key: '3', value: 'ExplicitContentEdited'},
   ];
 
-  const changeModalVisibility = (bool) => {
-    setisModalVisible(bool)
-  }
+  const changeModalVisibility = bool => {
+    setisModalVisible(bool);
+  };
 
   // Set data from list
-  const setData = (option) => {
-    setSelectedLanguage(option)
-  }
+  const setData = option => {
+    setSelectedLanguage(option);
+  };
 
   //Creating handle click function
-  const onRadioBtnClick = (item) => {
-    let updatedState = isLiked.map((isLikedItem) =>
+  const onRadioBtnClick = item => {
+    let updatedState = isLiked.map(isLikedItem =>
       isLikedItem.id === item.id
-        ? { ...isLikedItem, selected: true }
-        : { ...isLikedItem, selected: false }
+        ? {...isLikedItem, selected: true}
+        : {...isLikedItem, selected: false},
     );
     setIsLiked(updatedState);
   };
 
   // radion button items
-  const onRadioBtnPress = (item) => {
-    let updatedState = choose.map((isLikedItem) =>
+  const onRadioBtnPress = item => {
+    let updatedState = choose.map(isLikedItem =>
       isLikedItem.id === item.id
-        ? { ...isLikedItem, selected: true }
-        : { ...isLikedItem, selected: false }
+        ? {...isLikedItem, selected: true}
+        : {...isLikedItem, selected: false},
     );
     setchoose(updatedState);
     if (item.id === 1) {
-      setOnClickYes(true)
+      setOnClickYes(true);
     } else {
-      setOnClickYes(false)
+      setOnClickYes(false);
     }
   };
 
@@ -377,12 +391,11 @@ const ReleaseForm = ({ route, navigation }) => {
   //   }
   // };
 
-  const Separator = () => <View style={styles.separator} />
+  const Separator = () => <View style={styles.separator} />;
 
   // label
-  const [label, setLabel] = useState('')
-  const [newLabel, setNewLabel] = useState([])
-
+  const [label, setLabel] = useState('');
+  const [newLabel, setNewLabel] = useState([]);
 
   // user adding label
   const addLabel = () => {
@@ -403,26 +416,28 @@ const ReleaseForm = ({ route, navigation }) => {
 
   // adding new label input
 
-  const ListLabelItem = ({ newLabel }) => {
+  const ListLabelItem = ({newLabel}) => {
     return (
-      <View style={{
-        marginHorizontal: SIZES.padding * 2,
-        marginVertical: SIZES.padding * 0.6
-      }}>
-        <Text style={{
-          fontSize: 18,
-          fontWeight: 'bold',
-          color: 'white'
-        }}>{newLabel?.task}</Text>
+      <View
+        style={{
+          marginHorizontal: SIZES.padding * 2,
+          marginVertical: SIZES.padding * 0.6,
+        }}>
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: 'white',
+          }}>
+          {newLabel?.task}
+        </Text>
       </View>
     );
   };
 
-
   return (
     <View style={styles.mainContainer}>
       <ScrollView showsVerticalScrollIndicator={false}>
-
         {/* Language */}
 
         <View style={styles.langView}>
@@ -432,16 +447,14 @@ const ReleaseForm = ({ route, navigation }) => {
           <View style={styles.pickerContainer}>
             <TouchableOpacity
               onPress={() => changeModalVisibility(true)}
-              style={styles.touchableOpacity}
-            >
+              style={styles.touchableOpacity}>
               <Text style={styles.text}>{selectedLanguage}</Text>
             </TouchableOpacity>
             <Modal
               transparent={true}
-              animationType='fade'
+              animationType="fade"
               visible={isModalVisible}
-              onRequestClose={() => changeModalVisibility(false)}
-            >
+              onRequestClose={() => changeModalVisibility(false)}>
               <ModalPicker
                 changeModalVisibility={changeModalVisibility}
                 setData={setData}
@@ -455,11 +468,12 @@ const ReleaseForm = ({ route, navigation }) => {
                 //backgroundColor: 'red',
                 top: 20,
               }}>
-              <Image source={icons.downarrow}
+              <Image
+                source={icons.downarrow}
                 style={{
                   width: 10,
                   height: 10,
-                  resizeMode: 'contain'
+                  resizeMode: 'contain',
                 }}
               />
             </TouchableOpacity>
@@ -468,7 +482,7 @@ const ReleaseForm = ({ route, navigation }) => {
 
         {/* Display Artists */}
         <ReleaseInput
-          text='Display Artists (optional):'
+          text="Display Artists (optional):"
           value={displayArtist}
           onChangeText={text => setDisplayArtist(text)}
         />
@@ -476,14 +490,14 @@ const ReleaseForm = ({ route, navigation }) => {
         {/* Remixer */}
 
         <ReleaseInput
-          text='Remixer:'
+          text="Remixer:"
           value={remixer}
           onChangeText={text => setRemixer(text)}
         />
         {/* Orchestra */}
 
         <ReleaseInput
-          text='Orchestra:'
+          text="Orchestra:"
           value={orchestra}
           onChangeText={text => setOrchestra(text)}
         />
@@ -491,7 +505,7 @@ const ReleaseForm = ({ route, navigation }) => {
         {/* Actor */}
 
         <ReleaseInput
-          text='Actor:'
+          text="Actor:"
           value={actor}
           onChangeText={text => setActor(text)}
         />
@@ -501,41 +515,54 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           value={lyricist}
           onChangeText={text => setLyricist(text)}
-          text='Lyricist:'
+          text="Lyricist:"
         />
 
         {/* LABLE INPUT */}
 
         <View style={styles.langView}>
           <Text style={styles.langTxt}>Lable:</Text>
-          <View style={{
-            flexDirection: 'row',
-            //justifyContent: 'space-between',
-            //paddingHorizontal: 40,
-            alignItems: 'center',
-            //backgroundColor: 'red'
-          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              //justifyContent: 'space-between',
+              //paddingHorizontal: 40,
+              alignItems: 'center',
+              //backgroundColor: 'red'
+            }}>
             <View>
               {/* <Button title='labeldata' onPress={getUserLableData}/> */}
-              
-              <SelectList
-                setSelected={setSelected}
-                boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0, width: SIZES.width / 1.08 }]}
-                //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-                data={list}
-                //data={labelData.map((item) => console.log(''))}
-                //defaultOption={{ key: releaseData?.Release?.Release_Label, value: console.log('label value:',list[list.findIndex(x=>x.key==releaseData?.Release?.Release_Label)])  }}
-               // defaultOption={list[] }
-                
-                // placeholder={releaseData?.Release?.Release_Label}
-                onSelect={() => console.log(selected)}
-                dropdownStyles={{
-                  backgroundColor: COLORS.gray,
-                  marginHorizontal: 0,
-                }}
-              />
-            </View>
 
+              {list.length != 0 && (
+                <SelectList
+                  setSelected={setSelected}
+                  boxStyles={[
+                    styles.artistDropDown,
+                    {
+                      marginHorizontal: 0,
+                      marginVertical: 0,
+                      width: SIZES.width / 1.08,
+                    },
+                  ]}
+                  //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+                  data={list}
+                  //data={labelData.map((item) => console.log(''))}
+                  defaultOption={list.filter(
+                    (item, index) =>
+                      item?.key == releaseData?.Release?.Release_Label,
+                  )[0]}
+                  //defaultOption={{ key: releaseData?.Release?.Release_Label, value: console.log('label value:',list[list.findIndex(x=>x.key==releaseData?.Release?.Release_Label)])  }}
+                  // defaultOption={list[] }
+
+                  // placeholder={releaseData?.Release?.Release_Label}
+                  onSelect={() => console.log(selected)}
+                  dropdownStyles={{
+                    backgroundColor: COLORS.gray,
+                    marginHorizontal: 0,
+                  }}
+                />
+              )}
+            </View>
 
             {/* Add New Label Button */}
 
@@ -546,10 +573,7 @@ const ReleaseForm = ({ route, navigation }) => {
               <Text style={styles.addnewTxt}>Add New</Text>
             </TouchableOpacity> */}
           </View>
-
         </View>
-
-
 
         {/* Main Genre */}
 
@@ -558,16 +582,14 @@ const ReleaseForm = ({ route, navigation }) => {
           <View style={styles.pickerContainer}>
             <TouchableOpacity
               onPress={() => changeModalVisibility(true)}
-              style={styles.touchableOpacity}
-            >
+              style={styles.touchableOpacity}>
               <Text style={styles.text}>{selectedLanguage}</Text>
             </TouchableOpacity>
             <Modal
               transparent={true}
-              animationType='fade'
+              animationType="fade"
               visible={isModalVisible}
-              nRequestClose={() => changeModalVisibility(false)}
-            >
+              nRequestClose={() => changeModalVisibility(false)}>
               <ModalPicker
                 changeModalVisibility={changeModalVisibility}
                 setData={setData}
@@ -578,45 +600,41 @@ const ReleaseForm = ({ route, navigation }) => {
 
         {/* Release Type */}
 
-        <View style={{
-          paddingLeft: 15
-        }}>
+        <View
+          style={{
+            paddingLeft: 15,
+          }}>
           <Text style={styles.langTxt}>Release Type:</Text>
-          {isLiked.map((item) => (
+          {isLiked.map(item => (
             <RadioButton
               onPress={() => onRadioBtnClick(item)}
               selected={item.selected}
-              key={item.id}
-            >
+              key={item.id}>
               {item.name}
             </RadioButton>
           ))}
         </View>
 
-
-
         {/* Price Tiers */}
 
         <View style={styles.langView}>
           <Text style={styles.langTxt}>Price Tiers: (for itunes on v)</Text>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center'
-          }}>
-
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
             <View style={styles.pickerContainer}>
               <TouchableOpacity
                 onPress={() => changeModalVisibility(true)}
-                style={styles.touchableOpacity}
-              >
+                style={styles.touchableOpacity}>
                 <Text style={styles.text}>{selectedLanguage}</Text>
               </TouchableOpacity>
               <Modal
                 transparent={true}
-                animationType='fade'
+                animationType="fade"
                 visible={isModalVisible}
-                nRequestClose={() => changeModalVisibility(false)}
-              >
+                nRequestClose={() => changeModalVisibility(false)}>
                 <ModalPicker
                   changeModalVisibility={changeModalVisibility}
                   setData={setData}
@@ -627,9 +645,10 @@ const ReleaseForm = ({ route, navigation }) => {
                 style={{
                   position: 'absolute',
                   right: 10,
-                  top: 20
+                  top: 20,
                 }}>
-                <Image source={icons.downarrow}
+                <Image
+                  source={icons.downarrow}
                   style={{
                     width: 10,
                     height: 10,
@@ -640,9 +659,10 @@ const ReleaseForm = ({ route, navigation }) => {
             <TouchableOpacity
               onPress={() => setShowInfo(true)}
               style={{
-                marginHorizontal: 10
+                marginHorizontal: 10,
               }}>
-              <Image source={icons.infobutton}
+              <Image
+                source={icons.infobutton}
                 style={{
                   height: 20,
                   width: 20,
@@ -656,7 +676,7 @@ const ReleaseForm = ({ route, navigation }) => {
         {/* Release Description */}
 
         <ReleaseInput
-          text='Release Description:'
+          text="Release Description:"
           value={description}
           onChangeText={text => setdescription(text)}
           multiline={false}
@@ -667,13 +687,13 @@ const ReleaseForm = ({ route, navigation }) => {
         {/* Choose Primary Artist  */}
 
         <View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text
               style={{
                 marginHorizontal: SIZES.padding * 1.2,
                 marginTop: SIZES.padding * 0.8,
                 fontWeight: 'bold',
-                fontSize: 16
+                fontSize: 16,
               }}>
               Choose Primary Artist:
             </Text>
@@ -690,7 +710,7 @@ const ReleaseForm = ({ route, navigation }) => {
               </Text>
             </TouchableOpacity> */}
           </View>
-          <View style={{ marginHorizontal: SIZES.padding * 0.5 }}>
+          <View style={{marginHorizontal: SIZES.padding * 0.5}}>
             <SelectBox
               label=" "
               options={PRIMARY_ARTIST}
@@ -718,7 +738,7 @@ const ReleaseForm = ({ route, navigation }) => {
               }}
               optionsLabelStyle={{
                 fontSize: 17,
-                paddingHorizontal: SIZES.padding * 2
+                paddingHorizontal: SIZES.padding * 2,
               }}
               optionContainerStyle={{
                 backgroundColor: '#fff',
@@ -736,23 +756,21 @@ const ReleaseForm = ({ route, navigation }) => {
                 fontSize: 15,
                 fontWeight: 'bold',
               }}
-              multiListEmptyLabelStyle={{ fontSize: 15 }}
-              listEmptyLabelStyle={{ color: 'red' }}
+              multiListEmptyLabelStyle={{fontSize: 15}}
+              listEmptyLabelStyle={{color: 'red'}}
               //selectedItemStyle={{ color: 'red' }}
               arrowIconColor={COLORS.primary}
               searchIconColor={COLORS.primary}
               toggleIconColor={COLORS.primary}
-              listEmptyText='NO ARTIST FOUND'
+              listEmptyText="NO ARTIST FOUND"
             />
           </View>
-
         </View>
-
 
         {/* Feature Artist */}
 
         <ReleaseInput
-          text='Feature Artist:'
+          text="Feature Artist:"
           value={featureArtist}
           onChangeText={text => setFeatureArtist(text)}
         />
@@ -762,7 +780,7 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           value={composer}
           onChangeText={text => setComposer(text)}
-          text='Composer:'
+          text="Composer:"
         />
 
         {/* Arranger */}
@@ -770,14 +788,14 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           value={arranger}
           onChangeText={text => setArranger(text)}
-          text='Arranger:'
+          text="Arranger:"
         />
         {/* Conductor */}
 
         <ReleaseInput
           value={conductor}
           onChangeText={text => setConductor(text)}
-          text='Conductor:'
+          text="Conductor:"
         />
 
         {/* Release Title */}
@@ -785,22 +803,22 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           value={releaseTitle}
           onChangeText={text => setReleaseTitle(text)}
-          text='Release Title:'
+          text="Release Title:"
         />
 
         {/* ArtWork */}
 
-        <View style={{
-          marginHorizontal: SIZES.padding * 1.5,
-          marginVertical: SIZES.padding * 1.5
-        }}>
+        <View
+          style={{
+            marginHorizontal: SIZES.padding * 1.5,
+            marginVertical: SIZES.padding * 1.5,
+          }}>
           <Text style={styles.langTxt}>ArtWork:</Text>
           <View
             style={{
               flexDirection: 'row',
-              alignItems: 'center'
-            }}
-          >
+              alignItems: 'center',
+            }}>
             <TouchableOpacity
               onPress={() => chooseFile('photo')}
               activeOpacity={0.5}
@@ -809,13 +827,17 @@ const ReleaseForm = ({ route, navigation }) => {
                 padding: 10,
                 marginRight: 10,
                 borderColor: 'grey',
-                borderWidth: 1
+                borderWidth: 1,
               }}>
               <Text>Choose File </Text>
             </TouchableOpacity>
             {/* {chooseFile === null ? <Text>No file choose</Text> : <Text>{filePath.fileName}</Text>} */}
-            <Text style={{ marginRight: 60 }}>
-              {filePath.fileName == null ? <Text>No file Chosen</Text> : filePath.fileName}
+            <Text style={{marginRight: 60}}>
+              {filePath.fileName == null ? (
+                <Text>No file Chosen</Text>
+              ) : (
+                filePath.fileName
+              )}
             </Text>
           </View>
         </View>
@@ -826,7 +848,10 @@ const ReleaseForm = ({ route, navigation }) => {
           <Text style={styles.langTxt}>Sub Genre:</Text>
           <SelectList
             setSelected={setSelected}
-            boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0 }]}
+            boxStyles={[
+              styles.artistDropDown,
+              {marginHorizontal: 0, marginVertical: 0},
+            ]}
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             data={subGenedata}
             placeholder="Select"
@@ -840,32 +865,33 @@ const ReleaseForm = ({ route, navigation }) => {
 
         {/* Do you Want UPC */}
 
-        <View style={{
-          paddingLeft: 15
-        }}>
+        <View
+          style={{
+            paddingLeft: 15,
+          }}>
           <Text style={styles.langTxt}>Do you Want UPC:</Text>
-          {choose.map((item) => (
+          {choose.map(item => (
             <RadioButton
               onPress={() => onRadioBtnPress(item)}
               selected={item.selected}
-              key={item.id}
-            >
+              key={item.id}>
               {item.name}
             </RadioButton>
           ))}
         </View>
 
-        {onClickYes && <View>
-          <ReleaseInput text='UPC/EAN:' />
-
-        </View>}
+        {onClickYes && (
+          <View>
+            <ReleaseInput text="UPC/EAN:" />
+          </View>
+        )}
 
         {/* Copyrights */}
-        <View style={{ marginTop: 10 }}>
+        <View style={{marginTop: 10}}>
           <ReleaseInput
-            text='Copyrights:'
+            text="Copyrights:"
             value={copyRights}
-            onChangeText={(text) => setCopyRights(text)}
+            onChangeText={text => setCopyRights(text)}
           />
         </View>
 
@@ -882,46 +908,45 @@ const ReleaseForm = ({ route, navigation }) => {
               height: 50,
               borderRadius: 5,
               backgroundColor: '#EBEBEB',
-              justifyContent: 'center'
-            }}
-          >
-
+              justifyContent: 'center',
+            }}>
             <DatePicker
               modal
-              mode='date'
+              mode="date"
               open={open}
               date={date}
-              placeholder='Select date'
-              confirmBtnText='Confirm'
-              cancelBtnText='Cancel'
-
-              format='MM/DD/YYYY'
+              placeholder="Select date"
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              format="MM/DD/YYYY"
               customStyles={{
                 dateIcon: {
-                  display: 'none'
+                  display: 'none',
                 },
                 dateInput: {
                   height: 50,
                   //marginTop: 10,
                   borderWidth: 0,
-                }
+                },
               }}
-              onDateChange={(date) => {
+              onDateChange={date => {
                 setDate(date);
               }}
-              onConfirm={(date) => {
-                setOpen(false)
-                setDate(date)
+              onConfirm={date => {
+                setOpen(false);
+                setDate(date);
               }}
               onCancel={() => {
-                setOpen(false)
+                setOpen(false);
               }}
             />
           </View>
         </TouchableOpacity>
 
         <View>
-          <Text style={[styles.langTxt, { marginLeft: SIZES.padding * 1.5 }]}>Parental Warning Types:</Text>
+          <Text style={[styles.langTxt, {marginLeft: SIZES.padding * 1.5}]}>
+            Parental Warning Types:
+          </Text>
           <SelectList
             setSelected={setSelected}
             boxStyles={styles.artistDropDown}
@@ -939,17 +964,17 @@ const ReleaseForm = ({ route, navigation }) => {
         <TouchableOpacity
           style={styles.nextBtn}
           onPress={() => navigation.navigate('audioTracks')}
-        //onPress={() => navigation.navigate('testing')}
+          //onPress={() => navigation.navigate('testing')}
         >
           <Text style={styles.nextTxt}>Next</Text>
         </TouchableOpacity>
       </ScrollView>
 
       {loadingLabel && (
-        <View style={[styles.container, { width: width, height: height }]}>
+        <View style={[styles.container, {width: width, height: height}]}>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: height / 6 }}
+            contentContainerStyle={{paddingBottom: height / 6}}
             scrollsToTop={false}
             bounces={false}>
             <View
@@ -973,44 +998,45 @@ const ReleaseForm = ({ route, navigation }) => {
             </View>
             <Separator />
 
-            <View style={{
-              marginVertical: SIZES.padding * 2
-            }}>
-              <View style={{ paddingLeft: SIZES.padding * 2, marginBottom: 10 }}>
+            <View
+              style={{
+                marginVertical: SIZES.padding * 2,
+              }}>
+              <View style={{paddingLeft: SIZES.padding * 2, marginBottom: 10}}>
                 <Text style={styles.labelTxt}>Label*:</Text>
               </View>
-              <View style={{
-                marginHorizontal: SIZES.padding * 2,
-                flexDirection: 'row',
-                alignItems: 'center'
-              }}>
-                <View style={{
-                  width: "80%",
-                  height: 48,
-                  backgroundColor: 'white',
-                  borderRadius: 5
+              <View
+                style={{
+                  marginHorizontal: SIZES.padding * 2,
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}>
+                <View
+                  style={{
+                    width: '80%',
+                    height: 48,
+                    backgroundColor: 'white',
+                    borderRadius: 5,
+                  }}>
                   <TextInput
                     style={{
-                      width: "100%",
+                      width: '100%',
                       height: 50,
-                      paddingLeft: 10
+                      paddingLeft: 10,
                     }}
                     value={label}
-                    onChangeText={(text) => setLabel(text)}
-                  // onFocus={() => borderColor ? 'black' : 'red'}
+                    onChangeText={text => setLabel(text)}
+                    // onFocus={() => borderColor ? 'black' : 'red'}
                   />
                 </View>
-                <TouchableOpacity
-                  onPress={addLabel}
-                  style={styles.addnewBtn}
-                >
+                <TouchableOpacity onPress={addLabel} style={styles.addnewBtn}>
                   <Text style={styles.addnewTxt}>Save</Text>
                 </TouchableOpacity>
               </View>
-              <View style={{
-                padding: SIZES.padding * 2
-              }}>
+              <View
+                style={{
+                  padding: SIZES.padding * 2,
+                }}>
                 <Text style={styles.labelTxt}>Label:</Text>
               </View>
               <Separator />
@@ -1022,27 +1048,31 @@ const ReleaseForm = ({ route, navigation }) => {
               ))}
             </View>
           </ScrollView>
-
         </View>
       )}
 
       {/* INFO BUTTON */}
 
       {showInfo && (
-        <View style={[styles.container, { width: width, height: height }]}>
+        <View style={[styles.container, {width: width, height: height}]}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               padding: SIZES.padding * 4,
               paddingBottom: height / 5,
-            }}
-          >
-            <View style={{
-              backgroundColor: '#fff',
-              borderRadius: 5,
-              //margin: 20
             }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <View
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: 5,
+                //margin: 20
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
                 <Text style={styles.iTunesTxt}>iTunes Price Tiers</Text>
                 <TouchableOpacity onPress={() => setShowInfo(false)}>
                   <Image
@@ -1052,17 +1082,54 @@ const ReleaseForm = ({ route, navigation }) => {
                       width: 20,
                       marginRight: 20,
                     }}
-
                   />
                 </TouchableOpacity>
               </View>
-              <View style={{ width: '100%', height: 0.4, backgroundColor: COLORS.gray, marginVertical: 10 }} />
-              <View style={{ margin: SIZES.padding * 2 }}>
+              <View
+                style={{
+                  width: '100%',
+                  height: 0.4,
+                  backgroundColor: COLORS.gray,
+                  marginVertical: 10,
+                }}
+              />
+              <View style={{margin: SIZES.padding * 2}}>
                 <Text>
-                  <Text style={{ color: COLORS.primary, fontSize: 18, fontWeight: 'bold' }}>Note: </Text>
-                  <Text style={{ color: COLORS.red, fontSize: 15, fontWeight: '500' }}> We recommend leaving the price tier on iTunes either{' '}
-                    <Text style={{ color: '#000', textDecorationLine: 'underline', fontWeight: 'bold' }}>blank</Text> and let them auto-select like previously or select the{' '}
-                    <Text style={{ color: '#000', textDecorationLine: 'underline', fontWeight: 'bold' }}>back</Text> option.Below you’ll find information regarding price tiers and more about them.
+                  <Text
+                    style={{
+                      color: COLORS.primary,
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                    }}>
+                    Note:{' '}
+                  </Text>
+                  <Text
+                    style={{
+                      color: COLORS.red,
+                      fontSize: 15,
+                      fontWeight: '500',
+                    }}>
+                    {' '}
+                    We recommend leaving the price tier on iTunes either{' '}
+                    <Text
+                      style={{
+                        color: '#000',
+                        textDecorationLine: 'underline',
+                        fontWeight: 'bold',
+                      }}>
+                      blank
+                    </Text>{' '}
+                    and let them auto-select like previously or select the{' '}
+                    <Text
+                      style={{
+                        color: '#000',
+                        textDecorationLine: 'underline',
+                        fontWeight: 'bold',
+                      }}>
+                      back
+                    </Text>{' '}
+                    option.Below you’ll find information regarding price tiers
+                    and more about them.
                   </Text>
                 </Text>
                 <Text style={styles.quesTxt}>{Strings.ques_1}</Text>
@@ -1071,7 +1138,9 @@ const ReleaseForm = ({ route, navigation }) => {
                 <Text>{Strings.ans_2}</Text>
                 <Text style={styles.quesTxt}>{Strings.ques_3}</Text>
                 <Text>{Strings.ans_3}</Text>
-                <Text style={[styles.quesTxt, { fontStyle: 'italic' }]}>{Strings.ques_4}</Text>
+                <Text style={[styles.quesTxt, {fontStyle: 'italic'}]}>
+                  {Strings.ques_4}
+                </Text>
                 <Text>{Strings.ans_41}</Text>
                 <Text>{Strings.ans_42}</Text>
                 <Text>{Strings.ans_43}</Text>
@@ -1084,11 +1153,17 @@ const ReleaseForm = ({ route, navigation }) => {
                 <Text>{Strings.ans_72}</Text>
                 <Text>{Strings.ans_73}</Text>
               </View>
-              <View style={{ width: '100%', height: 0.4, backgroundColor: COLORS.gray, marginVertical: 10 }} />
-              <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <View
+                style={{
+                  width: '100%',
+                  height: 0.4,
+                  backgroundColor: COLORS.gray,
+                  marginVertical: 10,
+                }}
+              />
+              <View style={{flex: 1, alignItems: 'flex-end'}}>
                 <TouchableOpacity
                   onPress={() => setShowInfo(false)}
-
                   //onFocus={console.log('click')}
                   style={{
                     margin: SIZES.padding * 2,
@@ -1099,9 +1174,8 @@ const ReleaseForm = ({ route, navigation }) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     borderRadius: 5,
-
                   }}>
-                  <Text style={{ color: COLORS.gray }}>Close</Text>
+                  <Text style={{color: COLORS.gray}}>Close</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -1109,14 +1183,14 @@ const ReleaseForm = ({ route, navigation }) => {
         </View>
       )}
     </View>
-  )
-}
+  );
+};
 
-export default ReleaseForm
+export default ReleaseForm;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    flex: 1
+    flex: 1,
   },
   langView: {
     paddingHorizontal: SIZES.padding * 1.5,
@@ -1140,24 +1214,23 @@ const styles = StyleSheet.create({
     //backgroundColor: 'orange',
     alignSelf: 'stretch',
     paddingHorizontal: 10,
-    width: '100%'
+    width: '100%',
   },
   langTxt: {
     marginBottom: 9,
     fontSize: 16,
-    fontWeight: '600'
+    fontWeight: '600',
   },
   addnewBtn: {
     backgroundColor: COLORS.primary,
     padding: 14,
     marginHorizontal: 8,
     borderRadius: 3,
-
   },
   addnewTxt: {
     color: 'white',
     fontSize: 15,
-    fontWeight: '600'
+    fontWeight: '600',
   },
   nextBtn: {
     backgroundColor: COLORS.primary,
@@ -1166,12 +1239,12 @@ const styles = StyleSheet.create({
     padding: 15,
     marginHorizontal: SIZES.padding * 1.5,
     marginTop: SIZES.padding,
-    borderRadius: 7
+    borderRadius: 7,
   },
   nextTxt: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   container: {
     position: 'absolute',
@@ -1185,18 +1258,18 @@ const styles = StyleSheet.create({
   newLabel: {
     color: COLORS.white,
     fontWeight: 'bold',
-    fontSize: 25
+    fontSize: 25,
   },
   iTunesTxt: {
     fontSize: 15,
     lineHeight: 20,
     fontWeight: 'bold',
-    margin: 20
+    margin: 20,
   },
   quesTxt: {
     marginVertical: SIZES.padding,
     fontSize: 15,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   artistDropDown: {
     backgroundColor: COLORS.white,
@@ -1206,11 +1279,11 @@ const styles = StyleSheet.create({
     marginVertical: SIZES.padding,
     borderRadius: 5,
     borderColor: COLORS.gray,
-    borderWidth: 1
+    borderWidth: 1,
   },
   labelTxt: {
     color: COLORS.white,
     fontSize: 18,
-    fontWeight: 'bold'
-  }
-})
+    fontWeight: 'bold',
+  },
+});
