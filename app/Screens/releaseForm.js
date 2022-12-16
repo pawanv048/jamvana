@@ -77,7 +77,6 @@ const PRIMARY_ARTIST = [
 
 //import DatePicker from 'react-native-date-picker';  // Need to use this further
 
-
 import {
   StyleSheet,
   Text,
@@ -137,7 +136,7 @@ const ReleaseForm = ({ route, navigation }) => {
   // storing image path
   const [filePath, setFilePath] = useState({});
 
-
+  
   // Permission for gallery
   const requestExternalWritePermission = async () => {
     if (Platform.OS === 'android') {
@@ -163,18 +162,36 @@ const ReleaseForm = ({ route, navigation }) => {
 
   // console.log('labelid', lableData.map((userid) => userid))
   //console.log('test =>', lableData)
+
+
   let test1;
+  //const key = lableList?.Label_Id
+  
+  let list = [];
 
   if (lableData.length > 0) {
     const dataLbl = JSON.parse(lableData)
-    test1 = dataLbl.map((lableList) => (lableList?.Label_Id))
+    //key = dataLbl.map((lableLt) => (lableLt?.Label_Id))
+    test1 = dataLbl.map((lableList) => (lableList))
+
+
+    test1.forEach(element => {
+      console.log('show id:', element.Label_Id)
+      list.push({ key: element.Label_Id, value: element.Label_Name });
+    });
+
+    var a= list.findIndex(x=>x.key==2077);
+    console.log('IndexValue',a);
+    console.log('value:', list[a].value)
     //console.log(test1)
+
   } else {
     //alert('no label found')
-    console.log('error')
+    console.log('')
   }
-  //const datay = JSON.parse(lGit pull origin mainableData)
-  // 
+
+  
+  //const datay = JSON.parse(lGit pull origin mainableData) 
   // const datay1 = JSON.parse(lableData)
   // console.log(datay1)
   // //const datay = lableData.map((item) => item);
@@ -182,16 +199,21 @@ const ReleaseForm = ({ route, navigation }) => {
 
   //http://84.16.239.66/api/GetLableByUserId?UserId=a691efb4-04bc-4349-9ba4-0103abc0de70
   //a691efb4-04bc-4349-9ba4-0103abc0de70
+  //dbe6deea-a4de-4adb-a2db-ec1b050f04a6
+
+  const userReleaseId = releaseData?.Release?.User_Id
+
+  //console.log('userid=>>',userReleaseId)
 
   const getUserLableData = async () => {
-    console.log('calling api')
+    //console.log('calling api')
     //GET request
-    await fetch(`http://84.16.239.66/api/GetLableByUserId?UserId=a691efb4-04bc-4349-9ba4-0103abc0de70`, {
+    await fetch(`http://84.16.239.66/api/GetLableByUserId?UserId=${userReleaseId}`, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
+      // headers: {
+      //   'Accept': 'application/json',
+      //   'Content-Type': 'application/json'
+      // },
       //Request Type
     })
       .then((response) => response.json())
@@ -495,13 +517,17 @@ const ReleaseForm = ({ route, navigation }) => {
           }}>
             <View>
               {/* <Button title='labeldata' onPress={getUserLableData}/> */}
+              
               <SelectList
                 setSelected={setSelected}
-                boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0, width: width / 1.08 }]}
+                boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0, width: SIZES.width / 1.08 }]}
                 //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-                data={test1}
+                data={list}
                 //data={labelData.map((item) => console.log(''))}
-                placeholder="Select"
+                //defaultOption={{ key: releaseData?.Release?.Release_Label, value: console.log('label value:',list[list.findIndex(x=>x.key==releaseData?.Release?.Release_Label)])  }}
+               // defaultOption={list[] }
+                
+                // placeholder={releaseData?.Release?.Release_Label}
                 onSelect={() => console.log(selected)}
                 dropdownStyles={{
                   backgroundColor: COLORS.gray,
@@ -912,8 +938,8 @@ const ReleaseForm = ({ route, navigation }) => {
 
         <TouchableOpacity
           style={styles.nextBtn}
-          //onPress={() => navigation.navigate('audioTracks')}
-          onPress={() => navigation.navigate('testing')}
+          onPress={() => navigation.navigate('audioTracks')}
+        //onPress={() => navigation.navigate('testing')}
         >
           <Text style={styles.nextTxt}>Next</Text>
         </TouchableOpacity>
