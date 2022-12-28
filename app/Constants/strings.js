@@ -1,17 +1,20 @@
 export const appName = '';
 export const email = '';
+
+// RELEASE SCREEN TEXT
+
 export const t1 = 'Release Title :';
 export const t2 = 'Release Artist :';
 export const t3 = 'Release Date :';
 export const t4 = 'Release Id :';
 export const t5 = 'Release PrimaryArtist :';
 export const t6 = 'Release DisplayArtist :';
-export const t7 = 'Release ReleaseTitle';
+export const t7 = 'Release Title:';
 export const t8 = 'Release Label:';
 export const t9 = 'Release MainGenre:';
 export const t10 = 'Release SubGenre: ';
 export const t11 = 'Release Date:';
-export const t12 = 'Release ReleaseType';
+export const t12 = 'Release Type:';
 export const t13 = 'Composer:';
 export const t14 = 'Orchestra:';
 export const t15 = 'Arranger:';
@@ -22,6 +25,15 @@ export const t19 = 'LanguageCode:';
 export const t20 = 'Approve';
 export const t21 = 'Reject';
 export const t22 = 'Delete';
+
+// REJECT MODEL TEXT
+
+export const t41 = 'Save';
+export const t42 = 'Dismiss';
+
+
+// TRACK SCREEN TEXT
+
 export const t23 = 'Track Disc:';
 export const t24 = 'Track Track:';
 export const t25 = 'Track Artist:';
@@ -40,8 +52,10 @@ export const t37 = 'Track Orchestra:';
 export const t38 = 'Track Conductor:';
 export const t39 = 'Track Actor:';
 export const t40 = 'Track Arranger:';
-export const t41 = 'Save';
-export const t42 = 'Dismiss';
+
+
+// EXCLUSIVE SCREEN TEXT
+
 export const t43 = 'ExclusiveOn:';
 export const t44 = 'ExclusiveFor:';
 export const t45 = 'PreOrders:';
@@ -79,29 +93,31 @@ export const ans_1 = `For songs and music videos, three price tiers are availabl
 For songs, certain territories using U.S. Dollars have a total of five price tiers available: Lowest, Low, Back, Mid, and Front.
 For music videos in Japan, there are four price tiers available: Back, Mid, Front, and Premium.
 Choosing a price tier is optional. We will assign a price tier automatically to music content delivered without a price tier.`
-export const ques_2 = 'Can I choose different price tiers for different territories?'
+export const ques_2 = 'Can I choose different price tiers for different territories?';
 export const ans_2 = `Yes. You can choose any available price tier for each territory. For content that is cleared for sale in the World territory, the same price tier will be used everywhere your content is sold. To avoid pricing issues, use the same price tier for your album, song, or music video in all territories of the European Union.`
-export const ques_3 = 'Do I need to choose a price tier to offer music on the iTunes Store?'
+export const ques_3 = 'Do I need to choose a price tier to offer music on the iTunes Store?';
 export const ans_3 = `No, you don't need to choose a price tier for music content. If you don't choose a price tier, we'll use the default price tier instead.`
-export const ques_4 = 'Content Type Default Tier'
-export const ans_41 = 'Album	Mid/Front'
-export const ans_42 = 'Song	Mid'
-export const ans_43 = 'Music Video	Mid'
-export const ques_5 = 'Do I need to choose a certain album price tier for a song single?'
+export const ques_4 = 'Content Type Default Tier';
+export const ans_41 = 'Album	Mid/Front';
+export const ans_42 = 'Song	Mid';
+export const ans_43 = 'Music Video	Mid';
+export const ques_5 = 'Do I need to choose a certain album price tier for a song single?';
 export const ans_5 = 'No, choose any album price tier, and we will automatically price your single at the song price tier.'
-export const ques_6 = 'What is the retail price for each price tier?'
-export const ans_6 = 'Apple establishes retail prices for each price tier in each territory at its sole discretion.'
-export const ques_7 = 'You can choose one of three price tiers for music videos.'
-export const ans_71 = 'For example, in the U.S., the price tiers and associated prices are:'
-export const ans_72 = 'Back ($0.70)'
-export const ans_73 = 'Mid ($1.05)'
-export const ans_74 = 'Front ($1.40)'
+export const ques_6 = 'What is the retail price for each price tier?';
+export const ans_6 = 'Apple establishes retail prices for each price tier in each territory at its sole discretion.';
+export const ques_7 = 'You can choose one of three price tiers for music videos.';
+export const ans_71 = 'For example, in the U.S., the price tiers and associated prices are:';
+export const ans_72 = 'Back ($0.70)';
+export const ans_73 = 'Mid ($1.05)';
+export const ans_74 = 'Front ($1.40)';
 
 // Add NewArtist Screen.
 
 export const artist_detail = `Please ensure you enter in the artist name correctly. 
-We cannot guarantee that stores will update the artist name on a release after it has been submitted. 
-Artist names written in all CAPS is not allowed on retailer websites.`
-export const ylink = 'Yes I can provide a link'
+We cannot guarantee that stores will update the artist name on a release after it has been submitted.
+Artist names written in all CAPS is not allowed on retailer websites.`;
+export const ylink = 'Yes I can provide a link';
 export const nlink = 'No, I need an artist page created. (We will request a new artist page be created for you. You must update the page info here once live.)'
-export const artistlink = 'copy artist link / share > copy artist link'
+export const artistlink = 'copy artist link / share > copy artist link';
+export const shareartist = 'Share Artist > Copy Link';
+ 

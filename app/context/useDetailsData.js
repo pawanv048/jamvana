@@ -1,4 +1,5 @@
-import React, {createContext, useContext, useState} from 'react';
+import React, {useContext, useState, useReducer} from 'react';
+
 
 const DetailsContext = React.createContext();
 

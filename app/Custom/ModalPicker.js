@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     StyleSheet,
     Text,
@@ -6,21 +6,27 @@ import {
     Dimensions,
     TouchableOpacity,
     ScrollView,
+    Button
 } from 'react-native';
+import API from '../apis/API';
 
 
-const OPTION = ['English', 'Hindi', 'Punjabi']
+const OPTION = ['English', 'Hindi', 'Punjabi', 'Madrasi', 'Protogish']
+
+
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 
 const ModalPicker = (props) => {
+
+    
 
     // CHOOSE ITEM FROM LIST
     const onPressItem = (option) => {
         props.changeModalVisibility(false),
             props.setData(option)
     }
-    
+
     const option = OPTION.map((item, index) => {
         return (
             <TouchableOpacity
@@ -42,6 +48,7 @@ const ModalPicker = (props) => {
         >
             <View style={[styles.modal, { width: WIDTH - 20, height: HEIGHT / 2 }]}>
                 <ScrollView>
+                    
                     {option}
                 </ScrollView>
             </View>
@@ -49,7 +56,7 @@ const ModalPicker = (props) => {
     )
 }
 
-export default ModalPicker 
+export default ModalPicker
 
 const styles = StyleSheet.create({
     container: {

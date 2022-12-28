@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import API from '../apis/API';
+import {API} from '../apis/API';
 import * as Strings from '../Constants/strings';
 import {
   StyleSheet,
@@ -11,6 +11,12 @@ import {
   ActivityIndicator,
   Linking
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
+
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
+
+const API_AGREEMENT_URL = 'http://84.16.239.66/api/Agreements'
 
 const Agreements = () => {
 
@@ -20,7 +26,7 @@ const Agreements = () => {
   const getAgreementsData = () => {
     console.log('calling api')
     API({
-      url: 'http://84.16.239.66/api/Agreements',
+      url: `${API_AGREEMENT_URL}`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
 

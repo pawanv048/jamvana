@@ -13,9 +13,10 @@ import {
   ScrollView
 } from 'react-native';
 
-const ReleaseScreen = () => {
+const ReleaseScreen = ({ navigation }) => {
 
   const { data, setData } = useDetailsData();
+  const [releaseData, setreleaseData] = useState([]);
   const [showModal, setShowModal] = useState(false)
   const [headline, setHeadline] = useState('')
 
@@ -46,9 +47,9 @@ const ReleaseScreen = () => {
           `\n status : ${status}`
           + '\n' +
 
-          // 'comment : ' +
           comment,
           [{ t: 'ok', onPress: () => console.log('ok pressed') }],
+          
         );
       })
       .catch(error => {
@@ -56,69 +57,83 @@ const ReleaseScreen = () => {
       });
   };
 
+  function getReleaseItem() {
+    return (
+      <View>
+        <Text>{Strings.t4} {data[0]?.Release?.Release_Id}</Text>
+        <Text>{Strings.t5} {data[0]?.Release?.Release_PrimaryArtist}</Text>
+        <Text>{Strings.t6} {data[0]?.Release?.Release_DisplayArtist}</Text>
+        <Text>{Strings.t7} {data[0]?.Release?.Release_ReleaseTitle}</Text>
+        <Text>{Strings.t8} {data[0]?.Release?.Release_Label}</Text>
+        <Text>{Strings.t9} {data[0]?.Release?.Release_MainGenre}</Text>
+        <Text>{Strings.t10} {data[0]?.Release?.Release_SubGenre}</Text>
+        <Text>{Strings.t11} {moment(new Date(data[0]?.Release?.Date)).format('DD-MM-YYYY')}</Text>
+        <Text>{Strings.t12} {data[0]?.Release?.Release_ReleaseType}</Text>
+        <Text>{Strings.t13} {data[0]?.Release?.Composer}</Text>
+        <Text>{Strings.t14} {data[0]?.Release?.Orchestra}</Text>
+        <Text>{Strings.t15} {data[0]?.Release?.Arranger}</Text>
+        <Text>{Strings.t16} {data[0]?.Release?.Actor}</Text>
+        <Text>{Strings.t17} {data[0]?.Release?.Lyricist}</Text>
+        <Text>{Strings.t18}  {data[0]?.Release?.Checked}</Text>
+        <Text>{Strings.t19} {data[0]?.Release?.LanguageCode}</Text>
+      </View>
+    )
+  };
+
+  function renderFooter() {
+    return (
+      <View style={styles.releaseBtn}>
+        <TouchableOpacity
+          style={styles.actionBtn}
+          onPress={() => postUser(true, " ")}
+        >
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t20}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.actionBtn}
+          onPress={() => setShowModal(!showModal)}
+        >
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t21}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.actionBtn}>
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t22}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.actionBtn}
+          onPress={() => navigation.navigate('releaseForm', { data: data[0] })}
+        >
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>Edit</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  };
 
 
   return (
-    <React.Fragment>
-      <ScrollView style={{ margin: 15, }}>
-        <View style={{ flex: 1 }}>
-          
-            <Text>{Strings.t4} {data[0]?.Release?.Release_Id}</Text>
-            <Text>{Strings.t5} {data[0]?.Release?.Release_PrimaryArtist}</Text>
-            <Text>{Strings.t6} {data[0]?.Release?.Release_DisplayArtist}</Text>
-            <Text>{Strings.t7} {data[0]?.Release?.Release_ReleaseTitle}</Text>
-            <Text>{Strings.t8} {data[0]?.Release?.Release_Label}</Text>
-            <Text>{Strings.t9} {data[0]?.Release?.Release_MainGenre}</Text>
-            <Text>{Strings.t10} {data[0]?.Release?.Release_SubGenre}</Text>
-            <Text>{Strings.t11} {moment(new Date(data[0]?.Release?.Date)).format('DD-MM-YYYY')}</Text>
-            <Text>{Strings.t12} {data[0]?.Release?.Release_ReleaseType}</Text>
-            <Text>{Strings.t13} {data[0]?.Release?.Composer}</Text>
-            <Text>{Strings.t14} {data[0]?.Release?.Orchestra}</Text>
-            <Text>{Strings.t15} {data[0]?.Release?.Arranger}</Text>
-            <Text>{Strings.t16} {data[0]?.Release?.Actor}</Text>
-            <Text>{Strings.t17} {data[0]?.Release?.Lyricist}</Text>
-            <Text>{Strings.t18}  {data[0]?.Release?.Checked}</Text>
-            <Text>{Strings.t19} {data[0]?.Release?.LanguageCode}</Text>
-          
-          <View style={styles.releaseBtn}>
-            <TouchableOpacity
-              style={styles.accept}
-              onPress={() => postUser(
-                true,
-                " "
-              )}
-            >
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t20}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.reject}
-              onPress={() => setShowModal(!showModal)}
-            >
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t21}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.delete}>
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t22}</Text>
-            </TouchableOpacity>
-          </View>
-          {/* User Feedback */}
+    <ScrollView style={{ margin: 15 }}>
+      <View >
+        {getReleaseItem()}
+        {renderFooter()}
+        {/* User Feedback */}
+        <ModalFunction
+          animationType="slide"
+          showModal={showModal}
+          setShowModal={setShowModal}
+          headline={headline}
+          setHeadline={setHeadline}
+          onPress={(s, c) => postUser(s, c)}
+        />
+      </View>
+    </ScrollView>
 
-          <ModalFunction
-            animationType="slide"
-            showModal={showModal}
-            setShowModal={setShowModal}
-            headline={headline}
-            setHeadline={setHeadline}
-            onPress={(s, c) => postUser(s, c)}
-          />
-        </View>
-      </ScrollView>
-    </React.Fragment>
   )
 }
 
 
 const ModalFunction = ({ showModal, setShowModal, onPress }) => {
+
   const [headline, setHeadline] = useState(" ");
+  
   return (
     <Modal
       animationType={'slide'}
@@ -162,6 +177,7 @@ const ModalFunction = ({ showModal, setShowModal, onPress }) => {
             }}>
             <Text style={{ color: 'white', padding: 15, }}>{Strings.t42}</Text>
           </TouchableOpacity>
+
         </View>
       </View>
     </Modal>
@@ -173,35 +189,22 @@ export default ReleaseScreen
 const styles = StyleSheet.create({
 
   releaseBtn: {
-    flexDirection: 'column',
-    //margin: 15,
-    //backgroundColor: 'red', 
-    justifyContent: 'space-evenly',
-    alignItems: 'flex-start'
+    //flexDirection: 'column',
+    //justifyContent: 'space-evenly',
+    //alignItems: 'flex-start'
+    //backgroundColor: 'blue',
+    padding: 10,
+    paddingLeft: 0
   },
-  accept: {
-    //paddingLeft: 20,
+  actionBtn: {
     backgroundColor: '#383838',
     padding: 16,
-    marginLeft: 12,
-    borderRadius: 10
-  },
-  reject: {
-    padding: 18,
-    paddingLeft: 20,
-    paddingRight: 24,
-    marginTop: 10,
-    marginLeft: 15,
-    backgroundColor: '#383838',
-    borderRadius: 10
-  },
-  delete: {
-    padding: 18,
-    paddingRight: 26,
-    marginLeft: 15,
-    marginTop: 10,
-    backgroundColor: '#383838',
-    borderRadius: 10
+    //marginLeft: 12,
+    width: '30%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginBottom: 10
   },
   modalView: {
     justifyContent: 'center',

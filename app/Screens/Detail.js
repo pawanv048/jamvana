@@ -15,6 +15,7 @@ const Tabs = createMaterialTopTabNavigator();
 const Detail = ({route}) => {
 
   const detailsData = route.params.data;
+  
   const { data, setData } = useDetailsData();
   const [isLoading, setLoading] = useState(true);
 

@@ -10,7 +10,70 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Strings from '../Constants/strings';
 import SelectList from 'react-native-dropdown-select-list';
 import DatePicker from 'react-native-datepicker';
-//import DatePicker from 'react-native-date-picker';  // Need to use this further
+import { LogBox } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
+import useDetailsData from '../context/useDetailsData';
+import { API } from '../apis/API';
+
+
+
+import SelectBox from 'react-native-multi-selectbox';
+import { xorBy } from 'lodash';
+const PRIMARY_ARTIST = [
+  {
+    item: 'Juventus',
+    id: 'JUVE',
+  },
+  {
+    item: 'Real Madrid',
+    id: 'RM',
+  },
+  {
+    item: 'Barcelona',
+    id: 'BR',
+  },
+  {
+    item: 'PSG',
+    id: 'PSG',
+  },
+  {
+    item: 'FC Bayern Munich',
+    id: 'FBM',
+  },
+  {
+    item: 'Manchester United FC',
+    id: 'MUN',
+  },
+  {
+    item: 'Manchester City FC',
+    id: 'MCI',
+  },
+  {
+    item: 'Everton FC',
+    id: 'EVE',
+  },
+  {
+    item: 'Tottenham Hotspur FC',
+    id: 'TOT',
+  },
+  {
+    item: 'Chelsea FC',
+    id: 'CHE',
+  },
+  {
+    item: 'Liverpool FC',
+    id: 'LIV',
+  },
+  {
+    item: 'Arsenal FC',
+    id: 'ARS',
+  },
+
+  {
+    item: 'Leicester City FC',
+    id: 'LEI',
+  },
+]
 
 
 import {
@@ -25,25 +88,90 @@ import {
   useWindowDimensions,
   TextInput,
   ScrollView,
-  Alert
+  Alert,
+  Keyboard
 } from 'react-native';
 
+LogBox.ignoreAllLogs();                                                     //Ignore all log notifications
 //Import Image Picker
-import { launchImageLibrary } from 'react-native-image-picker';
 
-const ReleaseForm = ({ navigation }) => {
+// URLs
+const baseURL = 'http://84.16.239.66/api/'
+
+
+const ReleaseForm = ({ route, navigation }) => {
+
+  //passing data from ReleaseScreen
+  const releaseData = route?.params?.data
 
   const [selectedLanguage, setSelectedLanguage] = useState('English');
-  const [selectLabel, setSelectLabel] = useState('ITEM_1')
+
+  // dropdown data
+  const [languageData, setLanguageData] = useState([])
+  const [mainGenreData, setmainGenreData] = useState([])
+  const [subGenreData, setSubGenreData] = useState([])
+
+
   const [isModalVisible, setisModalVisible] = useState(false);
-  const [isModalLabelVisible, setisModalLabelVisible] = useState(false);
-  const [value, onChangeText] = useState('');
+  // const [value, setValue] = useState(getDetails("Release_ReleaseTitle"));
   const [description, setdescription] = useState('Distributed by Jamvana - www.Jamvana.com')
   const [loadingLabel, setLoadingLabel] = useState(false)
   const [showInfo, setShowInfo] = useState(false)
   const [selected, setSelected] = useState('');
-  const [selectedSubGenre, setSelectedSubGenre] = useState('');
-  const [date, setDate] = useState('');
+
+  //Get Particular Data
+  const [displayArtist, setDisplayArtist] = useState(
+    `${releaseData?.Release?.Release_DisplayArtist || ''}`,
+  );
+  const [remixer, setRemixer] = useState(
+    `${releaseData?.Release?.Remixer || ''}`,
+  );
+  const [orchestra, setOrchestra] = useState(
+    `${releaseData?.Release?.Orchestra || ''}`,
+  );
+  const [actor, setActor] = useState(
+    `${releaseData?.Release?.Actor || ''}`
+  );
+  const [lyricist, setLyricist] = useState(
+    `${releaseData?.Release?.Lyricist || ''}`,
+  );
+
+  const [mainGener, setMainGenre] = useState(
+    `${releaseData?.Release?.Release_MainGenre || ''}`
+  );
+  //console.log('Main Genere =>', mainGener)
+
+  const [featureArtist, setFeatureArtist] = useState(
+    `${releaseData?.Release?.Release_FeaturedArtist || ''}`,
+  );
+  const [composer, setComposer] = useState(
+    `${releaseData?.Release?.Composer || ''}`,
+  );
+  const [arranger, setArranger] = useState(
+    `${releaseData?.Release?.Arranger || ''}`,
+  );
+  const [conductor, setConductor] = useState(
+    `${releaseData?.Release?.Conductor || ''}`,
+  );
+  const [cat, setCat] = useState('');
+
+  const [releaseTitle, setReleaseTitle] = useState(
+    `${releaseData?.Release?.Release_ReleaseTitle || ''}`,
+  );
+  const [copyRights, setCopyRights] = useState(
+    `${releaseData?.Release?.Copyrights || ''}`,
+  );
+
+  //choose primary artist
+  const [selectedTeams, setSelectedTeams] = useState([])
+
+  function onMultiChange() {
+    return (item) => setSelectedTeams(xorBy(selectedTeams, [item], 'id'))
+  }
+
+  // Release Date
+  const [date, setDate] = useState(new Date())
+  const [open, setOpen] = useState(false)
   // storing image path
   const [filePath, setFilePath] = useState({});
 
@@ -68,6 +196,69 @@ const ReleaseForm = ({ navigation }) => {
       return false;
     } else return true;
   };
+
+  const [lableData, setLableData] = useState([])
+
+  //console.log('labelid', lableData.map((userid) => userid))
+  //console.log('test =>', lableData)
+  let test1;
+  //const key = lableList?.Label_Id
+  let list = [];
+
+  if (lableData.length > 0) {
+    const dataLbl = JSON.parse(lableData)
+    test1 = dataLbl.map((lableList) => (lableList))
+    test1.forEach(element => {
+      //console.log('show id:', element.Label_Id)
+      list.push({ key: element.Label_Id, value: element.Label_Name });
+    });
+  } else {
+    console.log('No data found')
+  }
+
+  const userReleaseId = releaseData?.Release?.User_Id
+
+  //console.log('userid=>>',userReleaseId)
+
+  const getUserLableData = async () => {
+    //console.log('calling api')
+    //GET request
+    await fetch(`${baseURL}GetLableByUserId?UserId=${userReleaseId}`, {
+      method: 'GET',
+      // headers: {
+      //   'Accept': 'application/json',
+      //   'Content-Type': 'application/json'
+      // },
+      //Request Type
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText)
+        }
+        return response.json()
+      })
+
+      //If response is in json then in success
+      .then((responseJson) => {
+        //Success
+        setLableData(JSON.stringify(responseJson.Data));
+        //console.log(JSON.stringify(responseJson));
+        ///console.log('base64 -> ', JSON.stringify(responseJson.Data[0].Label_Name));
+      })
+      //If response is not in json then in error
+      .catch((error) => {
+        //Error
+        Alert.alert(error);
+        //console.log(error);
+      })
+  };
+
+
+
+  useEffect(() => {
+    getUserLableData()
+  }, [])
+
 
   // Select File from gallery
   const chooseFile = async (type) => {
@@ -128,13 +319,6 @@ const ReleaseForm = ({ navigation }) => {
     { id: 2, value: false, name: "No", selected: false },
   ]);
 
-  // SubGene data
-  const subGenedata = [
-    { key: '1', value: 'Acapellas' },
-    { key: '2', value: '2 Step' },
-    { key: '3', value: 'Acid' },
-  ];
-
   // Parental warning data
   const data = [
     { key: '1', value: 'NotExplicit' },
@@ -176,42 +360,12 @@ const ReleaseForm = ({ navigation }) => {
     }
   };
 
-  // const saveValueFunction = () => {
-  //   // Function to save the value in AsyncStorage
-  //   if (label) {
-  //     // To check the input not empty
-  //     AsyncStorage.setItem('KeyString', label);
-  //     // Setting a data to a AsyncStorage with respect to a key
-  //     setLabel('');
-  //     // Resetting the TextInput
-  //     alert('Data Saved');
-  //     // Alert to confirm
-  //   } else {
-  //     alert('Please fill data');
-  //   }
-  // };
 
-  // useEffect(() => {
-  //   addLabel()
-  // }, [])
-
-  // // get remixer from user device.
-  // const getLabelFromUserDevice = async () => {
-  //   try {
-  //     const newLabel = await AsyncStorage.getItem('KeyString');
-  //     if (newLabel != null) {
-  //       setNewLabel(JSON.parse(newLabel));
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
+  // seperator
   const Separator = () => <View style={styles.separator} />
 
   // label
   const [label, setLabel] = useState('')
-
   const [newLabel, setNewLabel] = useState([])
 
 
@@ -232,7 +386,7 @@ const ReleaseForm = ({ navigation }) => {
     //console.log(label)
   };
 
-  // adding new label input
+  // adding new label
 
   const ListLabelItem = ({ newLabel }) => {
     return (
@@ -249,6 +403,69 @@ const ReleaseForm = ({ navigation }) => {
     );
   };
 
+  // GET Language data
+  const getLanguageData = () => {
+    //console.log('calling api')
+    API({
+      url: `${baseURL}/GetLanguage`,
+      // method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        // let newArray = val?.data.map((item) => {
+        //   return {key: item.Id, value: item.Language}
+        // })
+        setLanguageData(val?.Data)
+        //console.log('Agreement data ==>', val?.Data)
+        //setLoading(false)
+      },
+      onError: val => console.log('ERROR:', val),
+    })
+  }
+
+  // Get mainGenre data
+
+  const getMainGenreData = () => {
+    API({
+      url: `${baseURL}/GetmainGenre`,
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        //alert('maingeneredata =>',val?.Data)
+        ///let testlang = 
+        setmainGenreData(val?.Data)
+      },
+      onError: val => console.log('Error:', val)
+    })
+  }
+
+
+  const getSubGenreData = () => {
+    API({
+      url: `${baseURL}/Getsubgenre`,
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        setSubGenreData(val?.Data)
+      },
+      onError: val => console.log('Error:', val)
+    })
+  }
+
+
+
+
+  useEffect(() => {
+    getLanguageData();
+    getMainGenreData();
+    getSubGenreData();
+  }, []);
+
+  
+
+  const newLanguage = languageData.map((item) => { return { key: item.Id, value: item.Language } })
+  const newMainGenre = mainGenreData.map((item) => { return { key: item.Id, value: item.MainGenre_Name } })
+  const newSubGenre = subGenreData.map((item) => { return { key: item.Id, value: item.SubGenre_Name } })
 
   return (
     <View style={styles.mainContainer}>
@@ -256,76 +473,70 @@ const ReleaseForm = ({ navigation }) => {
 
         {/* Language */}
 
-        <View style={styles.langView}>
-          <Text style={styles.langTxt}>Language:</Text>
-          <View style={styles.pickerContainer}>
-            <TouchableOpacity
-              onPress={() => changeModalVisibility(true)}
-              style={styles.touchableOpacity}
-            >
-              <Text style={styles.text}>{selectedLanguage}</Text>
-            </TouchableOpacity>
-            <Modal
-              transparent={true}
-              animationType='fade'
-              visible={isModalVisible}
-              onRequestClose={() => changeModalVisibility(false)}
-            >
-              <ModalPicker
-                changeModalVisibility={changeModalVisibility}
-                setData={setData}
-              />
-            </Modal>
-            <TouchableOpacity
-              onPress={() => changeModalVisibility(true)}
-              style={{
-                position: 'absolute',
-                right: 10,
-                //backgroundColor: 'red',
-                top: 20,
-              }}>
-              <Image source={icons.downarrow}
-                style={{
-                  width: 10,
-                  height: 10,
-                  resizeMode: 'contain'
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
+        <View>
+          <Text style={[styles.langTxt, { marginLeft: SIZES.padding2, marginTop: 20 }]}>Language:</Text>
+          {/* <Button title='submit' onPress={getDataUsingAsyncAwaitGetCall}/> */}
+          <SelectList
+            //key={languageData.map((item) => item.Id)}
+            setSelected={setSelected}
+            boxStyles={styles.artistDropDown}
+            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+            //search={false}
+            data={newLanguage}
+            //data={data}
+            maxHeight={300}
+            placeholder="Select Language"
+            notFoundText="NO Language found"
+            //onSelect={() => console.log(selected)}
+           // onSelect={() => alert(selected)}
+            //search={false}
+            dropdownStyles={{
+              backgroundColor: COLORS.gray,
+              margin: SIZES.padding * 2,
+            }}
+          />
+
+        </View >
 
         {/* Display Artists */}
         <ReleaseInput
           text='Display Artists (optional):'
-          value={value}
-          onChangeText={text => onChangeText(text)}
+          value={displayArtist}
+          onChangeText={text => setDisplayArtist(text)}
         />
 
         {/* Remixer */}
 
         <ReleaseInput
           text='Remixer:'
+          value={remixer}
+          onChangeText={text => setRemixer(text)}
         />
         {/* Orchestra */}
 
         <ReleaseInput
           text='Orchestra:'
+          value={orchestra}
+          onChangeText={text => setOrchestra(text)}
         />
 
         {/* Actor */}
 
         <ReleaseInput
           text='Actor:'
+          value={actor}
+          onChangeText={text => setActor(text)}
         />
 
         {/* Lyricist */}
 
         <ReleaseInput
+          value={lyricist}
+          onChangeText={text => setLyricist(text)}
           text='Lyricist:'
         />
 
-        {/* Lable */}
+        {/* LABLE INPUT */}
 
         <View style={styles.langView}>
           <Text style={styles.langTxt}>Lable:</Text>
@@ -334,30 +545,67 @@ const ReleaseForm = ({ navigation }) => {
             //justifyContent: 'space-between',
             //paddingHorizontal: 40,
             alignItems: 'center',
-            // backgroundColor: 'red'
+            //backgroundColor: 'red'
           }}>
             <View>
-              <SelectList
-                setSelected={setLabel}
-                boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0, width: width / 1.55 }]}
-                //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-                data={newLabel.map((item) => item.task)}
-                placeholder="Select"
-                onSelect={() => console.log(selected)}
-                dropdownStyles={{
-                  backgroundColor: COLORS.gray,
-                  marginHorizontal: 0,
-                }}
-              />
+              {/* <Button title='labeldata' onPress={getUserLableData}/> */}
+
+              {list.length != 0 && (
+                <SelectList
+                  setSelected={setSelected}
+
+                  boxStyles={[
+                    styles.artistDropDown,
+                    {
+                      marginHorizontal: 0,
+                      marginVertical: 0,
+                      width: SIZES.width / 1.08,
+                    },
+                  ]}
+                  //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+                  data={list}
+                  //data={labelData.map((item) => console.log(''))}
+                  defaultOption={list.filter(
+                    (item, index) =>
+                      //item?.key == console.log('show lab=>>',releaseData?.Release?.Release_Label) ,
+                      item?.key == releaseData?.Release?.Release_Label,
+                  )[0]}
+                  //defaultOption={{ key: releaseData?.Release?.Release_Label, value: console.log('label value:',list[list.findIndex(x=>x.key==releaseData?.Release?.Release_Label)])  }}
+                  // defaultOption={list[] }
+
+                  // placeholder={releaseData?.Release?.Release_Label}
+                  //onSelect={() => }
+                  dropdownStyles={{
+                    backgroundColor: COLORS.gray,
+                    marginHorizontal: 0,
+                  }}
+                />
+              )}
+
+              {list.length == 0 && (
+                <SelectList data={list}
+                  setSelected={setSelected}
+                  boxStyles={[
+                    styles.artistDropDown,
+                    {
+                      marginHorizontal: 0,
+                      marginVertical: 0,
+                      width: SIZES.width / 1.08,
+                    },
+                  ]}
+                />
+              )}
             </View>
+
+
             {/* Add New Label Button */}
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => setLoadingLabel(true)}
               style={[styles.addnewBtn, { justifyContent: 'center', alignItems: 'center' }]}
             >
               <Text style={styles.addnewTxt}>Add New</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
         </View>
@@ -366,27 +614,22 @@ const ReleaseForm = ({ navigation }) => {
 
         {/* Main Genre */}
 
-        <View style={styles.langView}>
-          <Text style={styles.langTxt}>Main Genre:</Text>
-          <View style={styles.pickerContainer}>
-            <TouchableOpacity
-              onPress={() => changeModalVisibility(true)}
-              style={styles.touchableOpacity}
-            >
-              <Text style={styles.text}>{selectedLanguage}</Text>
-            </TouchableOpacity>
-            <Modal
-              transparent={true}
-              animationType='fade'
-              visible={isModalVisible}
-              nRequestClose={() => changeModalVisibility(false)}
-            >
-              <ModalPicker
-                changeModalVisibility={changeModalVisibility}
-                setData={setData}
-              />
-            </Modal>
-          </View>
+        <View>
+          <Text style={[styles.langTxt, { marginLeft: SIZES.padding2 }]}>Main Genre:</Text>
+          <SelectList
+            setSelected={setSelected}
+            boxStyles={styles.artistDropDown}
+            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+            data={newMainGenre}
+            
+            //placeholder="Select Maingenre"
+            onSelect={() => console.log(selected)}
+            //search={false}
+            dropdownStyles={{
+              backgroundColor: COLORS.gray,
+              margin: SIZES.padding * 2,
+            }}
+          />
         </View>
 
         {/* Release Type */}
@@ -490,7 +733,7 @@ const ReleaseForm = ({ navigation }) => {
               }}>
               Choose Primary Artist:
             </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('AddNewArtist')}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate('AddNewArtist')}>
               <Text
                 style={{
                   marginHorizontal: SIZES.padding * 1.2,
@@ -501,14 +744,64 @@ const ReleaseForm = ({ navigation }) => {
                   textDecorationLine: 'underline',
                 }}>Add New Artist
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
-          <ReleaseInput
-            placeholder='Select Some Option'
-            //multiline={true}
-            numberOfLines={2}
-            maxLength={200}
-          />
+          <View style={{ marginHorizontal: SIZES.padding * 0.5 }}>
+            <SelectBox
+              label=" "
+              options={PRIMARY_ARTIST}
+              selectedValues={selectedTeams}
+              onMultiSelect={onMultiChange()}
+              onTapClose={onMultiChange()}
+              isMulti
+              hideInputFilter={true}
+              containerStyle={{
+                backgroundColor: COLORS.white,
+                //alignItems: 'center',
+                width: '95%',
+                borderWidth: 1,
+                marginLeft: SIZES.padding,
+                height: 55,
+                borderRadius: 5,
+                paddingHorizontal: 10,
+                paddingVertical: 30,
+              }}
+              //inputFilterContainerStyle={{backgroundColor: '#000'}}
+              //inputFilterStyle={{fontSize: 21}}
+              labelStyle={{
+                fontSize: 10,
+                // margin: 20
+              }}
+              optionsLabelStyle={{
+                fontSize: 17,
+                paddingHorizontal: SIZES.padding * 2
+              }}
+              optionContainerStyle={{
+                backgroundColor: '#fff',
+                width: '94%',
+                //borderWidth: 1,
+                marginLeft: SIZES.padding,
+              }}
+              multiOptionContainerStyle={{
+                backgroundColor: COLORS.primary,
+                //marginHorizontal: 0
+                //borderWidth: 1,
+                //borderColor: 'red'
+              }}
+              multiOptionsLabelStyle={{
+                fontSize: 15,
+                fontWeight: 'bold',
+              }}
+              multiListEmptyLabelStyle={{ fontSize: 15 }}
+              listEmptyLabelStyle={{ color: 'red' }}
+              //selectedItemStyle={{ color: 'red' }}
+              arrowIconColor={COLORS.primary}
+              searchIconColor={COLORS.primary}
+              toggleIconColor={COLORS.primary}
+              listEmptyText='NO ARTIST FOUND'
+            />
+          </View>
+
         </View>
 
 
@@ -516,29 +809,38 @@ const ReleaseForm = ({ navigation }) => {
 
         <ReleaseInput
           text='Feature Artist:'
-
+          value={featureArtist}
+          onChangeText={text => setFeatureArtist(text)}
         />
 
         {/* Composer */}
 
         <ReleaseInput
+          value={composer}
+          onChangeText={text => setComposer(text)}
           text='Composer:'
         />
 
         {/* Arranger */}
 
         <ReleaseInput
+          value={arranger}
+          onChangeText={text => setArranger(text)}
           text='Arranger:'
         />
         {/* Conductor */}
 
         <ReleaseInput
+          value={conductor}
+          onChangeText={text => setConductor(text)}
           text='Conductor:'
         />
 
         {/* Release Title */}
 
         <ReleaseInput
+          value={releaseTitle}
+          onChangeText={text => setReleaseTitle(text)}
           text='Release Title:'
         />
 
@@ -548,7 +850,7 @@ const ReleaseForm = ({ navigation }) => {
           marginHorizontal: SIZES.padding * 1.5,
           marginVertical: SIZES.padding * 1.5
         }}>
-          <Text style={styles.langTxt}>ArtWork:</Text>
+          <Text style={styles.langTxt}>Artwork:</Text>
           <View
             style={{
               flexDirection: 'row',
@@ -574,16 +876,26 @@ const ReleaseForm = ({ navigation }) => {
           </View>
         </View>
 
+        {/* Cat number */}
+
+        <ReleaseInput
+          value={cat}
+          onChangeText={text => setCat(text)}
+          text='Cat Number:'
+        />
+
         {/* Sub Genre */}
 
         <View style={styles.langView}>
           <Text style={styles.langTxt}>Sub Genre:</Text>
           <SelectList
-            setSelected={setSelectedSubGenre}
+            setSelected={setSelected}
             boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0 }]}
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-            data={subGenedata}
-            placeholder="Select"
+            data={newSubGenre}
+            maxHeight={400}
+            //search={false}
+            placeholder="Select subgenre"
             onSelect={() => console.log(selected)}
             dropdownStyles={{
               backgroundColor: COLORS.gray,
@@ -618,6 +930,8 @@ const ReleaseForm = ({ navigation }) => {
         <View style={{ marginTop: 10 }}>
           <ReleaseInput
             text='Copyrights:'
+            value={copyRights}
+            onChangeText={(text) => setCopyRights(text)}
           />
         </View>
 
@@ -633,29 +947,40 @@ const ReleaseForm = ({ navigation }) => {
               borderColor: 'grey',
               height: 50,
               borderRadius: 5,
-              backgroundColor: '#EBEBEB'
+              backgroundColor: '#EBEBEB',
+              justifyContent: 'center'
             }}
           >
-            <DatePicker
-              date={date}
-              mode='date'
-              placeholder='Select date'
-              format='MM/DD/YYYY'
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
 
+            <DatePicker
+              modal
+              mode='date'
+              open={open}
+              date={date}
+              placeholder='Select date'
+              confirmBtnText='Confirm'
+              cancelBtnText='Cancel'
+
+              format='MM/DD/YYYY'
+              customStyles={{
                 dateIcon: {
-                  display: 'none',
+                  display: 'none'
                 },
                 dateInput: {
                   height: 50,
-                  marginTop: 10,
-                  borderWidth: 0.1
-                },
+                  //marginTop: 10,
+                  borderWidth: 0,
+                }
               }}
               onDateChange={(date) => {
                 setDate(date);
+              }}
+              onConfirm={(date) => {
+                setOpen(false)
+                setDate(date)
+              }}
+              onCancel={() => {
+                setOpen(false)
               }}
             />
           </View>
@@ -668,6 +993,7 @@ const ReleaseForm = ({ navigation }) => {
             boxStyles={styles.artistDropDown}
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             data={data}
+            //search={false}
             placeholder="Select"
             onSelect={() => console.log(selected)}
             dropdownStyles={{
@@ -680,6 +1006,7 @@ const ReleaseForm = ({ navigation }) => {
         <TouchableOpacity
           style={styles.nextBtn}
           onPress={() => navigation.navigate('audioTracks')}
+        //onPress={() => navigation.navigate('testing')}
         >
           <Text style={styles.nextTxt}>Next</Text>
         </TouchableOpacity>
@@ -849,7 +1176,6 @@ const ReleaseForm = ({ navigation }) => {
         </View>
       )}
     </View>
-
   )
 }
 
