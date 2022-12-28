@@ -1,44 +1,39 @@
-// import { StyleSheet, Text, View } from 'react-native'
-// import React from 'react'
-// import  SelectList  from 'react-native-dropdown-select-list'
-
-
-// const Testing = () => {
-
-//   const [selected, setSelected] = React.useState("");
-
-//   const data = [
-//     { key: '1', value: 'Mobiles', disabled: true },
-//     { key: '2', value: 'Appliances' },
-//     { key: '3', value: 'Cameras' },
-//     { key: '4', value: 'Computers', disabled: true },
-//     { key: '5', value: 'Vegetables' },
-//     { key: '6', value: 'Diary Products' },
-//     { key: '7', value: 'Drinks' },
-//   ]
-
-//   return (
-//     <View>
-//       <SelectList
-//         setSelected={(val) => setSelected(val)}
-//         data={data}
-//         save="value"
-//       />
-//     </View>
-//   )
-// }
-
-// export default Testing
-
-// const styles = StyleSheet.create({})
-
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, FlatList } from 'react-native'
 import React from 'react'
+import LinearGradient from 'react-native-linear-gradient';
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
+
+const data = [
+  {id: 1, value: 'sdfksd'},
+  {id: 2, value: 'sdfksd'},
+  {id: 3, value: 'sdfksd'},
+  {id: 4, value: 'sdfksd'},
+  {id: 5, value: 'sdfksd'}
+]
+
 
 const Testing = () => {
   return (
     <View>
-      <Text>testing</Text>
+      <FlatList data={data}
+        renderItem={item => {
+          return(
+            <ShimmerPlaceHolder
+              style={{
+                width: 80,
+                height: 100,
+                borderRadius: 50
+              }}
+              shimmerColors={['#fff', '#000']}
+            />
+          )
+        }}
+      />
+      
+
+
     </View>
   )
 }
@@ -46,3 +41,4 @@ const Testing = () => {
 export default Testing
 
 const styles = StyleSheet.create({})
+

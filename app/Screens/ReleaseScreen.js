@@ -47,9 +47,9 @@ const ReleaseScreen = ({ navigation }) => {
           `\n status : ${status}`
           + '\n' +
 
-          // 'comment : ' +
           comment,
           [{ t: 'ok', onPress: () => console.log('ok pressed') }],
+          
         );
       })
       .catch(error => {
@@ -131,7 +131,9 @@ const ReleaseScreen = ({ navigation }) => {
 
 
 const ModalFunction = ({ showModal, setShowModal, onPress }) => {
+
   const [headline, setHeadline] = useState(" ");
+  
   return (
     <Modal
       animationType={'slide'}

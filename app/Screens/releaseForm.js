@@ -13,7 +13,8 @@ import DatePicker from 'react-native-datepicker';
 import { LogBox } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import useDetailsData from '../context/useDetailsData';
-import API from '../apis/API';
+import { API } from '../apis/API';
+
 
 
 import SelectBox from 'react-native-multi-selectbox';
@@ -75,8 +76,6 @@ const PRIMARY_ARTIST = [
 ]
 
 
-//import DatePicker from 'react-native-date-picker';  // Need to use this further
-
 import {
   StyleSheet,
   Text,
@@ -89,21 +88,31 @@ import {
   useWindowDimensions,
   TextInput,
   ScrollView,
-  Alert
+  Alert,
+  Keyboard
 } from 'react-native';
 
-LogBox.ignoreAllLogs();//Ignore all log notifications
+LogBox.ignoreAllLogs();                                                     //Ignore all log notifications
 //Import Image Picker
 
+// URLs
+const baseURL = 'http://84.16.239.66/api/'
+
+
 const ReleaseForm = ({ route, navigation }) => {
+
+  //passing data from ReleaseScreen
   const releaseData = route?.params?.data
-  //console.log('show releasedata=>>',releaseData)
-  //  const { itemId } = route.params;
 
   const [selectedLanguage, setSelectedLanguage] = useState('English');
-  const [selectLabel, setSelectLabel] = useState('ITEM_1')
+
+  // dropdown data
+  const [languageData, setLanguageData] = useState([])
+  const [mainGenreData, setmainGenreData] = useState([])
+  const [subGenreData, setSubGenreData] = useState([])
+
+
   const [isModalVisible, setisModalVisible] = useState(false);
-  const [isModalLabelVisible, setisModalLabelVisible] = useState(false);
   // const [value, setValue] = useState(getDetails("Release_ReleaseTitle"));
   const [description, setdescription] = useState('Distributed by Jamvana - www.Jamvana.com')
   const [loadingLabel, setLoadingLabel] = useState(false)
@@ -111,17 +120,47 @@ const ReleaseForm = ({ route, navigation }) => {
   const [selected, setSelected] = useState('');
 
   //Get Particular Data
-  const [displayArtist, setDisplayArtist] = useState(`${(releaseData?.Release?.Release_DisplayArtist || '')}`);
-  const [remixer, setRemixer] = useState(`${(releaseData?.Release?.Remixer || '')}`)
-  const [orchestra, setOrchestra] = useState(`${(releaseData?.Release?.Orchestra || '')}`)
-  const [actor, setActor] = useState(`${(releaseData?.Release?.Actor || '')}`)
-  const [lyricist, setLyricist] = useState(`${(releaseData?.Release?.Lyricist || '')}`)
-  const [featureArtist, setFeatureArtist] = useState(`${(releaseData?.Release?.Release_FeaturedArtist || '')}`)
-  const [composer, setComposer] = useState(`${(releaseData?.Release?.Composer || '')}`)
-  const [arranger, setArranger] = useState(`${(releaseData?.Release?.Arranger || '')}`)
-  const [conductor, setConductor] = useState(`${(releaseData?.Release?.Conductor || '')}`)
-  const [releaseTitle, setReleaseTitle] = useState(`${(releaseData?.Release?.Release_ReleaseTitle || '')}`)
-  const [copyRights, setCopyRights] = useState(`${(releaseData?.Release?.Copyrights || '')}`)
+  const [displayArtist, setDisplayArtist] = useState(
+    `${releaseData?.Release?.Release_DisplayArtist || ''}`,
+  );
+  const [remixer, setRemixer] = useState(
+    `${releaseData?.Release?.Remixer || ''}`,
+  );
+  const [orchestra, setOrchestra] = useState(
+    `${releaseData?.Release?.Orchestra || ''}`,
+  );
+  const [actor, setActor] = useState(
+    `${releaseData?.Release?.Actor || ''}`
+  );
+  const [lyricist, setLyricist] = useState(
+    `${releaseData?.Release?.Lyricist || ''}`,
+  );
+
+  const [mainGener, setMainGenre] = useState(
+    `${releaseData?.Release?.Release_MainGenre || ''}`
+  );
+  //console.log('Main Genere =>', mainGener)
+
+  const [featureArtist, setFeatureArtist] = useState(
+    `${releaseData?.Release?.Release_FeaturedArtist || ''}`,
+  );
+  const [composer, setComposer] = useState(
+    `${releaseData?.Release?.Composer || ''}`,
+  );
+  const [arranger, setArranger] = useState(
+    `${releaseData?.Release?.Arranger || ''}`,
+  );
+  const [conductor, setConductor] = useState(
+    `${releaseData?.Release?.Conductor || ''}`,
+  );
+  const [cat, setCat] = useState('');
+
+  const [releaseTitle, setReleaseTitle] = useState(
+    `${releaseData?.Release?.Release_ReleaseTitle || ''}`,
+  );
+  const [copyRights, setCopyRights] = useState(
+    `${releaseData?.Release?.Copyrights || ''}`,
+  );
 
   //choose primary artist
   const [selectedTeams, setSelectedTeams] = useState([])
@@ -136,7 +175,7 @@ const ReleaseForm = ({ route, navigation }) => {
   // storing image path
   const [filePath, setFilePath] = useState({});
 
-  
+
   // Permission for gallery
   const requestExternalWritePermission = async () => {
     if (Platform.OS === 'android') {
@@ -160,46 +199,22 @@ const ReleaseForm = ({ route, navigation }) => {
 
   const [lableData, setLableData] = useState([])
 
-  // console.log('labelid', lableData.map((userid) => userid))
+  //console.log('labelid', lableData.map((userid) => userid))
   //console.log('test =>', lableData)
-
-
   let test1;
   //const key = lableList?.Label_Id
-  
   let list = [];
 
   if (lableData.length > 0) {
     const dataLbl = JSON.parse(lableData)
-    //key = dataLbl.map((lableLt) => (lableLt?.Label_Id))
     test1 = dataLbl.map((lableList) => (lableList))
-
-
     test1.forEach(element => {
-      console.log('show id:', element.Label_Id)
+      //console.log('show id:', element.Label_Id)
       list.push({ key: element.Label_Id, value: element.Label_Name });
     });
-
-    var a= list.findIndex(x=>x.key==2077);
-    console.log('IndexValue',a);
-    console.log('value:', list[a].value)
-    //console.log(test1)
-
   } else {
-    //alert('no label found')
-    console.log('')
+    console.log('No data found')
   }
-
-  
-  //const datay = JSON.parse(lGit pull origin mainableData) 
-  // const datay1 = JSON.parse(lableData)
-  // console.log(datay1)
-  // //const datay = lableData.map((item) => item);
-  // const test1 = datay1.map((lableList)=> (lableList?.Label_Id))
-
-  //http://84.16.239.66/api/GetLableByUserId?UserId=a691efb4-04bc-4349-9ba4-0103abc0de70
-  //a691efb4-04bc-4349-9ba4-0103abc0de70
-  //dbe6deea-a4de-4adb-a2db-ec1b050f04a6
 
   const userReleaseId = releaseData?.Release?.User_Id
 
@@ -208,7 +223,7 @@ const ReleaseForm = ({ route, navigation }) => {
   const getUserLableData = async () => {
     //console.log('calling api')
     //GET request
-    await fetch(`http://84.16.239.66/api/GetLableByUserId?UserId=${userReleaseId}`, {
+    await fetch(`${baseURL}GetLableByUserId?UserId=${userReleaseId}`, {
       method: 'GET',
       // headers: {
       //   'Accept': 'application/json',
@@ -216,7 +231,13 @@ const ReleaseForm = ({ route, navigation }) => {
       // },
       //Request Type
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText)
+        }
+        return response.json()
+      })
+
       //If response is in json then in success
       .then((responseJson) => {
         //Success
@@ -227,9 +248,9 @@ const ReleaseForm = ({ route, navigation }) => {
       //If response is not in json then in error
       .catch((error) => {
         //Error
-        alert(JSON.stringify(error));
-        console.error(error);
-      });
+        Alert.alert(error);
+        //console.log(error);
+      })
   };
 
 
@@ -298,13 +319,6 @@ const ReleaseForm = ({ route, navigation }) => {
     { id: 2, value: false, name: "No", selected: false },
   ]);
 
-  // SubGene data
-  const subGenedata = [
-    { key: '1', value: 'Acapellas' },
-    { key: '2', value: '2 Step' },
-    { key: '3', value: 'Acid' },
-  ];
-
   // Parental warning data
   const data = [
     { key: '1', value: 'NotExplicit' },
@@ -346,37 +360,8 @@ const ReleaseForm = ({ route, navigation }) => {
     }
   };
 
-  // const saveValueFunction = () => {
-  //   // Function to save the value in AsyncStorage
-  //   if (label) {
-  //     // To check the input not empty
-  //     AsyncStorage.setItem('KeyString', label);
-  //     // Setting a data to a AsyncStorage with respect to a key
-  //     setLabel('');
-  //     // Resetting the TextInput
-  //     alert('Data Saved');
-  //     // Alert to confirm
-  //   } else {
-  //     alert('Please fill data');
-  //   }
-  // };
 
-  // useEffect(() => {
-  //   addLabel()
-  // }, [])
-
-  // // get remixer from user device.
-  // const getLabelFromUserDevice = async () => {
-  //   try {
-  //     const newLabel = await AsyncStorage.getItem('KeyString');
-  //     if (newLabel != null) {
-  //       setNewLabel(JSON.parse(newLabel));
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
+  // seperator
   const Separator = () => <View style={styles.separator} />
 
   // label
@@ -401,7 +386,7 @@ const ReleaseForm = ({ route, navigation }) => {
     //console.log(label)
   };
 
-  // adding new label input
+  // adding new label
 
   const ListLabelItem = ({ newLabel }) => {
     return (
@@ -418,6 +403,69 @@ const ReleaseForm = ({ route, navigation }) => {
     );
   };
 
+  // GET Language data
+  const getLanguageData = () => {
+    //console.log('calling api')
+    API({
+      url: `${baseURL}/GetLanguage`,
+      // method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        // let newArray = val?.data.map((item) => {
+        //   return {key: item.Id, value: item.Language}
+        // })
+        setLanguageData(val?.Data)
+        //console.log('Agreement data ==>', val?.Data)
+        //setLoading(false)
+      },
+      onError: val => console.log('ERROR:', val),
+    })
+  }
+
+  // Get mainGenre data
+
+  const getMainGenreData = () => {
+    API({
+      url: `${baseURL}/GetmainGenre`,
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        //alert('maingeneredata =>',val?.Data)
+        ///let testlang = 
+        setmainGenreData(val?.Data)
+      },
+      onError: val => console.log('Error:', val)
+    })
+  }
+
+
+  const getSubGenreData = () => {
+    API({
+      url: `${baseURL}/Getsubgenre`,
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        setSubGenreData(val?.Data)
+      },
+      onError: val => console.log('Error:', val)
+    })
+  }
+
+
+
+
+  useEffect(() => {
+    getLanguageData();
+    getMainGenreData();
+    getSubGenreData();
+  }, []);
+
+  
+
+  const newLanguage = languageData.map((item) => { return { key: item.Id, value: item.Language } })
+  const newMainGenre = mainGenreData.map((item) => { return { key: item.Id, value: item.MainGenre_Name } })
+  const newSubGenre = subGenreData.map((item) => { return { key: item.Id, value: item.SubGenre_Name } })
 
   return (
     <View style={styles.mainContainer}>
@@ -425,46 +473,30 @@ const ReleaseForm = ({ route, navigation }) => {
 
         {/* Language */}
 
-        <View style={styles.langView}>
-          <Text style={styles.langTxt}>Language:</Text>
-          {/* <Text>itemId: {JSON.stringify(itemId)}</Text> */}
-          {/* <Text>{Strings.t4} {data[0]?.Release?.Release_Id}</Text> */}
-          <View style={styles.pickerContainer}>
-            <TouchableOpacity
-              onPress={() => changeModalVisibility(true)}
-              style={styles.touchableOpacity}
-            >
-              <Text style={styles.text}>{selectedLanguage}</Text>
-            </TouchableOpacity>
-            <Modal
-              transparent={true}
-              animationType='fade'
-              visible={isModalVisible}
-              onRequestClose={() => changeModalVisibility(false)}
-            >
-              <ModalPicker
-                changeModalVisibility={changeModalVisibility}
-                setData={setData}
-              />
-            </Modal>
-            <TouchableOpacity
-              onPress={() => changeModalVisibility(true)}
-              style={{
-                position: 'absolute',
-                right: 10,
-                //backgroundColor: 'red',
-                top: 20,
-              }}>
-              <Image source={icons.downarrow}
-                style={{
-                  width: 10,
-                  height: 10,
-                  resizeMode: 'contain'
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
+        <View>
+          <Text style={[styles.langTxt, { marginLeft: SIZES.padding2, marginTop: 20 }]}>Language:</Text>
+          {/* <Button title='submit' onPress={getDataUsingAsyncAwaitGetCall}/> */}
+          <SelectList
+            //key={languageData.map((item) => item.Id)}
+            setSelected={setSelected}
+            boxStyles={styles.artistDropDown}
+            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+            //search={false}
+            data={newLanguage}
+            //data={data}
+            maxHeight={300}
+            placeholder="Select Language"
+            notFoundText="NO Language found"
+            //onSelect={() => console.log(selected)}
+           // onSelect={() => alert(selected)}
+            //search={false}
+            dropdownStyles={{
+              backgroundColor: COLORS.gray,
+              margin: SIZES.padding * 2,
+            }}
+          />
+
+        </View >
 
         {/* Display Artists */}
         <ReleaseInput
@@ -517,23 +549,52 @@ const ReleaseForm = ({ route, navigation }) => {
           }}>
             <View>
               {/* <Button title='labeldata' onPress={getUserLableData}/> */}
-              
-              <SelectList
-                setSelected={setSelected}
-                boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0, width: SIZES.width / 1.08 }]}
-                //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-                data={list}
-                //data={labelData.map((item) => console.log(''))}
-                //defaultOption={{ key: releaseData?.Release?.Release_Label, value: console.log('label value:',list[list.findIndex(x=>x.key==releaseData?.Release?.Release_Label)])  }}
-               // defaultOption={list[] }
-                
-                // placeholder={releaseData?.Release?.Release_Label}
-                onSelect={() => console.log(selected)}
-                dropdownStyles={{
-                  backgroundColor: COLORS.gray,
-                  marginHorizontal: 0,
-                }}
-              />
+
+              {list.length != 0 && (
+                <SelectList
+                  setSelected={setSelected}
+
+                  boxStyles={[
+                    styles.artistDropDown,
+                    {
+                      marginHorizontal: 0,
+                      marginVertical: 0,
+                      width: SIZES.width / 1.08,
+                    },
+                  ]}
+                  //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+                  data={list}
+                  //data={labelData.map((item) => console.log(''))}
+                  defaultOption={list.filter(
+                    (item, index) =>
+                      //item?.key == console.log('show lab=>>',releaseData?.Release?.Release_Label) ,
+                      item?.key == releaseData?.Release?.Release_Label,
+                  )[0]}
+                  //defaultOption={{ key: releaseData?.Release?.Release_Label, value: console.log('label value:',list[list.findIndex(x=>x.key==releaseData?.Release?.Release_Label)])  }}
+                  // defaultOption={list[] }
+
+                  // placeholder={releaseData?.Release?.Release_Label}
+                  //onSelect={() => }
+                  dropdownStyles={{
+                    backgroundColor: COLORS.gray,
+                    marginHorizontal: 0,
+                  }}
+                />
+              )}
+
+              {list.length == 0 && (
+                <SelectList data={list}
+                  setSelected={setSelected}
+                  boxStyles={[
+                    styles.artistDropDown,
+                    {
+                      marginHorizontal: 0,
+                      marginVertical: 0,
+                      width: SIZES.width / 1.08,
+                    },
+                  ]}
+                />
+              )}
             </View>
 
 
@@ -553,27 +614,22 @@ const ReleaseForm = ({ route, navigation }) => {
 
         {/* Main Genre */}
 
-        <View style={styles.langView}>
-          <Text style={styles.langTxt}>Main Genre:</Text>
-          <View style={styles.pickerContainer}>
-            <TouchableOpacity
-              onPress={() => changeModalVisibility(true)}
-              style={styles.touchableOpacity}
-            >
-              <Text style={styles.text}>{selectedLanguage}</Text>
-            </TouchableOpacity>
-            <Modal
-              transparent={true}
-              animationType='fade'
-              visible={isModalVisible}
-              nRequestClose={() => changeModalVisibility(false)}
-            >
-              <ModalPicker
-                changeModalVisibility={changeModalVisibility}
-                setData={setData}
-              />
-            </Modal>
-          </View>
+        <View>
+          <Text style={[styles.langTxt, { marginLeft: SIZES.padding2 }]}>Main Genre:</Text>
+          <SelectList
+            setSelected={setSelected}
+            boxStyles={styles.artistDropDown}
+            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+            data={newMainGenre}
+            
+            //placeholder="Select Maingenre"
+            onSelect={() => console.log(selected)}
+            //search={false}
+            dropdownStyles={{
+              backgroundColor: COLORS.gray,
+              margin: SIZES.padding * 2,
+            }}
+          />
         </View>
 
         {/* Release Type */}
@@ -794,7 +850,7 @@ const ReleaseForm = ({ route, navigation }) => {
           marginHorizontal: SIZES.padding * 1.5,
           marginVertical: SIZES.padding * 1.5
         }}>
-          <Text style={styles.langTxt}>ArtWork:</Text>
+          <Text style={styles.langTxt}>Artwork:</Text>
           <View
             style={{
               flexDirection: 'row',
@@ -820,6 +876,14 @@ const ReleaseForm = ({ route, navigation }) => {
           </View>
         </View>
 
+        {/* Cat number */}
+
+        <ReleaseInput
+          value={cat}
+          onChangeText={text => setCat(text)}
+          text='Cat Number:'
+        />
+
         {/* Sub Genre */}
 
         <View style={styles.langView}>
@@ -828,8 +892,10 @@ const ReleaseForm = ({ route, navigation }) => {
             setSelected={setSelected}
             boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0 }]}
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-            data={subGenedata}
-            placeholder="Select"
+            data={newSubGenre}
+            maxHeight={400}
+            //search={false}
+            placeholder="Select subgenre"
             onSelect={() => console.log(selected)}
             dropdownStyles={{
               backgroundColor: COLORS.gray,
@@ -927,6 +993,7 @@ const ReleaseForm = ({ route, navigation }) => {
             boxStyles={styles.artistDropDown}
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             data={data}
+            //search={false}
             placeholder="Select"
             onSelect={() => console.log(selected)}
             dropdownStyles={{

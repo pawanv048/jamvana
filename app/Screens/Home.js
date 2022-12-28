@@ -10,62 +10,62 @@ import {
   StyleSheet,
 
 } from 'react-native';
-import API from '../apis/API';
+import {API} from '../apis/API';
 import moment from 'moment-timezone';
 import * as Strings from '../Constants/strings';
 import { COLORS, SIZES } from '../Constants/theme';
-import axios from 'axios';
+
+
+const API_ALLRELEASE_URL = 'http://84.16.239.66/api/Release/GetAllReleases';
 
 const Home = ({ navigation }) => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
-  const getAllReleases = async () => {
-    try {
-      const resp = await fetch(
-        'http://84.16.239.66/api/Release/GetAllReleases',
-      );
-      //console.log('ReleaseId123=', detailsData?.Release_Id);
-      const json = await resp.json();
-      setData(json.Data);
-      // console.log('fetchDetailsUsingReleaseId12=', JSON.stringify(json.Data));
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // const makeRequest = async () => {
-  //   try {
-  //     API
-  //   } catch (error) {
-      
-  //   }
-  // }
+  const getAllReleases = () => {
+    //console.log('calling api')
+    API({
+      url: `${API_ALLRELEASE_URL}`,
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        setData(val?.Data)
+         //console.log('Agreement data ==>', val?.Data)
+        setLoading(false)
+      },
+      onError: val => console.log('ERROR:', val),
+    });
+    setLoading(true);
+  }
+
+
 
   useEffect(() => {
     getAllReleases();
   }, []);
 
+
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size='large' />
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size='large'/> 
       </View>
     );
   }
+
+
 
   function renderHomeReleaseItem({ item }) {
     return (
       <View
         style={{
-          flex: 1,
+          //flex: 1,
           padding: 24,
           backgroundColor: '#1B1A17',
           marginBottom: 10,
           borderRadius: 15,
-
         }}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Detail', { data: item })}
@@ -79,15 +79,14 @@ const Home = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, padding: Platform.OS === 'ios' ? 40 : 2 }}>
-      <FlatList
-        data={data}
-        showsVerticalScrollIndicator={true}
-        keyExtractor={(item) => `${item.Release_Id}`}
-        renderItem={renderHomeReleaseItem}
-        contentContainerStyle={{ padding: SIZES.padding * 2 }}
-      />
-    </SafeAreaView>
+    <FlatList
+      data={data}
+      showsVerticalScrollIndicator={true}
+      keyExtractor={(item) => `${item.Release_Id}`}
+      renderItem={renderHomeReleaseItem}
+      contentContainerStyle={{ padding: SIZES.padding * 2}}
+      
+    />
   );
 };
 
@@ -101,3 +100,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   }
 })
+
+
+
+
+
+
+
+
