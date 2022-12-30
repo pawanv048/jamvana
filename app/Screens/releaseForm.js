@@ -15,65 +15,9 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import useDetailsData from '../context/useDetailsData';
 import { API } from '../apis/API';
 
-
-
 import SelectBox from 'react-native-multi-selectbox';
 import { xorBy } from 'lodash';
-const PRIMARY_ARTIST = [
-  {
-    item: 'Juventus',
-    id: 'JUVE',
-  },
-  {
-    item: 'Real Madrid',
-    id: 'RM',
-  },
-  {
-    item: 'Barcelona',
-    id: 'BR',
-  },
-  {
-    item: 'PSG',
-    id: 'PSG',
-  },
-  {
-    item: 'FC Bayern Munich',
-    id: 'FBM',
-  },
-  {
-    item: 'Manchester United FC',
-    id: 'MUN',
-  },
-  {
-    item: 'Manchester City FC',
-    id: 'MCI',
-  },
-  {
-    item: 'Everton FC',
-    id: 'EVE',
-  },
-  {
-    item: 'Tottenham Hotspur FC',
-    id: 'TOT',
-  },
-  {
-    item: 'Chelsea FC',
-    id: 'CHE',
-  },
-  {
-    item: 'Liverpool FC',
-    id: 'LIV',
-  },
-  {
-    item: 'Arsenal FC',
-    id: 'ARS',
-  },
 
-  {
-    item: 'Leicester City FC',
-    id: 'LEI',
-  },
-]
 
 
 import {
@@ -139,11 +83,22 @@ const ReleaseForm = ({ route, navigation }) => {
   const [mainGener, setMainGenre] = useState(
     `${releaseData?.Release?.Release_MainGenre || ''}`
   );
-  //console.log('Main Genere =>', mainGener)
+
+  const [primaryArtist, setprimaryArtist] = useState(
+    `${releaseData?.Release?.Release_PrimaryArtist || ''}`
+  );
+
+
+  //console.log('primary artist =>',primaryArtist)
+
+  const [subGener, setsubGener] = useState(
+    `${releaseData?.Release?.Release_SubGenre || ''}`
+  );
 
   const [featureArtist, setFeatureArtist] = useState(
     `${releaseData?.Release?.Release_FeaturedArtist || ''}`,
   );
+
   const [composer, setComposer] = useState(
     `${releaseData?.Release?.Composer || ''}`,
   );
@@ -162,12 +117,6 @@ const ReleaseForm = ({ route, navigation }) => {
     `${releaseData?.Release?.Copyrights || ''}`,
   );
 
-  //choose primary artist
-  const [selectedTeams, setSelectedTeams] = useState([])
-
-  function onMultiChange() {
-    return (item) => setSelectedTeams(xorBy(selectedTeams, [item], 'id'))
-  }
 
   // Release Date
   const [date, setDate] = useState(new Date())
@@ -204,6 +153,7 @@ const ReleaseForm = ({ route, navigation }) => {
   let test1;
   //const key = lableList?.Label_Id
   let list = [];
+ 
 
   if (lableData.length > 0) {
     const dataLbl = JSON.parse(lableData)
@@ -215,9 +165,10 @@ const ReleaseForm = ({ route, navigation }) => {
   } else {
     console.log('No data found')
   }
+ 
 
+  
   const userReleaseId = releaseData?.Release?.User_Id
-
   //console.log('userid=>>',userReleaseId)
 
   const getUserLableData = async () => {
@@ -287,13 +238,13 @@ const ReleaseForm = ({ route, navigation }) => {
             alert(response.errorMessage);
             return;
           }
-          console.log('base64 -> ', response.base64);
-          console.log('uri -> ', response.uri);
-          console.log('width -> ', response.width);
-          console.log('height -> ', response.height);
-          console.log('fileSize -> ', response.fileSize);
-          console.log('type -> ', response.type);
-          console.log('fileName -> ', response.fileName);
+          // console.log('base64 -> ', response.base64);
+          // console.log('uri -> ', response.uri);
+          // console.log('width -> ', response.width);
+          // console.log('height -> ', response.height);
+          // console.log('fileSize -> ', response.fileSize);
+          // console.log('type -> ', response.type);
+          // console.log('fileName -> ', response.fileName);
           setFilePath(response.assets[0]);
         });
       } catch (error) {
@@ -303,7 +254,7 @@ const ReleaseForm = ({ route, navigation }) => {
   };
 
 
-  const { width, height } = useWindowDimensions();
+  // const { width, height } = useWindowDimensions();
 
   // radion button liked category
   const [isLiked, setIsLiked] = useState([
@@ -387,7 +338,6 @@ const ReleaseForm = ({ route, navigation }) => {
   };
 
   // adding new label
-
   const ListLabelItem = ({ newLabel }) => {
     return (
       <View style={{
@@ -421,10 +371,10 @@ const ReleaseForm = ({ route, navigation }) => {
       },
       onError: val => console.log('ERROR:', val),
     })
-  }
+  };
+
 
   // Get mainGenre data
-
   const getMainGenreData = () => {
     API({
       url: `${baseURL}/GetmainGenre`,
@@ -437,7 +387,7 @@ const ReleaseForm = ({ route, navigation }) => {
       },
       onError: val => console.log('Error:', val)
     })
-  }
+  };
 
 
   const getSubGenreData = () => {
@@ -450,8 +400,60 @@ const ReleaseForm = ({ route, navigation }) => {
       },
       onError: val => console.log('Error:', val)
     })
+  };
+
+
+
+  let selectedArtistList=[];
+ // const [selectedArtistList, setSelectedArtistList] = useState([])
+
+  if(primaryArtist.length !== 0){
+    var artistNames=primaryArtist;
+    var artistList=artistNames.split(',');
+    console.log('atList',artistList);
+    artistList.forEach(element => {
+      //console.log('show id:', element.Label_Id)
+      selectedArtistList.push({ id:element, item: element });
+    });
+    selectedArtistList.map((item) => { return {id: item.id, item: item.item } })
+    console.log("ArtistList",selectedArtistList);
+  }
+  else{
+    console.log("ArtistList Else");
   }
 
+ 
+  // NEWPRI
+  //a691efb4-04bc-4349-9ba4-0103abc0de70
+  //const newLanguage = languageData.map((item) => { return { key: item.Id, value: item.Language } })
+  
+  const [prdata, setPrdata] = useState([])
+  
+  const choosePriArtist = prdata.map((items) => { return {id: items.ArtistName, item: items.ArtistName } })
+  const [chooseArt, setChoosePriArt ] = useState(choosePriArtist)
+  console.log('chooseprimary =>',chooseArt)
+
+
+   // select items from
+   function onMultiChange() {
+    //return (item) => setSelectedTeams(xorBy(selectedTeams, [item]))
+    return (item) => setChoosePriArt(xorBy(chooseArt, [item], 'id'))
+   // return (item) => setSelectedArtistList(xorBy(selectedArtistList, [item], 'id'))
+  }
+  //console.log('show primery=>', choosePriArtist)
+  //console.log(selectedTeams)
+  const getAllPrimaryArtist = () => {
+    API({
+      url: `http://84.16.239.66/api/GetAllArtistByUserId?userId=${userReleaseId}`,
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        //console.log('primary artistdata=>',val.Data)
+        setPrdata(val.Data)
+      },
+      onError: val => console.log('Error:', val)
+    })
+  }
 
 
 
@@ -459,13 +461,36 @@ const ReleaseForm = ({ route, navigation }) => {
     getLanguageData();
     getMainGenreData();
     getSubGenreData();
+    getAllPrimaryArtist();
   }, []);
 
-  
+  const updateDetails = () => {
+    API({
+      url: 'https://reqres.in/api/users/1',
+      method: 'put',
+      headers: { 'Content-Type': 'application/json' },
+      data: JSON.stringify({
+        //id: 4,
+        email: "pawv048kl@gmail.com",
+        first_name: "rakdfd",
+        last_name: "verdfd",
+        avatar: "https://reqres.in/img/dfsdf/2-image.jpg"
+      }),
+      onSuccess: val => {
+        console.log(val)
+      },
+      onError: val => console.log('Error:', val)
+    })
+
+    // Perform validation checks
+    navigation.navigate('audioTracks')
+  }
+
 
   const newLanguage = languageData.map((item) => { return { key: item.Id, value: item.Language } })
-  const newMainGenre = mainGenreData.map((item) => { return { key: item.Id, value: item.MainGenre_Name } })
+  const newMainGenre = mainGenreData.map((item) => { return { key: item.MainGenre_Name, value: item.MainGenre_Name } })
   const newSubGenre = subGenreData.map((item) => { return { key: item.Id, value: item.SubGenre_Name } })
+  //console.log(newMainGenre)
 
   return (
     <View style={styles.mainContainer}>
@@ -482,13 +507,14 @@ const ReleaseForm = ({ route, navigation }) => {
             boxStyles={styles.artistDropDown}
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             //search={false}
+            defaultOption={{ key: '1', value: 'English' }}
             data={newLanguage}
             //data={data}
             maxHeight={300}
-            placeholder="Select Language"
+            //placeholder="Select Language"
             notFoundText="NO Language found"
             //onSelect={() => console.log(selected)}
-           // onSelect={() => alert(selected)}
+            //onSelect={() => alert(selected)}
             //search={false}
             dropdownStyles={{
               backgroundColor: COLORS.gray,
@@ -621,7 +647,8 @@ const ReleaseForm = ({ route, navigation }) => {
             boxStyles={styles.artistDropDown}
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             data={newMainGenre}
-            
+            //defaultOption={}
+            defaultOption={{ "key": mainGener, "value": mainGener }}
             //placeholder="Select Maingenre"
             onSelect={() => console.log(selected)}
             //search={false}
@@ -653,59 +680,39 @@ const ReleaseForm = ({ route, navigation }) => {
 
         {/* Price Tiers */}
 
-        <View style={styles.langView}>
-          <Text style={styles.langTxt}>Price Tiers: (for itunes on v)</Text>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center'
-          }}>
-
-            <View style={styles.pickerContainer}>
+        <View style={{ marginTop: SIZES.padding }}>
+          <Text style={[styles.langTxt, { marginLeft: SIZES.padding2 }]}>Price Tiers:</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <SelectList
+              setSelected={setSelected}
+              boxStyles={[styles.artistDropDown, { width: SIZES.width / 1.3 }]}
+              //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+              data={newMainGenre}
+              //defaultOption={}
+              defaultOption={{ "key": mainGener, "value": mainGener }}
+              //placeholder="Select Maingenre"
+              onSelect={() => console.log(selected)}
+              //search={false}
+              dropdownStyles={{
+                backgroundColor: COLORS.gray,
+                margin: SIZES.padding * 2,
+              }}
+            />
+            <View>
               <TouchableOpacity
-                onPress={() => changeModalVisibility(true)}
-                style={styles.touchableOpacity}
-              >
-                <Text style={styles.text}>{selectedLanguage}</Text>
-              </TouchableOpacity>
-              <Modal
-                transparent={true}
-                animationType='fade'
-                visible={isModalVisible}
-                nRequestClose={() => changeModalVisibility(false)}
-              >
-                <ModalPicker
-                  changeModalVisibility={changeModalVisibility}
-                  setData={setData}
-                />
-              </Modal>
-              <TouchableOpacity
-                onPress={() => changeModalVisibility(true)}
+                onPress={() => setShowInfo(true)}
                 style={{
-                  position: 'absolute',
-                  right: 10,
-                  top: 20
+                  marginHorizontal: 5
                 }}>
-                <Image source={icons.downarrow}
+                <Image source={icons.infobutton}
                   style={{
-                    width: 10,
-                    height: 10,
+                    height: 20,
+                    width: 20,
+                    tintColor: COLORS.primary,
                   }}
                 />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              onPress={() => setShowInfo(true)}
-              style={{
-                marginHorizontal: 10
-              }}>
-              <Image source={icons.infobutton}
-                style={{
-                  height: 20,
-                  width: 20,
-                  tintColor: COLORS.primary,
-                }}
-              />
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -749,12 +756,17 @@ const ReleaseForm = ({ route, navigation }) => {
           <View style={{ marginHorizontal: SIZES.padding * 0.5 }}>
             <SelectBox
               label=" "
-              options={PRIMARY_ARTIST}
-              selectedValues={selectedTeams}
+              options={choosePriArtist}
+              //selectedValues={selectedArtistList}
+              selectedValues={chooseArt}
+              //selectedValues={selectedArtistList}
               onMultiSelect={onMultiChange()}
               onTapClose={onMultiChange()}
+              //onChange={onChange()}
+              //value={["Juventus","Real Madrid"]}
               isMulti
               hideInputFilter={true}
+              //defaultValue={console.log("sfValueArt",selectedArtistList) }
               containerStyle={{
                 backgroundColor: COLORS.white,
                 //alignItems: 'center',
@@ -766,6 +778,7 @@ const ReleaseForm = ({ route, navigation }) => {
                 paddingHorizontal: 10,
                 paddingVertical: 30,
               }}
+
               //inputFilterContainerStyle={{backgroundColor: '#000'}}
               //inputFilterStyle={{fontSize: 21}}
               labelStyle={{
@@ -894,9 +907,10 @@ const ReleaseForm = ({ route, navigation }) => {
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             data={newSubGenre}
             maxHeight={400}
+            defaultOption={{ "key": subGener, "value": subGener }}
             //search={false}
-            placeholder="Select subgenre"
-            onSelect={() => console.log(selected)}
+            //placeholder="Select subgenre"
+            //onSelect={() => console.log(selected)}
             dropdownStyles={{
               backgroundColor: COLORS.gray,
               marginHorizontal: 0,
@@ -937,7 +951,10 @@ const ReleaseForm = ({ route, navigation }) => {
 
         {/* Release Date */}
 
-        <TouchableOpacity style={styles.langView}>
+        <TouchableOpacity
+          activeOpacity={1}
+          style={styles.langView}
+        >
           <Text style={styles.langTxt}>Release Date:</Text>
           <View
             style={{
@@ -1005,8 +1022,8 @@ const ReleaseForm = ({ route, navigation }) => {
 
         <TouchableOpacity
           style={styles.nextBtn}
-          onPress={() => navigation.navigate('audioTracks')}
-        //onPress={() => navigation.navigate('testing')}
+          //onPress={updateDetails}
+        onPress={() => navigation.navigate('testing')}
         >
           <Text style={styles.nextTxt}>Next</Text>
         </TouchableOpacity>
@@ -1096,12 +1113,12 @@ const ReleaseForm = ({ route, navigation }) => {
       {/* INFO BUTTON */}
 
       {showInfo && (
-        <View style={[styles.container, { width: width, height: height }]}>
+        <View style={[styles.container, { width: SIZES.width, height: SIZES.height }]}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               padding: SIZES.padding * 4,
-              paddingBottom: height / 5,
+              paddingBottom: SIZES.height / 5,
             }}
           >
             <View style={{
@@ -1219,7 +1236,6 @@ const styles = StyleSheet.create({
     padding: 14,
     marginHorizontal: 8,
     borderRadius: 3,
-
   },
   addnewTxt: {
     color: 'white',

@@ -79,13 +79,14 @@ const Home = ({ navigation }) => {
   };
 
   return (
+    
     <FlatList
       data={data}
       showsVerticalScrollIndicator={true}
       keyExtractor={(item) => `${item.Release_Id}`}
       renderItem={renderHomeReleaseItem}
       contentContainerStyle={{ padding: SIZES.padding * 2}}
-      
+
     />
   );
 };
@@ -100,11 +101,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   }
 })
-
-
-
-
-
-
-
-
