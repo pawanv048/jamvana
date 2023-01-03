@@ -48,15 +48,11 @@ const ReleaseForm = ({ route, navigation }) => {
   //passing data from ReleaseScreen
   const releaseData = route?.params?.data
 
-  const [selectedLanguage, setSelectedLanguage] = useState('English');
-
   // dropdown data
   const [languageData, setLanguageData] = useState([])
   const [mainGenreData, setmainGenreData] = useState([])
   const [subGenreData, setSubGenreData] = useState([])
 
-
-  const [isModalVisible, setisModalVisible] = useState(false);
   // const [value, setValue] = useState(getDetails("Release_ReleaseTitle"));
   const [description, setdescription] = useState('Distributed by Jamvana - www.Jamvana.com')
   const [loadingLabel, setLoadingLabel] = useState(false)
@@ -88,8 +84,10 @@ const ReleaseForm = ({ route, navigation }) => {
     `${releaseData?.Release?.Release_PrimaryArtist || ''}`
   );
 
-
-  //console.log('primary artist =>',primaryArtist)
+  const [priceTiers, setpriceTiers] = useState(
+    `${releaseData?.Release?.Price_Tiers || ''}`
+  );
+  console.log('price artist =>',priceTiers)
 
   const [subGener, setsubGener] = useState(
     `${releaseData?.Release?.Release_SubGenre || ''}`
@@ -153,19 +151,17 @@ const ReleaseForm = ({ route, navigation }) => {
   let test1;
   //const key = lableList?.Label_Id
   let list = [];
- 
 
   if (lableData.length > 0) {
-    const dataLbl = JSON.parse(lableData)
-    test1 = dataLbl.map((lableList) => (lableList))
-    test1.forEach(element => {
-      //console.log('show id:', element.Label_Id)
-      list.push({ key: element.Label_Id, value: element.Label_Name });
-    });
+    const dataLbl = JSON.parse(lableData);
+     test1 = dataLbl.map((lableList) => lableList);
+     list = [
+      ...list,
+      ...test1.map((element) => ({ key: element.Label_Id, value: element.Label_Name }))
+    ];
   } else {
-    console.log('No data found')
+    console.log('No data found');
   }
- 
 
   
   const userReleaseId = releaseData?.Release?.User_Id
@@ -277,14 +273,6 @@ const ReleaseForm = ({ route, navigation }) => {
     { key: '3', value: 'ExplicitContentEdited' },
   ];
 
-  const changeModalVisibility = (bool) => {
-    setisModalVisible(bool)
-  }
-
-  // Set data from list
-  const setData = (option) => {
-    setSelectedLanguage(option)
-  }
 
   //Creating handle click function
   const onRadioBtnClick = (item) => {
@@ -405,25 +393,8 @@ const ReleaseForm = ({ route, navigation }) => {
 
 
   let selectedArtistList=[];
- // const [selectedArtistList, setSelectedArtistList] = useState([])
-
-  if(primaryArtist.length !== 0){
-    var artistNames=primaryArtist;
-    var artistList=artistNames.split(',');
-    console.log('atList',artistList);
-    artistList.forEach(element => {
-      //console.log('show id:', element.Label_Id)
-      selectedArtistList.push({ id:element, item: element });
-    });
-    selectedArtistList.map((item) => { return {id: item.id, item: item.item } })
-    console.log("ArtistList",selectedArtistList);
-  }
-  else{
-    console.log("ArtistList Else");
-  }
-
- 
-  // NEWPRI
+  //const [seledArtistList, setSelectedArtistList]=useState(selectedArtistList);
+  //NEWPRI
   //a691efb4-04bc-4349-9ba4-0103abc0de70
   //const newLanguage = languageData.map((item) => { return { key: item.Id, value: item.Language } })
   
@@ -431,14 +402,31 @@ const ReleaseForm = ({ route, navigation }) => {
   
   const choosePriArtist = prdata.map((items) => { return {id: items.ArtistName, item: items.ArtistName } })
   const [chooseArt, setChoosePriArt ] = useState(choosePriArtist)
-  console.log('chooseprimary =>',chooseArt)
+   console.log('choose_primary =>',chooseArt)
+   //choose_primary => [{"id": "MadRay", "item": "MadRay"}] -- when adding data on input field
 
+  if (primaryArtist.length !== 0) {
+    var artistNames = primaryArtist;
+    var artistList = artistNames.split(',');
+    console.log('atList', artistList);
+    //atList ["LeRome Swiss", "MadRay", "SAKRA."]
+   let selectedArtistList = [
+      ...selectedArtistList,
+      ...artistList.map((element) => ({ id: element , item: element }))  
+    ];
+    
+    //console.log('artist_list', selectedArtistList);
+    //artist_list [{"id": "LeRome Swiss", "item": "LeRome Swiss"}, {"id": "MadRay", "item": "MadRay"}, {"id": "SAKRA.", "item": "SAKRA."}]
+  } else {
+    console.log('ArtistList Else');
+  }
 
    // select items from
    function onMultiChange() {
     //return (item) => setSelectedTeams(xorBy(selectedTeams, [item]))
     return (item) => setChoosePriArt(xorBy(chooseArt, [item], 'id'))
-   // return (item) => setSelectedArtistList(xorBy(selectedArtistList, [item], 'id'))
+    
+   // return (item) => setSelectedArtistList(xorBy(seledArtistList, [item], 'id'))
   }
   //console.log('show primery=>', choosePriArtist)
   //console.log(selectedTeams)
@@ -464,32 +452,11 @@ const ReleaseForm = ({ route, navigation }) => {
     getAllPrimaryArtist();
   }, []);
 
-  const updateDetails = () => {
-    API({
-      url: 'https://reqres.in/api/users/1',
-      method: 'put',
-      headers: { 'Content-Type': 'application/json' },
-      data: JSON.stringify({
-        //id: 4,
-        email: "pawv048kl@gmail.com",
-        first_name: "rakdfd",
-        last_name: "verdfd",
-        avatar: "https://reqres.in/img/dfsdf/2-image.jpg"
-      }),
-      onSuccess: val => {
-        console.log(val)
-      },
-      onError: val => console.log('Error:', val)
-    })
-
-    // Perform validation checks
-    navigation.navigate('audioTracks')
-  }
-
 
   const newLanguage = languageData.map((item) => { return { key: item.Id, value: item.Language } })
   const newMainGenre = mainGenreData.map((item) => { return { key: item.MainGenre_Name, value: item.MainGenre_Name } })
   const newSubGenre = subGenreData.map((item) => { return { key: item.Id, value: item.SubGenre_Name } })
+  //const newpriceTiers = priceTiers.map((item) => item )
   //console.log(newMainGenre)
 
   return (

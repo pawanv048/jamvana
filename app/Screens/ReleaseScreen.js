@@ -71,6 +71,7 @@ const ReleaseScreen = ({ navigation }) => {
         <Text>{Strings.t12} {data[0]?.Release?.Release_ReleaseType}</Text>
         <Text>{Strings.t13} {data[0]?.Release?.Composer}</Text>
         <Text>{Strings.t14} {data[0]?.Release?.Orchestra}</Text>
+        <Text>Price Tiers: {data[0]?.Release?.Price_Tiers}</Text>
         <Text>{Strings.t15} {data[0]?.Release?.Arranger}</Text>
         <Text>{Strings.t16} {data[0]?.Release?.Actor}</Text>
         <Text>{Strings.t17} {data[0]?.Release?.Lyricist}</Text>
