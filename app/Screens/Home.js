@@ -86,7 +86,6 @@ const Home = ({ navigation }) => {
       keyExtractor={(item) => `${item.Release_Id}`}
       renderItem={renderHomeReleaseItem}
       contentContainerStyle={{ padding: SIZES.padding * 2}}
-
     />
   );
 };

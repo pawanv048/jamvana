@@ -52,6 +52,7 @@ const ReleaseForm = ({ route, navigation }) => {
   const [languageData, setLanguageData] = useState([])
   const [mainGenreData, setmainGenreData] = useState([])
   const [subGenreData, setSubGenreData] = useState([])
+  const [priceTierData, setpriceTierData] = useState([])
 
   // const [value, setValue] = useState(getDetails("Release_ReleaseTitle"));
   const [description, setdescription] = useState('Distributed by Jamvana - www.Jamvana.com')
@@ -87,7 +88,7 @@ const ReleaseForm = ({ route, navigation }) => {
   const [priceTiers, setpriceTiers] = useState(
     `${releaseData?.Release?.Price_Tiers || ''}`
   );
-  console.log('price artist =>',priceTiers)
+  console.log('price artist =>', priceTiers)
 
   const [subGener, setsubGener] = useState(
     `${releaseData?.Release?.Release_SubGenre || ''}`
@@ -154,8 +155,8 @@ const ReleaseForm = ({ route, navigation }) => {
 
   if (lableData.length > 0) {
     const dataLbl = JSON.parse(lableData);
-     test1 = dataLbl.map((lableList) => lableList);
-     list = [
+    test1 = dataLbl.map((lableList) => lableList);
+    list = [
       ...list,
       ...test1.map((element) => ({ key: element.Label_Id, value: element.Label_Name }))
     ];
@@ -163,7 +164,7 @@ const ReleaseForm = ({ route, navigation }) => {
     console.log('No data found');
   }
 
-  
+
   const userReleaseId = releaseData?.Release?.User_Id
   //console.log('userid=>>',userReleaseId)
 
@@ -305,41 +306,41 @@ const ReleaseForm = ({ route, navigation }) => {
 
   // label
   const [label, setLabel] = useState('')
-  const [newLabel, setNewLabel] = useState([])
+  //const [newLabel, setNewLabel] = useState([])
 
 
   // user adding label
-  const addLabel = () => {
-    if (label == '') {
-      Alert.alert('Error', 'Please input Label');
-    } else {
-      const newLabelList = {
-        id: Math.random(), // generate new id
-        task: label,
-        completed: false,
-      };
-      // console.log(id)
-      setNewLabel([...newLabel, newLabelList]);
-      setLabel('');
-    }
-    //console.log(label)
-  };
+  // const addLabel = () => {
+  //   if (label == '') {
+  //     Alert.alert('Error', 'Please input Label');
+  //   } else {
+  //     const newLabelList = {
+  //       id: Math.random(), // generate new id
+  //       task: label,
+  //       completed: false,
+  //     };
+  //     // console.log(id)
+  //     setNewLabel([...newLabel, newLabelList]);
+  //     setLabel('');
+  //   }
+  //   //console.log(label)
+  // };
 
   // adding new label
-  const ListLabelItem = ({ newLabel }) => {
-    return (
-      <View style={{
-        marginHorizontal: SIZES.padding * 2,
-        marginVertical: SIZES.padding * 0.6
-      }}>
-        <Text style={{
-          fontSize: 18,
-          fontWeight: 'bold',
-          color: 'white'
-        }}>{newLabel?.task}</Text>
-      </View>
-    );
-  };
+  // const ListLabelItem = ({ newLabel }) => {
+  //   return (
+  //     <View style={{
+  //       marginHorizontal: SIZES.padding * 2,
+  //       marginVertical: SIZES.padding * 0.6
+  //     }}>
+  //       <Text style={{
+  //         fontSize: 18,
+  //         fontWeight: 'bold',
+  //         color: 'white'
+  //       }}>{newLabel?.task}</Text>
+  //     </View>
+  //   );
+  // };
 
   // GET Language data
   const getLanguageData = () => {
@@ -390,44 +391,40 @@ const ReleaseForm = ({ route, navigation }) => {
     })
   };
 
-
-
-  let selectedArtistList=[];
-  //const [seledArtistList, setSelectedArtistList]=useState(selectedArtistList);
+  let [selectedArtistList, setSelectedArtistList] = useState([]);
   //NEWPRI
   //a691efb4-04bc-4349-9ba4-0103abc0de70
   //const newLanguage = languageData.map((item) => { return { key: item.Id, value: item.Language } })
   
   const [prdata, setPrdata] = useState([])
   
-  const choosePriArtist = prdata.map((items) => { return {id: items.ArtistName, item: items.ArtistName } })
-  const [chooseArt, setChoosePriArt ] = useState(choosePriArtist)
-   console.log('choose_primary =>',chooseArt)
-   //choose_primary => [{"id": "MadRay", "item": "MadRay"}] -- when adding data on input field
+  const choosePriArtist = prdata.map((items) => { return { id: items.ArtistName, item: items.ArtistName } })
+  const [chooseArt, setchooseArt] = useState([])
+  console.log('selectedArtistList =>', selectedArtistList)
+  //choose_primary => [{"id": "MadRay", "item": "MadRay"}] -- when adding data on input field
 
   if (primaryArtist.length !== 0) {
     var artistNames = primaryArtist;
     var artistList = artistNames.split(',');
     console.log('atList', artistList);
     //atList ["LeRome Swiss", "MadRay", "SAKRA."]
-   let selectedArtistList = [
+    selectedArtistList = [
       ...selectedArtistList,
-      ...artistList.map((element) => ({ id: element , item: element }))  
+      ...artistList.map((element) => ({ id: element, item: element }))
     ];
-    
+
     //console.log('artist_list', selectedArtistList);
     //artist_list [{"id": "LeRome Swiss", "item": "LeRome Swiss"}, {"id": "MadRay", "item": "MadRay"}, {"id": "SAKRA.", "item": "SAKRA."}]
   } else {
     console.log('ArtistList Else');
   }
 
-   // select items from
-   function onMultiChange() {
-    //return (item) => setSelectedTeams(xorBy(selectedTeams, [item]))
-    return (item) => setChoosePriArt(xorBy(chooseArt, [item], 'id'))
-    
-   // return (item) => setSelectedArtistList(xorBy(seledArtistList, [item], 'id'))
+  // select items from
+  function onMultiChange() {
+  //  return (item) => setSelectedArtistList(xorBy(selectedArtistList, [item], 'id'))
+    return (item) => setchooseArt(xorBy(chooseArt, [item], 'id'))
   }
+
   //console.log('show primery=>', choosePriArtist)
   //console.log(selectedTeams)
   const getAllPrimaryArtist = () => {
@@ -443,6 +440,20 @@ const ReleaseForm = ({ route, navigation }) => {
     })
   }
 
+  //http://84.16.239.66/api/Release/GetAllPriceTires?UserId=a691efb4-04bc-4349-9ba4-0103abc0de70
+
+  const getAllPriceTires = () => {
+    API({
+      url: `http://84.16.239.66/api/Release/GetAllPriceTires?UserId=${userReleaseId}`,
+      headers: { 'Content-Type': 'application/json' },
+      onSuccess: val => {
+        //console.log('price ties=>',val.Data)
+        setpriceTierData(val.Data)
+      },
+      onError: val => console.log('Error:', val)
+
+    })
+  }
 
 
   useEffect(() => {
@@ -450,14 +461,15 @@ const ReleaseForm = ({ route, navigation }) => {
     getMainGenreData();
     getSubGenreData();
     getAllPrimaryArtist();
+    getAllPriceTires();
   }, []);
 
 
   const newLanguage = languageData.map((item) => { return { key: item.Id, value: item.Language } })
   const newMainGenre = mainGenreData.map((item) => { return { key: item.MainGenre_Name, value: item.MainGenre_Name } })
   const newSubGenre = subGenreData.map((item) => { return { key: item.Id, value: item.SubGenre_Name } })
-  //const newpriceTiers = priceTiers.map((item) => item )
-  //console.log(newMainGenre)
+  const newpriceTiers = priceTierData.map((item) => {return { key: item.Release_Id, value: item.Price_Tier  }} )
+  // console.log('price_Tiers =>',newpriceTiers)
 
   return (
     <View style={styles.mainContainer}>
@@ -564,9 +576,8 @@ const ReleaseForm = ({ route, navigation }) => {
                       item?.key == releaseData?.Release?.Release_Label,
                   )[0]}
                   //defaultOption={{ key: releaseData?.Release?.Release_Label, value: console.log('label value:',list[list.findIndex(x=>x.key==releaseData?.Release?.Release_Label)])  }}
-                  // defaultOption={list[] }
-
-                  // placeholder={releaseData?.Release?.Release_Label}
+                  //defaultOption={list[]}
+                  //placeholder={releaseData?.Release?.Release_Label}
                   //onSelect={() => }
                   dropdownStyles={{
                     backgroundColor: COLORS.gray,
@@ -654,18 +665,21 @@ const ReleaseForm = ({ route, navigation }) => {
               setSelected={setSelected}
               boxStyles={[styles.artistDropDown, { width: SIZES.width / 1.3 }]}
               //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-              data={newMainGenre}
+              data={newpriceTiers}
               //defaultOption={}
-              defaultOption={{ "key": mainGener, "value": mainGener }}
+             defaultOption={{ "key": priceTiers, "value": priceTiers }}
               //placeholder="Select Maingenre"
               onSelect={() => console.log(selected)}
+              
               //search={false}
               dropdownStyles={{
                 backgroundColor: COLORS.gray,
                 margin: SIZES.padding * 2,
+                
               }}
             />
-            <View>
+
+            <View style={{position: 'absolute', right: 30 }}>
               <TouchableOpacity
                 onPress={() => setShowInfo(true)}
                 style={{
@@ -723,17 +737,18 @@ const ReleaseForm = ({ route, navigation }) => {
           <View style={{ marginHorizontal: SIZES.padding * 0.5 }}>
             <SelectBox
               label=" "
-              options={choosePriArtist}
-              //selectedValues={selectedArtistList}
-              selectedValues={chooseArt}
-              //selectedValues={selectedArtistList}
+              options={selectedArtistList}
+              selectedValues={selectedArtistList}
+               //options={choosePriArtist}
+              //selectedValues={chooseArt}
+              
               onMultiSelect={onMultiChange()}
               onTapClose={onMultiChange()}
               //onChange={onChange()}
               //value={["Juventus","Real Madrid"]}
               isMulti
               hideInputFilter={true}
-              //defaultValue={console.log("sfValueArt",selectedArtistList) }
+              //sdefaultValue={choosePriArtist}
               containerStyle={{
                 backgroundColor: COLORS.white,
                 //alignItems: 'center',
@@ -989,8 +1004,8 @@ const ReleaseForm = ({ route, navigation }) => {
 
         <TouchableOpacity
           style={styles.nextBtn}
-          //onPress={updateDetails}
-        onPress={() => navigation.navigate('testing')}
+           onPress={() => navigation.navigate('audioTracks')}
+          //onPress={() => navigation.navigate('testing')}
         >
           <Text style={styles.nextTxt}>Next</Text>
         </TouchableOpacity>
@@ -1068,9 +1083,9 @@ const ReleaseForm = ({ route, navigation }) => {
 
               {/* Listing New Label */}
 
-              {newLabel.map((item, index) => (
+              {/* {newLabel.map((item, index) => (
                 <ListLabelItem key={index} newLabel={item} />
-              ))}
+              ))} */}
             </View>
           </ScrollView>
 

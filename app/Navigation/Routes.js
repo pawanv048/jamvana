@@ -15,18 +15,19 @@ import {
   ArtistDetails
 } from '../Screens';
 
-
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 
 function Root() {
   return (
+    
     <Drawer.Navigator>
       <Drawer.Screen name="Home" component={Home} options={{title: 'Releases'}}/>
       <Drawer.Screen name="Agreements" component={Agreements} />
-      <Drawer.Screen name="releaseForm" component={ReleaseForm} options={{title: 'Release Form'}}/>
+      {/* <Drawer.Screen name="releaseForm" component={ReleaseForm} options={{title: ''}} /> */}
     </Drawer.Navigator>
+   
   );
 }
 
