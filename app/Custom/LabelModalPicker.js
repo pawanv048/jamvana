@@ -12,6 +12,8 @@ const LABELDATA = ['ITEM_1', 'ITEM_2', 'ITEM_3', 'ITEM_4', 'ITEM_5', 'ITEM_6']
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 
+//***********************Module not in use ******************** */
+
 const LabelModalPicker = (props) => {
 
     const onPressItem = (label) => {

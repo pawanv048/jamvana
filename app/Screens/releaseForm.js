@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import ReleaseInput from '../Custom/ReleaseInput';
+// import ReleaseInput from '../Custom/ReleaseInput';
 import { COLORS, SIZES } from '../Constants/theme';
 import icons from '../Constants/icons';
 import { Picker } from '@react-native-picker/picker';
-import RadioButton from '../Custom/RadioButton';
+// import RadioButton from '../Custom/RadioButton';
 import ModalPicker from '../Custom/ModalPicker';
 import LabelModalPicker from '../Custom/LabelModalPicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,10 +16,9 @@ import useDetailsData from '../context/useDetailsData';
 import { API } from '../apis/API';
 import Toast from 'react-native-simple-toast';
 
-import { TextButton } from '../Custom/CustomComponent';
+import { TextButton, ReleaseInput, RadioButton } from '../Custom/CustomComponent';
 import SelectBox from 'react-native-multi-selectbox';
 import { xorBy } from 'lodash';
-
 
 
 import {
@@ -28,7 +27,6 @@ import {
   View,
   Image,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Modal,
   Button,
   TextInput,
@@ -432,10 +430,64 @@ const ReleaseForm = ({ route, navigation }) => {
   
 
   const validatedForm = () => {
-    console.log('validation Button Clicked')
-    // if(!editInput.displayArtist){
-    //   //handleError('please enter displayArtist','displayArtist')
-    // }
+    //console.log('validation Button Clicked')
+    let isValid = true;
+    if(!editInput.displayArtist){
+      handleError('Please Enter Display Artist','displayArtist')
+      isValid = false;
+    }
+    if(!editInput.remixer){
+      handleError('Please Enter Remixer','remixer')
+      isValid = false;
+    }
+    if(!editInput.orchestra){
+      handleError('Please Enter Orchestra','orchestra')
+      isValid = false;
+    }
+    if(!editInput.actor){
+      handleError('Please Enter Actor','actor')
+      isValid = false;
+    }
+    if(!editInput.lyricist){
+      handleError('Please Enter Lyricist','lyricist')
+      isValid = false;
+    }
+    if(!editInput.catnum){
+      handleError('Please Enter Catnum','catnum')
+      isValid = false;
+    }
+    if(!editInput.composer){
+      handleError('Please Enter Composer','composer')
+      isValid = false;
+    }
+    if(!editInput.arranger){
+      handleError('Please Enter Arranger','arranger')
+      isValid = false;
+    }
+    if(!editInput.conductor){
+      handleError('Please Enter Conductor','conductor')
+      isValid = false;
+    }
+    if(!editInput.copyright){
+      handleError('Please Enter Copyright','copyright')
+      isValid = false;
+    }
+    if(!editInput.featureArtist){
+      handleError('Please Enter FeatureArtist','featureArtist')
+      isValid = false;
+    }
+    if(!editInput.releasetitle){
+      handleError('Please Enter Releasetitle','releasetitle')
+      isValid = false;
+    }
+    if(!editInput.releasedes){
+      handleError('Please Enter Release Description','releasedes')
+      isValid = false;
+    }
+    if(isValid){
+      navigation.navigate('audioTracks')
+      //console.log(editInput)
+    }
   }
 
   //handle user change inputs
@@ -487,9 +539,9 @@ const ReleaseForm = ({ route, navigation }) => {
           text='Display Artists (optional):'
           value={editInput.displayArtist}
           //error='this is the errror'
-          //error={errors.displayArtist}
+          error={errors.displayArtist}
+          onFocus={() => handleError(null, 'displayArtist')}
           onChangeText={text => handleOnChange(text, 'displayArtist')}
-         // onFocus={() => handleError(null, 'displayArtist')}
           //onChangeText={text => handleOnChange(text)}
         />
 
@@ -498,6 +550,8 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           text='Remixer:'
           value={editInput.remixer}
+          error={errors.remixer}
+          onFocus={() => handleError(null, 'remixer')}
           onChangeText={text => handleOnChange(text, 'remixer')}
         />
         {/* Orchestra */}
@@ -505,6 +559,8 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           text='Orchestra:'
           value={editInput.orchestra}
+          error={errors.orchestra}
+          onFocus={() => handleError(null, 'orchestra')}
           onChangeText={text => handleOnChange(text, 'orchestra')}
         />
 
@@ -513,6 +569,8 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           text='Actor:'
           value={editInput.actor}
+          error={errors.actor}
+          onFocus={() => handleError(null, 'actor')}
           onChangeText={text => handleOnChange(text, 'actor')}
         />
 
@@ -521,6 +579,8 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           value={editInput.lyricist}
           text='Lyricist:'
+          error={errors.lyricist}
+          onFocus={() => handleError(null, 'lyricist')}
           onChangeText={text => handleOnChange(text, 'lyricist')}
         //errorMessage={Toast.show('This is a long toast.', Toast.LONG)}
         />
@@ -638,7 +698,6 @@ const ReleaseForm = ({ route, navigation }) => {
         </View>
 
 
-
         {/* Price Tiers */}
 
         <View style={{ marginTop: SIZES.padding }}>
@@ -684,7 +743,9 @@ const ReleaseForm = ({ route, navigation }) => {
 
         <ReleaseInput
           text='Release Description:'
-           value={editInput.releasedes}
+          value={editInput.releasedes}
+          error={errors.releasedes}
+          onFocus={() => handleError(null, 'releasedes')}
           onChangeText={text => handleOnChange(text, 'releasedes')}
           multiline={false}
           numberOfLines={2}
@@ -787,6 +848,8 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           text='Feature Artist:'
           value={editInput.featureArtist}
+          error={errors.featureArtist}
+          onFocus={() => handleError(null, 'featureArtist')}
           onChangeText={text => handleOnChange(text, 'featureArtist')}
         />
 
@@ -795,6 +858,8 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           value={editInput.composer}
           text='Composer:'
+          error={errors.composer}
+          onFocus={() => handleError(null, 'composer')}
           onChangeText={text => handleOnChange(text, 'composer')}
         />
 
@@ -803,6 +868,8 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           text='Arranger:'
           value={editInput.arranger}
+          error={errors.arranger}
+          onFocus={() => handleError(null, 'arranger')}
           onChangeText={text => handleOnChange(text, 'arranger')}
         />
         {/* Conductor */}
@@ -810,6 +877,8 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           value={editInput.conductor}
           text='Conductor:'
+          error={errors.conductor}
+          onFocus={() => handleError(null, 'conductor')}
           onChangeText={text => handleOnChange(text, 'conductor')}
         />
 
@@ -818,6 +887,8 @@ const ReleaseForm = ({ route, navigation }) => {
         <ReleaseInput
           value={editInput.releasetitle}
           text='Release Title:'
+          error={errors.releasetitle}
+          onFocus={() => handleError(null, 'releasetitle')}
           onChangeText={text => handleOnChange(text, 'releasetitle')}
         />
 
@@ -857,6 +928,8 @@ const ReleaseForm = ({ route, navigation }) => {
 
         <ReleaseInput
           value={editInput.catnum}
+          onFocus={() => handleError(null, 'catnum')}
+          error={errors.catnum}
           onChangeText={text => handleOnChange(text, 'catnum')}
           text='Cat Number:'
         />
@@ -909,6 +982,8 @@ const ReleaseForm = ({ route, navigation }) => {
           <ReleaseInput
             value={editInput.copyright}
             text='Copyrights:'
+            error={errors.copyright}
+            onFocus={() => handleError(null, 'copyright')}
             onChangeText={(text) => handleOnChange(text, 'copyright')}
           />
         </View>
@@ -985,7 +1060,7 @@ const ReleaseForm = ({ route, navigation }) => {
         </View>
         <TextButton
           //onPress={() => navigation.navigate('testing')}
-          onPress={() => validatedForm()}
+          onPress={validatedForm}
           //onPress={() => navigation.navigate('audioTracks')}
           label='Next'
           contentContainerStyle={styles.nextBtn}

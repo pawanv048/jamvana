@@ -16,7 +16,7 @@ import {
 
 import AudioTrackInput from '../Custom/AudioTrackInput';
 import icons from '../Constants/icons';
-import RadioButton from '../Custom/RadioButton';
+import {RadioButton} from '../Custom/CustomComponent';
 import * as Strings from '../Constants/strings';
 import CheckBox from '@react-native-community/checkbox';
 import SelectList from 'react-native-dropdown-select-list';

@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import React, { useState } from 'react';
-import { Separator, CustomInput } from '../Custom/CustomComponent';
+import { Separator, CustomInput, RadioButton } from '../Custom/CustomComponent';
 import { COLORS, SIZES } from '../Constants/theme';
-import RadioButton from '../Custom/RadioButton';
+// import RadioButton from '../Custom/RadioButton';
 import * as Strings from '../Constants/strings';
 
 import { useForm } from "react-hook-form";
 
-
+////**********************This module is not in use **************** */
 
 const AddNewArtist = ({navigation}) => {
 
