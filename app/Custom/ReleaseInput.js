@@ -3,15 +3,19 @@ import { StyleSheet, Text, View, TextInput, Platform } from 'react-native';
 import { SIZES } from '../Constants/theme';
 
 const ReleaseInput = props => {
+   const [isFocus, setIsFocus] = React.useState(false)
+
    const {
       text,
       value,
-      onChangeText,
+      onChangeText = () =>{},  
       placeholder,
       multiline,
       maxLength,
       numberOfLines,
-      title
+      title,
+      onFocus = () => {},
+      error
    } = props
 
    function renderReleaseForm() {
@@ -24,6 +28,8 @@ const ReleaseInput = props => {
             <Text style={styles.formTxt}>{text}</Text>
             <View style={styles.input}>
                <TextInput
+                  autoCapitalize='none'
+                  autoCorrect={false}
                   style={styles.inputTxt}
                   value={value}
                   onChangeText={onChangeText}
@@ -31,8 +37,19 @@ const ReleaseInput = props => {
                   multiline={multiline}
                   maxLength={maxLength}
                   numberOfLines={numberOfLines}
+                  onFocus={() => {
+                     onFocus();
+                     setIsFocus(true)
+                  }}
+                  onBlur={() => {
+                     setIsFocus(false)
+                  }}
                />
             </View>
+            {error && (
+                <Text style={{ color: 'red' }}>{error}</Text>
+            )}
+
          </View>
       )
    };

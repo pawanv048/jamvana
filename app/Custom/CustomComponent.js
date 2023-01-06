@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Animated } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { COLORS, SIZES } from '../Constants/theme';
 import { Controller } from "react-hook-form";
@@ -6,60 +6,85 @@ import Toast from 'react-native-simple-toast';
 
 export const Separator = () => <View style={styles.separator} />
 
-export const CustomInput = (props) => {
-  const {
-    title,
-    keyboardType,
-    control,
-    name,
-    rules = {}        // choice if you want to see the rules on particular field or not.
-  } = props
-  const [isActive, setisActive] = useState(false);
+export const TextButton = ({
+  contentContainerStyle,
+  disabled,
+  label,
+  labelStyle,
+  onPress
+}) => {
   return (
-    <View>
-      <Text style={styles.titleTxt}>{title}</Text>
-
-      <Controller
-        
-        control={control}
-        name={name}
-        defaultValue=''
-        
-        rules={rules}
-        render={({ field: { onChange, value }, fieldState: { error } }) => (
-          <>
-            <View style={{
-              borderWidth: 1.5,
-              borderColor: isActive ? COLORS.primary : COLORS.black,
-              borderRadius: 5,
-              height: 50,
+      <TouchableOpacity
+          style={{
+              alignItems: 'center',
               justifyContent: 'center',
-              marginVertical: SIZES.padding * 1,
-              backgroundColor: COLORS.white,
-              //alignItems: 'center'
-              paddingLeft: 10
-            }}>
-              <TextInput
-                autoCapitalize='none'
-                keyboardType={keyboardType}
-                value={value}
-                onChangeText={onChange}
-                onFocus={() => setisActive(true)}
-                onBlur={() => setisActive(false)}
-                {...props}
-              />
-            </View>
-            {error && (
-              // <Text style={{ color: 'red', alignSelf: 'stretch' }}>{error.message || 'Error'}</Text>
-              Toast.show(error.message || 'Error', Toast.SHORT)
-            )}
-          </>
-        )}
-      />
-
-    </View>
+              backgroundColor: COLORS.primary,
+              ...contentContainerStyle
+          }}
+          disabled={disabled}
+          onPress={onPress}
+      >
+          <Text style={{ color: COLORS.secondary, ...labelStyle }}>
+              {label}
+          </Text>
+      </TouchableOpacity>
   )
-};
+}
+
+// export const CustomInput = (props) => {
+//   const {
+//     title,
+//     keyboardType,
+//     control,
+//     name,
+//     rules = {}        // choice if you want to see the rules on particular field or not.
+//   } = props
+//   const [isActive, setisActive] = useState(false);
+//   return (
+//     <View>
+//       <Text style={styles.titleTxt}>{title}</Text>
+
+//       <Controller
+        
+//         control={control}
+//         name={name}
+//         defaultValue=''
+        
+//         rules={rules}
+//         render={({ field: { onChange, value }, fieldState: { error } }) => (
+//           <>
+//             <View style={{
+//               borderWidth: 1.5,
+//               borderColor: isActive ? COLORS.primary : COLORS.black,
+//               borderRadius: 5,
+//               height: 50,
+//               justifyContent: 'center',
+//               marginVertical: SIZES.padding * 1,
+//               backgroundColor: COLORS.white,
+//               //alignItems: 'center'
+//               paddingLeft: 10
+//             }}>
+//               <TextInput
+//                 autoCapitalize='none'
+//                 keyboardType={keyboardType}
+//                 value={value}
+//                 onChangeText={onChange}
+//                 onFocus={() => setisActive(true)}
+//                 onBlur={() => setisActive(false)}
+//                 {...props}
+//               />
+//             </View>
+//             {error && (
+//               // <Text style={{ color: 'red', alignSelf: 'stretch' }}>{error.message || 'Error'}</Text>
+//               Toast.show(error.message || 'Error', Toast.SHORT)
+//             )}
+//           </>
+//         )}
+//       />
+
+//     </View>
+//   )
+// };
 
 
 // export const CustomBar = ({ step, steps, height }) => {
@@ -136,6 +161,6 @@ const styles = StyleSheet.create({
   }
 })
 
-const CustomComponent = { Separator, CustomInput };
+const CustomComponent = { Separator, TextButton };
 
 export default CustomComponent;

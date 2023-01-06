@@ -25,9 +25,23 @@ const country_list = [
   { id: 12, name: 'Norfolk Island' },
   { id: 13, name: 'Guadeloupe' },
   { id: 14, name: 'Equatorial Guinea' },
+  { id: 1, name: 'India' },
+  { id: 2, name: 'china' },
+  { id: 3, name: 'sri Lanka' },
+  { id: 4, name: 'Australia' },
+  { id: 5, name: 'New York' },
+  { id: 6, name: 'Gabon' },
+  { id: 7, name: 'Gambia' },
+  { id: 8, name: 'Guadeloupe' },
+  { id: 9, name: 'Equatorial Guinea' },
+  { id: 10, name: 'Guatemala' },
+  { id: 11, name: 'Niger' },
+  { id: 12, name: 'Norfolk Island' },
+  { id: 13, name: 'Guadeloupe' },
+  { id: 14, name: 'Equatorial Guinea' },
 ]
 
-const SelectTerritories = ({navigation}) => {
+const SelectTerritories = ({ navigation }) => {
 
   const [countryList, setCountryList] = useState(country_list)
   const [toggle, setoggle] = useState(true)
@@ -87,14 +101,18 @@ const SelectTerritories = ({navigation}) => {
   // Country list
   function renderTerritoriesList() {
     return (
-      <FlatList data={countryList}
-        keyExtractor={(item) => `${item.id}`}
-        renderItem={renderItem}
-        style={{ paddingLeft: SIZES.padding * 2 }}
-        //ListFooterComponent={renderFooter()}
-        contentContainerStyle={{ marginBottom: 20 }}
-      />
+      <>
+        <FlatList
+          data={countryList}
+          keyExtractor={(item) => `${item.id}`}
+          renderItem={renderItem}
+          style={{ paddingLeft: SIZES.padding * 2 }}
+          //ListFooterComponent={renderFooter()}
 
+          contentContainerStyle={{ paddingBottom: SIZES.padding }}
+        />
+        {renderFooter()}
+      </>
     )
   };
 
@@ -125,11 +143,11 @@ const SelectTerritories = ({navigation}) => {
     )
   }
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.headerTxt}>Select Territories</Text>
       {renderHeader()}
       {renderTerritoriesList()}
-      {renderFooter()}
+
     </View>
   )
 }

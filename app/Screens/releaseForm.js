@@ -14,7 +14,9 @@ import { LogBox } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import useDetailsData from '../context/useDetailsData';
 import { API } from '../apis/API';
+import Toast from 'react-native-simple-toast';
 
+import { TextButton } from '../Custom/CustomComponent';
 import SelectBox from 'react-native-multi-selectbox';
 import { xorBy } from 'lodash';
 
@@ -29,7 +31,6 @@ import {
   TouchableWithoutFeedback,
   Modal,
   Button,
-  useWindowDimensions,
   TextInput,
   ScrollView,
   Alert,
@@ -40,45 +41,29 @@ LogBox.ignoreAllLogs();                                                     //Ig
 //Import Image Picker
 
 // URLs
-const baseURL = 'http://84.16.239.66/api/'
-
+const baseURL = 'http://84.16.239.66/api/';
 
 const ReleaseForm = ({ route, navigation }) => {
 
   //passing data from ReleaseScreen
-  const releaseData = route?.params?.data
+  const releaseData = route?.params?.data;
 
   // dropdown data
-  const [languageData, setLanguageData] = useState([])
-  const [mainGenreData, setmainGenreData] = useState([])
-  const [subGenreData, setSubGenreData] = useState([])
-  const [priceTierData, setpriceTierData] = useState([])
-
-  // const [value, setValue] = useState(getDetails("Release_ReleaseTitle"));
-  const [description, setdescription] = useState('Distributed by Jamvana - www.Jamvana.com')
-  const [loadingLabel, setLoadingLabel] = useState(false)
-  const [showInfo, setShowInfo] = useState(false)
+  const [languageData, setLanguageData] = useState([]);
+  const [mainGenreData, setmainGenreData] = useState([]);
+  const [subGenreData, setSubGenreData] = useState([]);
+  const [priceTierData, setpriceTierData] = useState([]);
+  const [description, setdescription] = useState(
+    'Distributed by Jamvana - www.Jamvana.com',
+  );
+  const [loadingLabel, setLoadingLabel] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   const [selected, setSelected] = useState('');
 
-  //Get Particular Data
-  const [displayArtist, setDisplayArtist] = useState(
-    `${releaseData?.Release?.Release_DisplayArtist || ''}`,
-  );
-  const [remixer, setRemixer] = useState(
-    `${releaseData?.Release?.Remixer || ''}`,
-  );
-  const [orchestra, setOrchestra] = useState(
-    `${releaseData?.Release?.Orchestra || ''}`,
-  );
-  const [actor, setActor] = useState(
-    `${releaseData?.Release?.Actor || ''}`
-  );
-  const [lyricist, setLyricist] = useState(
-    `${releaseData?.Release?.Lyricist || ''}`,
-  );
+
 
   const [mainGener, setMainGenre] = useState(
-    `${releaseData?.Release?.Release_MainGenre || ''}`
+    `${releaseData?.Release?.Release_MainGenre || ''}`,
   );
 
   const [primaryArtist, setprimaryArtist] = useState(
@@ -86,40 +71,30 @@ const ReleaseForm = ({ route, navigation }) => {
   );
 
   const [priceTiers, setpriceTiers] = useState(
-    `${releaseData?.Release?.Price_Tiers || ''}`
+    `${releaseData?.Release?.Price_Tiers || ''}`,
   );
-  console.log('price artist =>', priceTiers)
+  // console.log('price artist =>', priceTiers)
 
   const [subGener, setsubGener] = useState(
-    `${releaseData?.Release?.Release_SubGenre || ''}`
+    `${releaseData?.Release?.Release_SubGenre || ''}`,
   );
 
-  const [featureArtist, setFeatureArtist] = useState(
-    `${releaseData?.Release?.Release_FeaturedArtist || ''}`,
-  );
-
-  const [composer, setComposer] = useState(
-    `${releaseData?.Release?.Composer || ''}`,
-  );
-  const [arranger, setArranger] = useState(
-    `${releaseData?.Release?.Arranger || ''}`,
-  );
-  const [conductor, setConductor] = useState(
-    `${releaseData?.Release?.Conductor || ''}`,
-  );
+  
   const [cat, setCat] = useState('');
 
-  const [releaseTitle, setReleaseTitle] = useState(
-    `${releaseData?.Release?.Release_ReleaseTitle || ''}`,
-  );
+  // const [releaseTitle, setReleaseTitle] = useState(
+  //   `${releaseData?.Release?.Release_ReleaseTitle || ''}`,
+  // );
   const [copyRights, setCopyRights] = useState(
     `${releaseData?.Release?.Copyrights || ''}`,
   );
 
 
   // Release Date
-  const [date, setDate] = useState(new Date())
-  const [open, setOpen] = useState(false)
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+
+
   // storing image path
   const [filePath, setFilePath] = useState({});
 
@@ -145,7 +120,7 @@ const ReleaseForm = ({ route, navigation }) => {
     } else return true;
   };
 
-  const [lableData, setLableData] = useState([])
+  const [lableData, setLableData] = useState([]);
 
   //console.log('labelid', lableData.map((userid) => userid))
   //console.log('test =>', lableData)
@@ -173,11 +148,6 @@ const ReleaseForm = ({ route, navigation }) => {
     //GET request
     await fetch(`${baseURL}GetLableByUserId?UserId=${userReleaseId}`, {
       method: 'GET',
-      // headers: {
-      //   'Accept': 'application/json',
-      //   'Content-Type': 'application/json'
-      // },
-      //Request Type
     })
       .then((response) => {
         if (!response.ok) {
@@ -185,7 +155,6 @@ const ReleaseForm = ({ route, navigation }) => {
         }
         return response.json()
       })
-
       //If response is in json then in success
       .then((responseJson) => {
         //Success
@@ -255,16 +224,16 @@ const ReleaseForm = ({ route, navigation }) => {
 
   // radion button liked category
   const [isLiked, setIsLiked] = useState([
-    { id: 1, value: true, name: "Release", selected: false },
-    { id: 2, value: false, name: "Album", selected: false },
-    { id: 3, value: false, name: "Mix", selected: false }
+    { id: 1, value: true, name: 'Release', selected: false },
+    { id: 2, value: false, name: 'Album', selected: false },
+    { id: 3, value: false, name: 'Mix', selected: false },
   ]);
 
   // radio button category
-  const [onClickYes, setOnClickYes] = useState(false)
+  const [onClickYes, setOnClickYes] = useState(false);
   const [choose, setchoose] = useState([
-    { id: 1, value: false, name: "Yes", selected: false },
-    { id: 2, value: false, name: "No", selected: false },
+    { id: 1, value: false, name: 'Yes', selected: false },
+    { id: 2, value: false, name: 'No', selected: false },
   ]);
 
   // Parental warning data
@@ -280,7 +249,7 @@ const ReleaseForm = ({ route, navigation }) => {
     let updatedState = isLiked.map((isLikedItem) =>
       isLikedItem.id === item.id
         ? { ...isLikedItem, selected: true }
-        : { ...isLikedItem, selected: false }
+        : { ...isLikedItem, selected: false },
     );
     setIsLiked(updatedState);
   };
@@ -290,7 +259,7 @@ const ReleaseForm = ({ route, navigation }) => {
     let updatedState = choose.map((isLikedItem) =>
       isLikedItem.id === item.id
         ? { ...isLikedItem, selected: true }
-        : { ...isLikedItem, selected: false }
+        : { ...isLikedItem, selected: false },
     );
     setchoose(updatedState);
     if (item.id === 1) {
@@ -307,40 +276,6 @@ const ReleaseForm = ({ route, navigation }) => {
   // label
   const [label, setLabel] = useState('')
   //const [newLabel, setNewLabel] = useState([])
-
-
-  // user adding label
-  // const addLabel = () => {
-  //   if (label == '') {
-  //     Alert.alert('Error', 'Please input Label');
-  //   } else {
-  //     const newLabelList = {
-  //       id: Math.random(), // generate new id
-  //       task: label,
-  //       completed: false,
-  //     };
-  //     // console.log(id)
-  //     setNewLabel([...newLabel, newLabelList]);
-  //     setLabel('');
-  //   }
-  //   //console.log(label)
-  // };
-
-  // adding new label
-  // const ListLabelItem = ({ newLabel }) => {
-  //   return (
-  //     <View style={{
-  //       marginHorizontal: SIZES.padding * 2,
-  //       marginVertical: SIZES.padding * 0.6
-  //     }}>
-  //       <Text style={{
-  //         fontSize: 18,
-  //         fontWeight: 'bold',
-  //         color: 'white'
-  //       }}>{newLabel?.task}</Text>
-  //     </View>
-  //   );
-  // };
 
   // GET Language data
   const getLanguageData = () => {
@@ -391,42 +326,40 @@ const ReleaseForm = ({ route, navigation }) => {
     })
   };
 
-  let [selectedArtistList, setSelectedArtistList] = useState([]);
+
+  const [selectedArtistList, setSelectedArtistList] = useState([]);
+  const [dummyData, setDummyData] = useState([]);
   //NEWPRI
   //a691efb4-04bc-4349-9ba4-0103abc0de70
   //const newLanguage = languageData.map((item) => { return { key: item.Id, value: item.Language } })
-  
+
   const [prdata, setPrdata] = useState([])
-  
-  const choosePriArtist = prdata.map((items) => { return { id: items.ArtistName, item: items.ArtistName } })
-  const [chooseArt, setchooseArt] = useState([])
-  console.log('selectedArtistList =>', selectedArtistList)
-  //choose_primary => [{"id": "MadRay", "item": "MadRay"}] -- when adding data on input field
 
-  if (primaryArtist.length !== 0) {
-    var artistNames = primaryArtist;
-    var artistList = artistNames.split(',');
-    console.log('atList', artistList);
-    //atList ["LeRome Swiss", "MadRay", "SAKRA."]
-    selectedArtistList = [
-      ...selectedArtistList,
-      ...artistList.map((element) => ({ id: element, item: element }))
-    ];
+  useEffect(() => {
+    if (primaryArtist.length !== 0) {
+      var artistNames = primaryArtist;
+      var artistList = artistNames.split(',');
+      console.log('atList', artistList);
+      //atList ["LeRome Swiss", "MadRay", "SAKRA."]
+      let data12 = [
+        ...selectedArtistList,
+        ...artistList.map(element => ({ id: element, item: element })),
+      ];
+      console.log('dummy Data', data12);
+      setDummyData([...data12, ...prdata.map(items => ({ id: items.Id, item: items.ArtistName }))]);
+      setSelectedArtistList(data12);
+    } else {
+      console.log('ArtistList Else');
+    }
+  }, [prdata, primaryArtist]);
 
-    //console.log('artist_list', selectedArtistList);
-    //artist_list [{"id": "LeRome Swiss", "item": "LeRome Swiss"}, {"id": "MadRay", "item": "MadRay"}, {"id": "SAKRA.", "item": "SAKRA."}]
-  } else {
-    console.log('ArtistList Else');
-  }
 
-  // select items from
+  // Multiselection Primary Artist List
   function onMultiChange() {
-  //  return (item) => setSelectedArtistList(xorBy(selectedArtistList, [item], 'id'))
-    return (item) => setchooseArt(xorBy(chooseArt, [item], 'id'))
+    return item =>
+      setSelectedArtistList(xorBy(selectedArtistList, [item], 'id'));
   }
 
-  //console.log('show primery=>', choosePriArtist)
-  //console.log(selectedTeams)
   const getAllPrimaryArtist = () => {
     API({
       url: `http://84.16.239.66/api/GetAllArtistByUserId?userId=${userReleaseId}`,
@@ -447,11 +380,10 @@ const ReleaseForm = ({ route, navigation }) => {
       url: `http://84.16.239.66/api/Release/GetAllPriceTires?UserId=${userReleaseId}`,
       headers: { 'Content-Type': 'application/json' },
       onSuccess: val => {
-        //console.log('price ties=>',val.Data)
-        setpriceTierData(val.Data)
+        console.log('price tites=>', val.Data)
+        //setpriceTierData(val.Data)
       },
-      onError: val => console.log('Error:', val)
-
+      onError: val => console.log('Something went wrong:', val)
     })
   }
 
@@ -465,11 +397,58 @@ const ReleaseForm = ({ route, navigation }) => {
   }, []);
 
 
-  const newLanguage = languageData.map((item) => { return { key: item.Id, value: item.Language } })
-  const newMainGenre = mainGenreData.map((item) => { return { key: item.MainGenre_Name, value: item.MainGenre_Name } })
-  const newSubGenre = subGenreData.map((item) => { return { key: item.Id, value: item.SubGenre_Name } })
-  const newpriceTiers = priceTierData.map((item) => {return { key: item.Release_Id, value: item.Price_Tier  }} )
-  // console.log('price_Tiers =>',newpriceTiers)
+  const newLanguage = languageData.map(item => {
+    return { key: item.Id, value: item.Language };
+  });
+  const newMainGenre = mainGenreData.map(item => {
+    return { key: item.MainGenre_Name, value: item.MainGenre_Name };
+  });
+  const newSubGenre = subGenreData.map(item => {
+    return { key: item.Id, value: item.SubGenre_Name };
+  });
+  const newpriceTiers = priceTierData.map(item => {
+    return { key: item.Release_Id, value: item.Price_Tier };
+  });
+
+  //validation hooks
+  const [editInput, setEditInput] = useState({
+    displayArtist: `${releaseData?.Release?.Release_DisplayArtist}`,
+    remixer: `${releaseData?.Release?.Remixer || ''}`,
+    orchestra: `${releaseData?.Release?.Orchestra || ''}`,
+    actor: `${releaseData?.Release?.Actor || ''}`,
+    lyricist: `${releaseData?.Release?.Lyricist || ''}`,
+    releasedes: '',
+    releasetitle: '',
+    catnum: '',
+    copyright: '',
+    featureArtist: `${releaseData?.Release?.Release_FeaturedArtist || ''}`,
+    composer: `${releaseData?.Release?.Composer || ''}`,
+    arranger: `${releaseData?.Release?.Arranger || ''}`,
+    conductor: `${releaseData?.Release?.Conductor || ''}`,
+  })
+
+  // FORM VALIDATION
+  const [errors, setErrors] = useState({});
+  
+
+  const validatedForm = () => {
+    console.log('validation Button Clicked')
+    // if(!editInput.displayArtist){
+    //   //handleError('please enter displayArtist','displayArtist')
+    // }
+  }
+
+  //handle user change inputs
+  const handleOnChange = (text, editInput) => {
+    setEditInput(prevState => ({ ...prevState, [editInput]: text }));
+  }
+  //console.log('edited_entries =>',editInput)
+
+
+  // Error Messages
+  const handleError = (errorMessage, editInput) => {
+    setErrors(prevState => ({ ...prevState, [editInput]: errorMessage }));
+  }
 
   return (
     <View style={styles.mainContainer}>
@@ -486,7 +465,7 @@ const ReleaseForm = ({ route, navigation }) => {
             boxStyles={styles.artistDropDown}
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             //search={false}
-            defaultOption={{ key: '1', value: 'English' }}
+            defaultOption={{ key: 'English', value: 'English' }}
             data={newLanguage}
             //data={data}
             maxHeight={300}
@@ -506,39 +485,44 @@ const ReleaseForm = ({ route, navigation }) => {
         {/* Display Artists */}
         <ReleaseInput
           text='Display Artists (optional):'
-          value={displayArtist}
-          onChangeText={text => setDisplayArtist(text)}
+          value={editInput.displayArtist}
+          //error='this is the errror'
+          //error={errors.displayArtist}
+          onChangeText={text => handleOnChange(text, 'displayArtist')}
+         // onFocus={() => handleError(null, 'displayArtist')}
+          //onChangeText={text => handleOnChange(text)}
         />
 
         {/* Remixer */}
 
         <ReleaseInput
           text='Remixer:'
-          value={remixer}
-          onChangeText={text => setRemixer(text)}
+          value={editInput.remixer}
+          onChangeText={text => handleOnChange(text, 'remixer')}
         />
         {/* Orchestra */}
 
         <ReleaseInput
           text='Orchestra:'
-          value={orchestra}
-          onChangeText={text => setOrchestra(text)}
+          value={editInput.orchestra}
+          onChangeText={text => handleOnChange(text, 'orchestra')}
         />
 
         {/* Actor */}
 
         <ReleaseInput
           text='Actor:'
-          value={actor}
-          onChangeText={text => setActor(text)}
+          value={editInput.actor}
+          onChangeText={text => handleOnChange(text, 'actor')}
         />
 
         {/* Lyricist */}
 
         <ReleaseInput
-          value={lyricist}
-          onChangeText={text => setLyricist(text)}
+          value={editInput.lyricist}
           text='Lyricist:'
+          onChangeText={text => handleOnChange(text, 'lyricist')}
+        //errorMessage={Toast.show('This is a long toast.', Toast.LONG)}
         />
 
         {/* LABLE INPUT */}
@@ -558,7 +542,6 @@ const ReleaseForm = ({ route, navigation }) => {
               {list.length != 0 && (
                 <SelectList
                   setSelected={setSelected}
-
                   boxStyles={[
                     styles.artistDropDown,
                     {
@@ -626,9 +609,9 @@ const ReleaseForm = ({ route, navigation }) => {
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             data={newMainGenre}
             //defaultOption={}
-            defaultOption={{ "key": mainGener, "value": mainGener }}
+            defaultOption={{ key: mainGener, value: mainGener }}
             //placeholder="Select Maingenre"
-            onSelect={() => console.log(selected)}
+            //onSelect={() => alert(selected)}
             //search={false}
             dropdownStyles={{
               backgroundColor: COLORS.gray,
@@ -667,19 +650,19 @@ const ReleaseForm = ({ route, navigation }) => {
               //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
               data={newpriceTiers}
               //defaultOption={}
-             defaultOption={{ "key": priceTiers, "value": priceTiers }}
+              defaultOption={{ "key": priceTiers, "value": priceTiers }}
               //placeholder="Select Maingenre"
               onSelect={() => console.log(selected)}
-              
+
               //search={false}
               dropdownStyles={{
                 backgroundColor: COLORS.gray,
                 margin: SIZES.padding * 2,
-                
+
               }}
             />
 
-            <View style={{position: 'absolute', right: 30 }}>
+            <View style={{ position: 'absolute', right: 30, top: 22 }}>
               <TouchableOpacity
                 onPress={() => setShowInfo(true)}
                 style={{
@@ -701,8 +684,8 @@ const ReleaseForm = ({ route, navigation }) => {
 
         <ReleaseInput
           text='Release Description:'
-          value={description}
-          onChangeText={text => setdescription(text)}
+           value={editInput.releasedes}
+          onChangeText={text => handleOnChange(text, 'releasedes')}
           multiline={false}
           numberOfLines={2}
           maxLength={200}
@@ -737,11 +720,11 @@ const ReleaseForm = ({ route, navigation }) => {
           <View style={{ marginHorizontal: SIZES.padding * 0.5 }}>
             <SelectBox
               label=" "
-              options={selectedArtistList}
+              //options={selectedArtistList}
+              options={dummyData}
               selectedValues={selectedArtistList}
-               //options={choosePriArtist}
+              //options={choosePriArtist}
               //selectedValues={chooseArt}
-              
               onMultiSelect={onMultiChange()}
               onTapClose={onMultiChange()}
               //onChange={onChange()}
@@ -796,7 +779,6 @@ const ReleaseForm = ({ route, navigation }) => {
               listEmptyText='NO ARTIST FOUND'
             />
           </View>
-
         </View>
 
 
@@ -804,39 +786,39 @@ const ReleaseForm = ({ route, navigation }) => {
 
         <ReleaseInput
           text='Feature Artist:'
-          value={featureArtist}
-          onChangeText={text => setFeatureArtist(text)}
+          value={editInput.featureArtist}
+          onChangeText={text => handleOnChange(text, 'featureArtist')}
         />
 
         {/* Composer */}
 
         <ReleaseInput
-          value={composer}
-          onChangeText={text => setComposer(text)}
+          value={editInput.composer}
           text='Composer:'
+          onChangeText={text => handleOnChange(text, 'composer')}
         />
 
         {/* Arranger */}
 
         <ReleaseInput
-          value={arranger}
-          onChangeText={text => setArranger(text)}
           text='Arranger:'
+          value={editInput.arranger}
+          onChangeText={text => handleOnChange(text, 'arranger')}
         />
         {/* Conductor */}
 
         <ReleaseInput
-          value={conductor}
-          onChangeText={text => setConductor(text)}
+          value={editInput.conductor}
           text='Conductor:'
+          onChangeText={text => handleOnChange(text, 'conductor')}
         />
 
         {/* Release Title */}
 
         <ReleaseInput
-          value={releaseTitle}
-          onChangeText={text => setReleaseTitle(text)}
+          value={editInput.releasetitle}
           text='Release Title:'
+          onChangeText={text => handleOnChange(text, 'releasetitle')}
         />
 
         {/* ArtWork */}
@@ -874,8 +856,8 @@ const ReleaseForm = ({ route, navigation }) => {
         {/* Cat number */}
 
         <ReleaseInput
-          value={cat}
-          onChangeText={text => setCat(text)}
+          value={editInput.catnum}
+          onChangeText={text => handleOnChange(text, 'catnum')}
           text='Cat Number:'
         />
 
@@ -925,9 +907,9 @@ const ReleaseForm = ({ route, navigation }) => {
         {/* Copyrights */}
         <View style={{ marginTop: 10 }}>
           <ReleaseInput
+            value={editInput.copyright}
             text='Copyrights:'
-            value={copyRights}
-            onChangeText={(text) => setCopyRights(text)}
+            onChangeText={(text) => handleOnChange(text, 'copyright')}
           />
         </View>
 
@@ -1001,14 +983,14 @@ const ReleaseForm = ({ route, navigation }) => {
             }}
           />
         </View>
-
-        <TouchableOpacity
-          style={styles.nextBtn}
-           onPress={() => navigation.navigate('audioTracks')}
+        <TextButton
           //onPress={() => navigation.navigate('testing')}
-        >
-          <Text style={styles.nextTxt}>Next</Text>
-        </TouchableOpacity>
+          onPress={() => validatedForm()}
+          //onPress={() => navigation.navigate('audioTracks')}
+          label='Next'
+          contentContainerStyle={styles.nextBtn}
+          labelStyle={styles.nextTxt}
+        />
       </ScrollView>
 
       {loadingLabel && (
@@ -1231,7 +1213,8 @@ const styles = StyleSheet.create({
     padding: 15,
     marginHorizontal: SIZES.padding * 1.5,
     marginTop: SIZES.padding,
-    borderRadius: 7
+    borderRadius: 7,
+    marginBottom: SIZES.padding
   },
   nextTxt: {
     color: 'white',

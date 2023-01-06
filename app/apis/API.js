@@ -25,6 +25,8 @@
 
 import axios from 'axios';
 
+export const baseUrl = 'http://84.16.239.66/api/';
+
 export const API = async ({url, params, method, headers, onSuccess, onError}) => {
     let defaultHeaders = {
       'Content-Type': 'multipart/form-data',

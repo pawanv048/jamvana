@@ -25,9 +25,23 @@ const provider_list = [
   { id: 12, name: 'Djshop.de' },
   { id: 13, name: 'eMusic' },
   { id: 14, name: 'Rdio' },
+  { id: 1, name: 'Beatport' },
+  { id: 2, name: 'iTunes' },
+  { id: 3, name: 'Spotify' },
+  { id: 4, name: 'Juno' },
+  { id: 5, name: 'Deezer' },
+  { id: 6, name: 'Amazon' },
+  { id: 7, name: '7Digital' },
+  { id: 8, name: 'Aspiro' },
+  { id: 9, name: 'Anghami' },
+  { id: 10, name: 'Beats Music' },
+  { id: 11, name: 'BloomFM' },
+  { id: 12, name: 'Djshop.de' },
+  { id: 13, name: 'eMusic' },
+  { id: 14, name: 'Rdio' },
 ]
 
-const DigitalProvider = ({navigation}) => {
+const DigitalProvider = ({ navigation }) => {
 
   const [providerList, setProviderList] = useState(provider_list)
   const [toggle, setoggle] = useState(true)
@@ -87,14 +101,16 @@ const DigitalProvider = ({navigation}) => {
   // provider list
   function renderTerritoriesList() {
     return (
-      <FlatList data={providerList}
-        keyExtractor={(item) => `${item.id}`}
-        renderItem={renderItem}
-        style={{ paddingLeft: SIZES.padding * 2 }}
-        //ListFooterComponent={renderFooter()}
-        contentContainerStyle={{ marginBottom: 20 }}
-      />
-
+      <>
+        <FlatList data={providerList}
+          keyExtractor={(item) => `${item.id}`}
+          renderItem={renderItem}
+          style={{ paddingLeft: SIZES.padding * 2 }}
+          //ListFooterComponent={renderFooter()}
+          contentContainerStyle={{ marginBottom: 20 }}
+        />
+        {renderFooter()}
+      </>
     )
   };
 
@@ -125,11 +141,11 @@ const DigitalProvider = ({navigation}) => {
     )
   }
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.headerTxt}>CHOOSE DIGITAL SERVICE PROVIDERS</Text>
       {renderHeader()}
       {renderTerritoriesList()}
-      {renderFooter()}
+
     </View>
   )
 }
@@ -139,7 +155,6 @@ export default DigitalProvider
 const styles = StyleSheet.create({
   container: {
     flex: 1
-
   },
   headerTxt: {
     fontSize: 18,
