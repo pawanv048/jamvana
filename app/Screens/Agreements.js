@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {API} from '../apis/API';
+import { API } from '../apis/API';
 import * as Strings from '../Constants/strings';
 import {
   StyleSheet,
@@ -41,20 +41,20 @@ const Agreements = () => {
   }
 
   useEffect(() => {
-    getAgreementsData();  
-  },[]);
+    getAgreementsData();
+  }, []);
 
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator/>
+        <ActivityIndicator />
       </View>
     );
   }
 
   function renderAgreementsList() {
 
-    const pdf = data.map(({Userid}) => Userid)
+    const pdf = data.map(({ Userid }) => Userid)
 
     const renderItem = ({ item, index }) => {
 
@@ -76,7 +76,10 @@ const Agreements = () => {
               style={{
                 fontSize: 15
               }}
-              ellipsizeMode="tail" numberOfLines={1}>{item.UserName}
+              ellipsizeMode="tail"
+              numberOfLines={1}
+            >
+              {item.UserName}
             </Text>
           </View>
           <Text>
@@ -86,7 +89,7 @@ const Agreements = () => {
             backgroundColor: '#8D8DAA',
             padding: 8,
             borderRadius: 4
-          }}         
+          }}
             onPress={() => Linking.openURL(`https://musicdistributionsystem.com/members/Agreements/Agreement_${pdf[index]}.pdf`)}
           >
             <Text>{Strings.t46}</Text>
@@ -101,7 +104,7 @@ const Agreements = () => {
           data={data}
           keyExtractor={item => `${item.Userid}`}
           renderItem={renderItem}
-          //style={{backgroundColor: 'red'}}
+        //style={{backgroundColor: 'red'}}
         />
       </View>
     )

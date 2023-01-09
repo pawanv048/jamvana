@@ -77,6 +77,7 @@ const ReleaseScreen = ({ navigation }) => {
         <Text>{Strings.t17} {data[0]?.Release?.Lyricist}</Text>
         <Text>{Strings.t18}  {data[0]?.Release?.Checked}</Text>
         <Text>{Strings.t19} {data[0]?.Release?.LanguageCode}</Text>
+        <Text>Parental warning {data[0]?.Release?.ParentalWarning}</Text>
       </View>
     )
   };

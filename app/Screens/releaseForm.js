@@ -5,14 +5,14 @@ import icons from '../Constants/icons';
 import { Picker } from '@react-native-picker/picker';
 // import RadioButton from '../Custom/RadioButton';
 import ModalPicker from '../Custom/ModalPicker';
-import LabelModalPicker from '../Custom/LabelModalPicker';
+// import LabelModalPicker from '../Custom/LabelModalPicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Strings from '../Constants/strings';
 import SelectList from 'react-native-dropdown-select-list';
 import DatePicker from 'react-native-datepicker';
 import { LogBox } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
-import useDetailsData from '../context/useDetailsData';
+// import useDetailsData from '../context/useDetailsData';
 import { API } from '../apis/API';
 import Toast from 'react-native-simple-toast';
 
@@ -46,45 +46,21 @@ const ReleaseForm = ({ route, navigation }) => {
   //passing data from ReleaseScreen
   const releaseData = route?.params?.data;
 
+
   // dropdown data
   const [languageData, setLanguageData] = useState([]);
   const [mainGenreData, setmainGenreData] = useState([]);
   const [subGenreData, setSubGenreData] = useState([]);
   const [priceTierData, setpriceTierData] = useState([]);
-  const [description, setdescription] = useState(
-    'Distributed by Jamvana - www.Jamvana.com',
-  );
+
   const [loadingLabel, setLoadingLabel] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [selected, setSelected] = useState('');
+  //console.log('selected dropdown value=>',selected)
 
-
-
-  const [mainGener, setMainGenre] = useState(
-    `${releaseData?.Release?.Release_MainGenre || ''}`,
-  );
 
   const [primaryArtist, setprimaryArtist] = useState(
     `${releaseData?.Release?.Release_PrimaryArtist || ''}`
-  );
-
-  const [priceTiers, setpriceTiers] = useState(
-    `${releaseData?.Release?.Price_Tiers || ''}`,
-  );
-  // console.log('price artist =>', priceTiers)
-
-  const [subGener, setsubGener] = useState(
-    `${releaseData?.Release?.Release_SubGenre || ''}`,
-  );
-
-  
-  const [cat, setCat] = useState('');
-
-  // const [releaseTitle, setReleaseTitle] = useState(
-  //   `${releaseData?.Release?.Release_ReleaseTitle || ''}`,
-  // );
-  const [copyRights, setCopyRights] = useState(
-    `${releaseData?.Release?.Copyrights || ''}`,
   );
 
 
@@ -95,7 +71,7 @@ const ReleaseForm = ({ route, navigation }) => {
 
   // storing image path
   const [filePath, setFilePath] = useState({});
-
+    // console.log('FilePath', filePath)
 
   // Permission for gallery
   const requestExternalWritePermission = async () => {
@@ -139,6 +115,9 @@ const ReleaseForm = ({ route, navigation }) => {
 
 
   const userReleaseId = releaseData?.Release?.User_Id
+
+  //console.log('releasetype response =>',userReleasetype );
+
   //console.log('userid=>>',userReleaseId)
 
   const getUserLableData = async () => {
@@ -179,15 +158,15 @@ const ReleaseForm = ({ route, navigation }) => {
   const chooseFile = async (type) => {
     let options = {
       mediaType: type,
-      maxWidth: 300,
-      maxHeight: 550,
+      maxWidth: 3000,
+      maxHeight: 3000,
       quality: 1,
     };
     let isStoragePermitted = await requestExternalWritePermission();
     if (isStoragePermitted) {
       try {
         launchImageLibrary(options, (response) => {
-          console.log('Response = ', response);
+          // console.log('Response = ', response);
 
           if (response.didCancel) {
             alert('cancelled camera picker');
@@ -204,12 +183,29 @@ const ReleaseForm = ({ route, navigation }) => {
           }
           // console.log('base64 -> ', response.base64);
           // console.log('uri -> ', response.uri);
-          // console.log('width -> ', response.width);
-          // console.log('height -> ', response.height);
+            // console.log('width -> ', response.width);
+            // console.log('height -> ', response.height);
           // console.log('fileSize -> ', response.fileSize);
           // console.log('type -> ', response.type);
           // console.log('fileName -> ', response.fileName);
+
+          //console.log(response.assets[0].height);
+
+          // const desiredWidth = '3000px';
+          // const desiredHeight = '3000px';
+
+          
+          // if (response.width === options.maxWidth && response.height === options.maxHeight) {
+          //   // image has the correct dimensions, proceed with processing the image
+          //   setFilePath(response.assets[0]);
+            
+          // } else {
+          //   // image does not have the correct dimensions, display an error message or prompt the user to select a different image
+          //   alert("Image dimensions must be 3000*3000. Please select a different image.");
+          // }
+
           setFilePath(response.assets[0]);
+          console.log('printresponce=>', response.assets[0]);
         });
       } catch (error) {
         console.log(error)
@@ -218,14 +214,9 @@ const ReleaseForm = ({ route, navigation }) => {
   };
 
 
-  // const { width, height } = useWindowDimensions();
 
-  // radion button liked category
-  const [isLiked, setIsLiked] = useState([
-    { id: 1, value: true, name: 'Release', selected: false },
-    { id: 2, value: false, name: 'Album', selected: false },
-    { id: 3, value: false, name: 'Mix', selected: false },
-  ]);
+  // console.log('Calculating size of screen:', SIZES.height);
+
 
   // radio button category
   const [onClickYes, setOnClickYes] = useState(false);
@@ -241,8 +232,25 @@ const ReleaseForm = ({ route, navigation }) => {
     { key: '3', value: 'ExplicitContentEdited' },
   ];
 
+  const [isLiked, setIsLiked] = useState([
+    { id: 1, value: true, name: 'Release', selected: false },
+    { id: 2, value: false, name: 'Album', selected: false },
+    { id: 3, value: false, name: 'Mix', selected: false },
+  ]);
+  let userReleasetype = releaseData?.Release?.Release_ReleaseType;
+  const [updateReleaseType, setUpdateReleaseType] = useState(userReleasetype)
+  useEffect(() => {
+    if (userReleasetype) {
+      let updatedState = isLiked.map((isLikedItem) =>
+        isLikedItem.name === userReleasetype
+          ? { ...isLikedItem, selected: true }
+          : { ...isLikedItem, selected: false },
+      );
+      setIsLiked(updatedState);
+      setUpdateReleaseType(userReleasetype);
+    }
+  }, [userReleasetype]);
 
-  //Creating handle click function
   const onRadioBtnClick = (item) => {
     let updatedState = isLiked.map((isLikedItem) =>
       isLikedItem.id === item.id
@@ -250,6 +258,8 @@ const ReleaseForm = ({ route, navigation }) => {
         : { ...isLikedItem, selected: false },
     );
     setIsLiked(updatedState);
+    setUpdateReleaseType(item.name);
+    //console.log('name =>', item.name);
   };
 
   // radion button items
@@ -327,10 +337,7 @@ const ReleaseForm = ({ route, navigation }) => {
 
   const [selectedArtistList, setSelectedArtistList] = useState([]);
   const [dummyData, setDummyData] = useState([]);
-  //NEWPRI
-  //a691efb4-04bc-4349-9ba4-0103abc0de70
-  //const newLanguage = languageData.map((item) => { return { key: item.Id, value: item.Language } })
-
+  //console.log(dummyData)
   const [prdata, setPrdata] = useState([])
 
   useEffect(() => {
@@ -339,12 +346,30 @@ const ReleaseForm = ({ route, navigation }) => {
       var artistList = artistNames.split(',');
       console.log('atList', artistList);
       //atList ["LeRome Swiss", "MadRay", "SAKRA."]
+      // let data12 = [
+      //   ...selectedArtistList,
+      //   ...artistList.map(element => ({ id: element, item: element })),
+      // ];
+
+      // let data12 = [
+      //   ...new Set([...selectedArtistList, ...artistList.map(element => ({ id: element, item: element }))])
+      // ];
+
       let data12 = [
         ...selectedArtistList,
-        ...artistList.map(element => ({ id: element, item: element })),
+        ...artistList.map(element => ({ id: element, item: element }))
       ];
+
+      data12 = data12.filter((item, index) => {
+        return data12.findIndex(i => i.id === item.id && i.item === item.item) === index;
+      });
+
+      //let uniqueData = [...new Set(data12)];
+      //data12 = data12.filter((item, index) => data12.indexOf(item) === index);
       console.log('dummy Data', data12);
-      setDummyData([...data12, ...prdata.map(items => ({ id: items.Id, item: items.ArtistName }))]);
+      //console.log('uniqueData Data', uniqueData);
+      setDummyData([...data12, ...prdata.map(items => ({ id: items.Id, item: items.ArtistName }))
+      ]);
       setSelectedArtistList(data12);
     } else {
       console.log('ArtistList Else');
@@ -415,76 +440,90 @@ const ReleaseForm = ({ route, navigation }) => {
     orchestra: `${releaseData?.Release?.Orchestra || ''}`,
     actor: `${releaseData?.Release?.Actor || ''}`,
     lyricist: `${releaseData?.Release?.Lyricist || ''}`,
-    releasedes: '',
-    releasetitle: '',
-    catnum: '',
-    copyright: '',
+    releasedes: 'Distributed by Jamvana - www.Jamvana.com',
+    releasetitle: `${releaseData?.Release?.Release_ReleaseTitle || ''}`,
+    copyright: `${releaseData?.Release?.Copyrights}`,
     featureArtist: `${releaseData?.Release?.Release_FeaturedArtist || ''}`,
     composer: `${releaseData?.Release?.Composer || ''}`,
     arranger: `${releaseData?.Release?.Arranger || ''}`,
     conductor: `${releaseData?.Release?.Conductor || ''}`,
+    mainGener: `${releaseData?.Release?.Release_MainGenre || ''}`,
+    priceTiers: `${releaseData?.Release?.Price_Tiers || ''}`,
+    subGener: `${releaseData?.Release?.Release_SubGenre || ''}`,
+    ParentalWarning: `${releaseData?.Release?.ParentalWarning}`,
+    catNum: `${releaseData?.Release?.Release_CatNumber}`,
+    artwork: `${releaseData?.Release?.Release_Artwork}`,
+    upc_ean: `${releaseData?.Release?.Release_UPC}`,
   })
+
+  //console.log('show parental=>',editInput.upc_ean);
+
+
 
   // FORM VALIDATION
   const [errors, setErrors] = useState({});
-  
+
 
   const validatedForm = () => {
     //console.log('validation Button Clicked')
     let isValid = true;
-    if(!editInput.displayArtist){
-      handleError('Please Enter Display Artist','displayArtist')
+    if (!editInput.displayArtist) {
+      handleError('Please Enter Display Artist', 'displayArtist')
       isValid = false;
     }
-    if(!editInput.remixer){
-      handleError('Please Enter Remixer','remixer')
+    if (!editInput.remixer) {
+      handleError('Please Enter Remixer', 'remixer')
       isValid = false;
     }
-    if(!editInput.orchestra){
-      handleError('Please Enter Orchestra','orchestra')
+    if (!editInput.orchestra) {
+      handleError('Please Enter Orchestra', 'orchestra')
       isValid = false;
     }
-    if(!editInput.actor){
-      handleError('Please Enter Actor','actor')
+    if (!editInput.actor) {
+      handleError('Please Enter Actor', 'actor')
       isValid = false;
     }
-    if(!editInput.lyricist){
-      handleError('Please Enter Lyricist','lyricist')
+    if (!editInput.lyricist) {
+      handleError('Please Enter Lyricist', 'lyricist')
       isValid = false;
     }
-    if(!editInput.catnum){
-      handleError('Please Enter Catnum','catnum')
+    if (!editInput.catNum) {
+      handleError('Please Enter Catnum', 'catnum')
       isValid = false;
     }
-    if(!editInput.composer){
-      handleError('Please Enter Composer','composer')
+    if (!editInput.composer) {
+      handleError('Please Enter Composer', 'composer')
       isValid = false;
     }
-    if(!editInput.arranger){
-      handleError('Please Enter Arranger','arranger')
+    if (!editInput.arranger) {
+      handleError('Please Enter Arranger', 'arranger')
       isValid = false;
     }
-    if(!editInput.conductor){
-      handleError('Please Enter Conductor','conductor')
+    if (!editInput.conductor) {
+      handleError('Please Enter Conductor', 'conductor')
       isValid = false;
     }
-    if(!editInput.copyright){
-      handleError('Please Enter Copyright','copyright')
+    if (!editInput.copyright) {
+      handleError('Please Enter Copyright', 'copyright')
       isValid = false;
     }
-    if(!editInput.featureArtist){
-      handleError('Please Enter FeatureArtist','featureArtist')
+    if (!editInput.featureArtist) {
+      handleError('Please Enter FeatureArtist', 'featureArtist')
       isValid = false;
     }
-    if(!editInput.releasetitle){
-      handleError('Please Enter Releasetitle','releasetitle')
+    if (!editInput.releasetitle) {
+      handleError('Please Enter Releasetitle', 'releasetitle')
       isValid = false;
     }
-    if(!editInput.releasedes){
-      handleError('Please Enter Release Description','releasedes')
+    if (!editInput.releasedes) {
+      handleError('Please Enter Release Description', 'releasedes')
       isValid = false;
     }
-    if(isValid){
+    if (!editInput.upc_ean) {
+      handleError('Please Enter Release UPC/EAN', 'upc_ean')
+      isValid = false;
+    }
+    if (isValid) {
       navigation.navigate('audioTracks')
       //console.log(editInput)
     }
@@ -542,7 +581,7 @@ const ReleaseForm = ({ route, navigation }) => {
           error={errors.displayArtist}
           onFocus={() => handleError(null, 'displayArtist')}
           onChangeText={text => handleOnChange(text, 'displayArtist')}
-          //onChangeText={text => handleOnChange(text)}
+        //onChangeText={text => handleOnChange(text)}
         />
 
         {/* Remixer */}
@@ -669,7 +708,7 @@ const ReleaseForm = ({ route, navigation }) => {
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             data={newMainGenre}
             //defaultOption={}
-            defaultOption={{ key: mainGener, value: mainGener }}
+            defaultOption={{ key: editInput.mainGener, value: editInput.mainGener }}
             //placeholder="Select Maingenre"
             //onSelect={() => alert(selected)}
             //search={false}
@@ -709,7 +748,7 @@ const ReleaseForm = ({ route, navigation }) => {
               //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
               data={newpriceTiers}
               //defaultOption={}
-              defaultOption={{ "key": priceTiers, "value": priceTiers }}
+              defaultOption={{ key: editInput.priceTiers, value: editInput.priceTiers }}
               //placeholder="Select Maingenre"
               onSelect={() => console.log(selected)}
 
@@ -919,7 +958,18 @@ const ReleaseForm = ({ route, navigation }) => {
             </TouchableOpacity>
             {/* {chooseFile === null ? <Text>No file choose</Text> : <Text>{filePath.fileName}</Text>} */}
             <Text style={{ marginRight: 60 }}>
-              {filePath.fileName == null ? <Text>No file Chosen</Text> : filePath.fileName}
+              {
+                filePath.fileName == null
+                  ? (
+                    <Text
+                      //ellipsizeMode='tail'
+                      //numberOfLines={1}
+                    >
+                      {editInput.artwork.length > 25 ? `${editInput.artwork.substring(0, 25)}...` : editInput.artwork}
+                    </Text>
+                  )
+                  : filePath.fileName
+              }
             </Text>
           </View>
         </View>
@@ -927,10 +977,10 @@ const ReleaseForm = ({ route, navigation }) => {
         {/* Cat number */}
 
         <ReleaseInput
-          value={editInput.catnum}
-          onFocus={() => handleError(null, 'catnum')}
-          error={errors.catnum}
-          onChangeText={text => handleOnChange(text, 'catnum')}
+          value={editInput.catNum}
+          onFocus={() => handleError(null, 'catNum')}
+          error={errors.catNum}
+          onChangeText={text => handleOnChange(text, 'catNum')}
           text='Cat Number:'
         />
 
@@ -944,7 +994,7 @@ const ReleaseForm = ({ route, navigation }) => {
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             data={newSubGenre}
             maxHeight={400}
-            defaultOption={{ "key": subGener, "value": subGener }}
+            defaultOption={{ key: editInput.subGener, value: editInput.subGener }}
             //search={false}
             //placeholder="Select subgenre"
             //onSelect={() => console.log(selected)}
@@ -973,7 +1023,13 @@ const ReleaseForm = ({ route, navigation }) => {
         </View>
 
         {onClickYes && <View>
-          <ReleaseInput text='UPC/EAN:' />
+          <ReleaseInput text='UPC/EAN:'
+            value={editInput.upc_ean}
+            //error='this is the errror'
+            error={errors.upc_ean}
+            onFocus={() => handleError(null, 'upc_ean')}
+            onChangeText={text => handleOnChange(text, 'upc_ean')}
+          />
 
         </View>}
 
@@ -1050,6 +1106,7 @@ const ReleaseForm = ({ route, navigation }) => {
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             data={data}
             //search={false}
+            defaultOption={{ key: editInput.ParentalWarning, value: editInput.ParentalWarning }}
             placeholder="Select"
             onSelect={() => console.log(selected)}
             dropdownStyles={{
