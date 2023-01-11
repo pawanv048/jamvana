@@ -183,8 +183,8 @@ const ReleaseForm = ({ route, navigation }) => {
           }
           // console.log('base64 -> ', response.base64);
           // console.log('uri -> ', response.uri);
-            // console.log('width -> ', response.width);
-            // console.log('height -> ', response.height);
+          // console.log('width -> ', response.width);
+          // console.log('height -> ', response.height);
           // console.log('fileSize -> ', response.fileSize);
           // console.log('type -> ', response.type);
           // console.log('fileName -> ', response.fileName);
@@ -194,18 +194,16 @@ const ReleaseForm = ({ route, navigation }) => {
           // const desiredWidth = '3000px';
           // const desiredHeight = '3000px';
 
-          
-          // if (response.width === options.maxWidth && response.height === options.maxHeight) {
-          //   // image has the correct dimensions, proceed with processing the image
-          //   setFilePath(response.assets[0]);
+          if (response.assets[0].width >= options.maxWidth && response.assets[0].height >= options.maxHeight) {
+            // image has the correct dimensions, proceed with processing the image
+            setFilePath(response.assets[0]);
             
-          // } else {
-          //   // image does not have the correct dimensions, display an error message or prompt the user to select a different image
-          //   alert("Image dimensions must be 3000*3000. Please select a different image.");
-          // }
-
-          setFilePath(response.assets[0]);
-          console.log('printresponce=>', response.assets[0]);
+          } else {
+            // image does not have the correct dimensions, display an error message or prompt the user to select a different image
+            alert("Size of the file should not be less than 3000*3000. Please select a different image.");
+          }
+          //setFilePath(response.assets[0]);
+          // console.log('printresponce=>', response.assets[0]);
         });
       } catch (error) {
         console.log(error)
@@ -344,30 +342,13 @@ const ReleaseForm = ({ route, navigation }) => {
     if (primaryArtist.length !== 0) {
       var artistNames = primaryArtist;
       var artistList = artistNames.split(',');
-      console.log('atList', artistList);
-      //atList ["LeRome Swiss", "MadRay", "SAKRA."]
-      // let data12 = [
-      //   ...selectedArtistList,
-      //   ...artistList.map(element => ({ id: element, item: element })),
-      // ];
-
-      // let data12 = [
-      //   ...new Set([...selectedArtistList, ...artistList.map(element => ({ id: element, item: element }))])
-      // ];
-
       let data12 = [
         ...selectedArtistList,
         ...artistList.map(element => ({ id: element, item: element }))
       ];
-
       data12 = data12.filter((item, index) => {
         return data12.findIndex(i => i.id === item.id && i.item === item.item) === index;
       });
-
-      //let uniqueData = [...new Set(data12)];
-      //data12 = data12.filter((item, index) => data12.indexOf(item) === index);
-      console.log('dummy Data', data12);
-      //console.log('uniqueData Data', uniqueData);
       setDummyData([...data12, ...prdata.map(items => ({ id: items.Id, item: items.ArtistName }))
       ]);
       setSelectedArtistList(data12);
@@ -1120,8 +1101,8 @@ const ReleaseForm = ({ route, navigation }) => {
           onPress={validatedForm}
           //onPress={() => navigation.navigate('audioTracks')}
           label='Next'
-          contentContainerStyle={styles.nextBtn}
-          labelStyle={styles.nextTxt}
+          // contentContainerStyle={styles.nextBtn}
+          // labelStyle={styles.nextTxt}
         />
       </ScrollView>
 
@@ -1337,21 +1318,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 15,
     fontWeight: '600'
-  },
-  nextBtn: {
-    backgroundColor: COLORS.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 15,
-    marginHorizontal: SIZES.padding * 1.5,
-    marginTop: SIZES.padding,
-    borderRadius: 7,
-    marginBottom: SIZES.padding
-  },
-  nextTxt: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold'
   },
   container: {
     position: 'absolute',

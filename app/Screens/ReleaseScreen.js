@@ -69,6 +69,7 @@ const ReleaseScreen = ({ navigation }) => {
         <Text>{Strings.t10} {data[0]?.Release?.Release_SubGenre}</Text>
         <Text>{Strings.t11} {moment(new Date(data[0]?.Release?.Date)).format('DD-MM-YYYY')}</Text>
         <Text>{Strings.t12} {data[0]?.Release?.Release_ReleaseType}</Text>
+        <Text>Featured Artist: {data[0]?.Release?.Release_FeaturedArtist}</Text>
         <Text>{Strings.t13} {data[0]?.Release?.Composer}</Text>
         <Text>{Strings.t14} {data[0]?.Release?.Orchestra}</Text>
         <Text>Price Tiers: {data[0]?.Release?.Price_Tiers}</Text>

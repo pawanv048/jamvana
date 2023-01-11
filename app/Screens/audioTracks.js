@@ -14,14 +14,14 @@ import {
 
 } from 'react-native';
 
-import AudioTrackInput from '../Custom/AudioTrackInput';
+
 import icons from '../Constants/icons';
-import {RadioButton} from '../Custom/CustomComponent';
+import { RadioButton } from '../Custom/CustomComponent';
 import * as Strings from '../Constants/strings';
 import CheckBox from '@react-native-community/checkbox';
 import SelectList from 'react-native-dropdown-select-list';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CustomBar } from '../Custom/CustomComponent';
+import { ReleaseInput, DropdownPicker, TextButton } from '../Custom/CustomComponent';
 
 
 // import Sound Component
@@ -36,8 +36,9 @@ const AudioTracks = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
 
   const [loading, setLoading] = useState(false);
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [selected, setSelected] = useState('');
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const [explicittoggleCheckBox, setExplicittoggleCheckBox] = useState(false);
   // const [progress, setProgress] = useState(0)
   const [isPlayIndex, setIsPlayIndex] = useState('');
 
@@ -52,9 +53,6 @@ const AudioTracks = ({ navigation }) => {
     currentTime: 0,
     endTime: 1
   });
-
-  //const [isPlaying, setShowPause] = useState(false)
-  //const playBackState = usePlaybackState();
 
   useEffect(() => {
     getTodosFromUserDevice();
@@ -106,13 +104,19 @@ const AudioTracks = ({ navigation }) => {
 
   const ListItem = ({ todo }) => {
     return (
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{
+        flexDirection: 'row',
+        marginHorizontal: SIZES.padding * 2,
+        //paddingTop: 10,
+
+      }}>
         <View style={{
-          width: '80%',
+          width: '75%',
           height: 50,
           backgroundColor: '#fff',
           borderRadius: 5,
-          marginVertical: SIZES.padding * 0.3,
+          //margin: SIZES.padding,
+          marginTop: 5,
           justifyContent: 'center',
           //alignItems: 'center'
           paddingLeft: SIZES.padding
@@ -141,7 +145,7 @@ const AudioTracks = ({ navigation }) => {
           )}
 
           <TouchableOpacity
-            style={[styles.remixerInputBtn, { marginHorizontal: 10 }]}
+            style={[styles.remixerInputBtn, { marginHorizontal: 15 }]}
             onPress={() => deleteRemixer(todo.id)}>
             <Text style={styles.remixerTxt}>-</Text>
           </TouchableOpacity>
@@ -486,7 +490,7 @@ const AudioTracks = ({ navigation }) => {
                       />
                     </TouchableOpacity>
                   )}
-                 
+
                 </View>
 
               </View>
@@ -557,14 +561,43 @@ const AudioTracks = ({ navigation }) => {
             </View>
             <Separator />
             <View>
+
+
               {/* Disc */}
 
-              <AudioTrackInput
-                text="Disc*:"
-              //onChangeText={(text) =>}
+              <View>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    color: COLORS.white,
+                    marginVertical: 7,
+                    marginLeft: SIZES.padding,
+                    marginTop: 20
+                  }}>Disc*:</Text>
+                <View
+                  style={{
+                    backgroundColor: COLORS.white,
+                    padding: SIZES.padding * 1.5,
+                    marginHorizontal: SIZES.padding2,
+                    borderRadius: 5
+                  }}>
+                  <Text>1</Text>
+                </View>
+              </View>
+
+
+              {/* Track */}
+              <ReleaseInput
+                text='Track#*:'
+                value={'1'}
+                labelContainer={{
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
               />
 
-              {/* Artist */}
+              {/* Artist- Need multiple selection box */}
 
               <View>
                 <Text style={styles.artistTxt}>Artist*:</Text>
@@ -583,14 +616,254 @@ const AudioTracks = ({ navigation }) => {
               </View>
 
               {/* Feature Artist */}
-              <AudioTrackInput text="Feature Artist*:" />
+              <ReleaseInput
+                text='Feature Artist*:'
+                labelContainer={{
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+              />
+              {/* Track */}
+
+              <ReleaseInput
+                text='Display Artist:'
+                labelContainer={{
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+              />
+
+              <ReleaseInput
+                text='Title*:'
+                labelContainer={{
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+                value={'title name'}
+              />
 
               {/* Mix Version */}
-              <AudioTrackInput text="Mix Version:" />
-              <AudioTrackInput text="Arranger:" />
-              <AudioTrackInput text="Conductor:" />
-              <AudioTrackInput text="Sub Gene:" />
-              <AudioTrackInput text="Contributors:" />
+              <ReleaseInput
+                text='Mix Version:'
+                labelContainer={{
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+              />
+
+              {/* Choose Remixer */}
+
+              <View>
+                <Text style={styles.artistTxt}>Choose Remixer:</Text>
+                <SelectList
+                  setSelected={setSelected}
+                  boxStyles={styles.artistDropDown}
+                  data={data}
+                  onSelect={() => alert(selected)}
+                  dropdownStyles={{
+                    backgroundColor: 'white',
+                    marginHorizontal: SIZES.padding * 2,
+                  }}
+                />
+              </View>
+
+
+              {/* Enter Remixer */}
+
+              {/* <Text
+                  style={{
+                    color: COLORS.white,
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    marginVertical: SIZES.padding * 0.8
+                  }}>
+                  OR Enter Remixer(s):
+                </Text> */}
+              {todos.map((item, index) => (
+                <ListItem key={index} todo={item} />
+              ))}
+
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  //backgroundColor: 'red',
+                  marginVertical: SIZES.padding
+                }}>
+
+                <ReleaseInput
+                  text='OR Enter Remixer(s):'
+                  onChangeText={text => setTextInput(text)}
+                  ContainerStyle={{ width: SIZES.width / 1.4 }}
+                  labelContainer={{
+                    color: 'white',
+                    fontWeight: 'bold'
+                  }}
+                />
+                <TouchableOpacity
+                  //style={[styles.remixerInputBtn, { marginHorizontal: 10,  }]}
+                  style={{
+                    backgroundColor: COLORS.primary,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingHorizontal: 20,
+                    paddingVertical: 8,
+                    position: 'absolute',
+                    right: 10,
+                    bottom: 5,
+                    borderRadius: 5,
+
+                  }}
+                  onPress={addRemixer}>
+                  <Text style={styles.remixerTxt}>+</Text>
+                </TouchableOpacity>
+                {/* <View style={styles.inputContainer}>
+                    <TextInput
+                      style={styles.remixInput}
+                      placeholder="select remixer"
+                      value={textInput}
+                      onChangeText={text => setTextInput(text)}
+                    />
+                  </View> */}
+                {/* <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <TouchableOpacity
+                      style={[styles.remixerInputBtn, { marginHorizontal: 10 }]}
+                      onPress={addRemixer}>
+                      <Text style={styles.remixerTxt}>+</Text>
+                    </TouchableOpacity>
+                  </View> */}
+              </View>
+
+
+
+              {/* Orchestra */}
+              <ReleaseInput
+                text='Orchestra:'
+                labelContainer={{
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+              />
+
+              {/* Actor */}
+              <ReleaseInput
+                text='Actor:'
+                labelContainer={{
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+              />
+
+              {/* Arranger */}
+              <ReleaseInput
+                text='Arranger:'
+                labelContainer={{
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+              />
+
+
+              {/* Conductor */}
+              <ReleaseInput
+                text='Conductor:'
+                labelContainer={{
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+              />
+
+              {/* Composer */}
+              <View>
+                <ReleaseInput
+                  text='Composer:'
+                  placeholder='First Name'
+                  labelContainer={{
+                    color: 'white',
+                    fontWeight: 'bold'
+                  }}
+                />
+                <ReleaseInput placeholder='Last Name' />
+              </View>
+
+              {/* Lyricist */}
+              <View>
+                <ReleaseInput
+                  text='Lyricist:'
+                  placeholder='First Name'
+                  labelContainer={{
+                    color: 'white',
+                    fontWeight: 'bold'
+                  }}
+                />
+                <ReleaseInput placeholder='Last Name' />
+              </View>
+
+
+              {/* Main Genre: */}
+              <DropdownPicker
+                label="Main Genre:"
+                data={data}
+                setSelected={setSelected}
+              />
+
+              {/* Sub Gene */}
+              <DropdownPicker
+                label="Sub Genre:"
+                data={data}
+                setSelected={setSelected}
+              />
+
+
+              {/* Publisher */}
+              <ReleaseInput
+                text='Publisher:'
+                labelContainer={{
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+              />
+
+              {/* Contributors */}
+              <ReleaseInput
+                text='Contributors:'
+                labelContainer={{
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+              />
+
+              {/* ISRC */}
+              <View style={styles.irscView}>
+                <Text style={{
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  fontSize: 20
+                }}>{Strings.isrc}</Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginVertical: SIZES.padding,
+                  }}>
+                  {choose.map(item => (
+                    <RadioButton
+                      onPress={() => onRadioBtnPress(item)}
+                      selected={item.selected}
+                      key={item.id}>
+                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>{item.name}</Text>
+                    </RadioButton>
+                  ))}
+                </View>
+              </View>
+
+
+
 
               {/* Album Only */}
 
@@ -646,114 +919,37 @@ const AudioTracks = ({ navigation }) => {
 
               {/* Price Ties */}
 
+              <DropdownPicker
+                label='Price Ties:(for iTunes only)'
+                setSelected={setSelected}
+                data={data}
+              />
+
+
+
+
               <View>
-                <AudioTrackInput
-                  text="Price Ties:(for iTunes only)"
-                  placeholder="Select price Tier"
-                />
                 <Text
                   style={{
-                    marginVertical: 9,
-                    fontSize: 12,
-                    fontWeight: '800',
+                    marginTop: SIZES.padding * 2,
+                    fontSize: 15,
+                    fontWeight: 'bold',
                     color: COLORS.white,
                     marginLeft: SIZES.padding2,
                   }}>
                   {Strings.audiofile}
                 </Text>
-                <TouchableOpacity style={[styles.addNewBtn, { marginHorizontal: SIZES.padding * 1.5 }]}>
-                  <Text style={styles.saveTxt}>Select Tracks</Text>
-                </TouchableOpacity>
+
+                <TextButton
+                  onPress={() => console.log('upload tacks')}
+                  label='Select Tracks'
+                />
               </View>
 
-              {/* Track */}
 
-              <AudioTrackInput text="Track#*:" />
 
-              <AudioTrackInput text="Display Artist:" />
 
-              <AudioTrackInput text="Title*:" />
 
-              {/* Enter Remixer */}
-              <View
-                style={{
-                  marginHorizontal: SIZES.padding,
-                }}>
-                <Text
-                  style={{
-                    color: COLORS.white,
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                    marginVertical: SIZES.padding * 0.2
-                  }}>
-                  OR Enter Remixer(s):
-                </Text>
-
-                {todos.map((item, index) => (
-                  <ListItem key={index} todo={item} />
-                ))}
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginVertical: SIZES.padding * 0.3
-                  }}>
-                  <View style={styles.inputContainer}>
-                    <TextInput
-                      style={styles.remixInput}
-                      placeholder="select remixer"
-                      value={textInput}
-                      onChangeText={text => setTextInput(text)}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <TouchableOpacity
-                      style={[styles.remixerInputBtn, { marginHorizontal: 10 }]}
-                      onPress={addRemixer}>
-                      <Text style={styles.remixerTxt}>+</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-
-              {/* Orchestra */}
-              <AudioTrackInput text="Orchestra:" />
-
-              {/* Actor */}
-              <AudioTrackInput text="Actor:" />
-
-              {/* Main Genre */}
-              <AudioTrackInput text="Main Genre:" />
-
-              {/* Publisher */}
-              <AudioTrackInput text="Publisher:" />
-              {/* ISRC */}
-              <View style={styles.irscView}>
-                <Text style={{
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  fontSize: 20
-                }}>{Strings.isrc}</Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginVertical: SIZES.padding,
-                  }}>
-                  {choose.map(item => (
-                    <RadioButton
-                      onPress={() => onRadioBtnPress(item)}
-                      selected={item.selected}
-                      key={item.id}>
-                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>{item.name}</Text>
-                    </RadioButton>
-                  ))}
-                </View>
-              </View>
 
               <View
                 style={{
@@ -774,15 +970,21 @@ const AudioTracks = ({ navigation }) => {
                   onCheckColor="#4C19AE"
                   onTintColor="#4C19AE"
                   //lineWidth={2}
-                  value={toggleCheckBox}
-                  onValueChange={newValue => setToggleCheckBox(newValue)}
+                  value={explicittoggleCheckBox}
+                  onValueChange={newValue => setExplicittoggleCheckBox(newValue)}
                 />
               </View>
 
+
+
               {/* Save */}
-              <TouchableOpacity style={[styles.addNewBtn, { marginTop: 25 }]}>
-                <Text style={styles.saveTxt}>Save</Text>
-              </TouchableOpacity>
+              <TextButton
+                onPress={() => console.log('upload tacks')}
+                label='Save'
+              // contentContainerStyle={styles.nextBtn}
+              // labelStyle={styles.nextTxt}
+              />
+
             </View>
           </ScrollView>
         </View>

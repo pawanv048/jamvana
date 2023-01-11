@@ -1,8 +1,12 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Platform } from 'react-native';
 import React, { useState } from 'react';
 import { COLORS, SIZES } from '../Constants/theme';
+import SelectList from 'react-native-dropdown-select-list';
 import { Controller } from "react-hook-form";
 import Toast from 'react-native-simple-toast';
+
+
+
 
 export const Separator = () => <View style={styles.separator} />
 
@@ -19,6 +23,11 @@ export const TextButton = ({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: COLORS.primary,
+        padding: 15,
+        marginHorizontal: SIZES.padding * 1.5,
+        marginVertical: SIZES.padding,
+        borderRadius: 7,
+
         ...contentContainerStyle                      //pass style on customcomonent
       }}
       disabled={disabled}
@@ -26,7 +35,9 @@ export const TextButton = ({
     >
       <Text
         style={{
-          color: COLORS.secondary,
+          color: COLORS.white,
+          fontSize: 20,
+          fontWeight: 'bold',
           ...labelStyle                               ////pass style on customcomonent
         }}>
         {label}
@@ -34,6 +45,7 @@ export const TextButton = ({
     </TouchableOpacity>
   )
 };
+
 
 // RELEASE FORM INPUT
 
@@ -43,13 +55,15 @@ export const ReleaseInput = props => {
   const {
     text,
     value,
-    onChangeText = () => {},
+    onChangeText = () => { },
     placeholder,
     multiline,
     maxLength,
     numberOfLines,
+    labelContainer,
     title,
-    onFocus = () => {},
+    ContainerStyle,
+    onFocus = () => { },
     error
   } = props
 
@@ -60,8 +74,36 @@ export const ReleaseInput = props => {
           marginHorizontal: SIZES.padding * 1.5,
           marginVertical: SIZES.padding * 0.5
         }}>
-        <Text style={styles.formTxt}>{text}</Text>
-        <View style={styles.input}>
+        <Text
+          style={{
+            marginBottom: 9,
+            fontSize: 16,
+            fontWeight: '600',
+            ...labelContainer
+          }}>{text}</Text>
+        <View
+          style={{
+            width: '100%',
+            height: 50,
+            backgroundColor: '#fff',
+            borderWidth: 0.3,
+            borderColor: 'grey',
+            //marginHorizontal: 20,
+            borderRadius: 5,
+            justifyContent: 'center',
+            paddingLeft: SIZES.padding * 1.6,
+            ...ContainerStyle,
+            ...Platform.select({
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5, 
+            })
+          }}>
           <TextInput
             autoCapitalize='none'
             autoCorrect={false}
@@ -102,16 +144,89 @@ export const ReleaseInput = props => {
 export const RadioButton = ({ onPress, selected, children }) => {
   //console.log('select button',selected)
   return (
-      <View style={styles.radioButtonContainer}>
-          <TouchableOpacity onPress={onPress} style={styles.radioButton}>
-              {selected ? <View style={styles.radioButtonIcon} /> : null}
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onPress}>
-              <Text style={styles.radioButtonText}>{children}</Text>
-          </TouchableOpacity>
-      </View>
+    <View style={styles.radioButtonContainer}>
+      <TouchableOpacity onPress={onPress} style={styles.radioButton}>
+        {selected ? <View style={styles.radioButtonIcon} /> : null}
+      </TouchableOpacity>
+      <TouchableOpacity onPress={onPress}>
+        <Text style={styles.radioButtonText}>{children}</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
+
+
+
+// DropDown box
+
+export const DropdownPicker = ({
+  label,
+  setSelected,
+  data
+}) => {
+  return (
+    <View>
+      <Text
+        style={{
+          marginBottom: 9,
+          fontSize: 16,
+          fontWeight: '800',
+          marginVertical: SIZES.padding,
+          marginLeft: SIZES.padding2,
+          color: COLORS.white,
+        }}>{label}</Text>
+      <SelectList
+        setSelected={setSelected}
+        boxStyles={{
+          backgroundColor: '#fff',
+          marginHorizontal: SIZES.padding2,
+          //marginVertical: SIZES.padding * 0.8,
+          paddingVertical: SIZES.padding * 1.5,
+        }}
+        data={data}
+        onSelect={() => alert(selected)}
+        dropdownStyles={{
+          backgroundColor: 'white',
+          marginHorizontal: SIZES.padding * 2,
+        }}
+      />
+    </View>
+  )
+}
+
+
+
+
+{/* <View>
+  <Text style={styles.artistTxt}>Choose Remixer:</Text>
+  <SelectList
+    setSelected={setSelected}
+    boxStyles={styles.artistDropDown}
+    data={data}
+    onSelect={() => alert(selected)}
+    dropdownStyles={{
+      backgroundColor: 'white',
+      marginHorizontal: SIZES.padding * 2,
+    }}
+  />
+</View> 
+
+ artistDropDown: {
+    backgroundColor: '#fff',
+    marginHorizontal: SIZES.padding2,
+    //marginVertical: SIZES.padding * 0.8,
+    paddingVertical: SIZES.padding * 1.5,
+  },
+  artistTxt: {
+    marginBottom: 9,
+    fontSize: 16,
+    fontWeight: '800',
+    marginVertical: SIZES.padding,
+    marginLeft: SIZES.padding2,
+    color: COLORS.white,
+  },
+
+*/}
 
 
 
@@ -234,6 +349,7 @@ export const RadioButton = ({ onPress, selected, children }) => {
 // }
 
 const styles = StyleSheet.create({
+
   separator: {
     marginHorizontal: SIZES.padding2,
     borderBottomColor: 'grey',
@@ -271,14 +387,15 @@ const styles = StyleSheet.create({
   formTxt: {
     marginBottom: 9,
     fontSize: 16,
-    fontWeight: '600'
+    fontWeight: '600',
+
   },
   radioButtonContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginRight: 45
- },
- radioButton: {
+  },
+  radioButton: {
     height: 20,
     width: 20,
     backgroundColor: "#F8F8F8",
@@ -287,19 +404,19 @@ const styles = StyleSheet.create({
     borderColor: "#E6E6E6",
     alignItems: "center",
     justifyContent: "center"
- },
- radioButtonIcon: {
+  },
+  radioButtonIcon: {
     height: 14,
     width: 14,
     borderRadius: 7,
     backgroundColor: COLORS.primary
- },
- radioButtonText: {
+  },
+  radioButtonText: {
     fontSize: 16,
-    marginLeft: 16  
- }
+    marginLeft: 16
+  }
 })
 
-const CustomComponent = { Separator, TextButton, ReleaseInput, RadioButton };
+const CustomComponent = { Separator, TextButton, ReleaseInput, RadioButton, DropdownPicker };
 
 export default CustomComponent;
