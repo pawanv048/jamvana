@@ -532,7 +532,6 @@ const ReleaseForm = ({ route, navigation }) => {
     setEditInput({ ...editInput, subGener: selected });
   }
 
-
   // Error Messages
   const handleError = (errorMessage, editInput) => {
     setErrors(prevState => ({ ...prevState, [editInput]: errorMessage }));
@@ -987,8 +986,8 @@ const ReleaseForm = ({ route, navigation }) => {
                       ellipsizeMode='middle'
                       numberOfLines={1}
                     >
-                      shhs
-                      {/* {editInput.artwork.length > 20 ? `${editInput.artwork.substring(0, 20)}...` : editInput.artwork} */}
+                      
+                      {editInput.artwork.length > 20 ? `${editInput.artwork.substring(0, 20)}...` : editInput.artwork}
                     </Text>
                   )
                   : filePath.fileName
