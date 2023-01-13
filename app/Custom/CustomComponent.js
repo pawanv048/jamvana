@@ -161,9 +161,12 @@ export const RadioButton = ({ onPress, selected, children }) => {
 
 export const DropdownPicker = ({
   label,
-  setSelected,
-  data
+  data,
+  defaultOption,
+  
 }) => {
+
+  const [selected, setSelected] = useState('')
   return (
     <View>
       <Text
@@ -177,6 +180,7 @@ export const DropdownPicker = ({
         }}>{label}</Text>
       <SelectList
         setSelected={setSelected}
+        defaultOption={defaultOption}
         boxStyles={{
           backgroundColor: '#fff',
           marginHorizontal: SIZES.padding2,
@@ -184,7 +188,7 @@ export const DropdownPicker = ({
           paddingVertical: SIZES.padding * 1.5,
         }}
         data={data}
-        onSelect={() => alert(selected)}
+        //onSelect={() => console.log(selected)}
         dropdownStyles={{
           backgroundColor: 'white',
           marginHorizontal: SIZES.padding * 2,

@@ -22,7 +22,7 @@ import CheckBox from '@react-native-community/checkbox';
 import SelectList from 'react-native-dropdown-select-list';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ReleaseInput, DropdownPicker, TextButton } from '../Custom/CustomComponent';
-
+import { API } from '../apis/API';
 
 // import Sound Component
 import Sound from 'react-native-sound';
@@ -32,8 +32,21 @@ import * as Progress from 'react-native-progress';
 // import VideoPlayer from 'react-native-video-controls';
 
 
-const AudioTracks = ({ navigation }) => {
+//api services
+const baseURL = 'http://84.16.239.66/api/';
+
+
+
+const AudioTracks = ({ navigation, route }) => {
   const { height, width } = useWindowDimensions();
+  //const audioTracksData = route?.params
+  const {formData} = route.params;
+  console.log('formData =>',formData);
+  // console.log('displayData =>',audioTracksData);
+
+
+  const [mainGenreData, setMainGenreData] = useState([])
+  const [subGenerData, setSubGenreData] = useState([])
 
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState('');
@@ -41,6 +54,13 @@ const AudioTracks = ({ navigation }) => {
   const [explicittoggleCheckBox, setExplicittoggleCheckBox] = useState(false);
   // const [progress, setProgress] = useState(0)
   const [isPlayIndex, setIsPlayIndex] = useState('');
+
+  // counting
+  const [count, setCount] = useState(0);
+
+  const handleSubmit = () => {
+    setCount(count + 1);
+  }
 
   //remixer
   const [textInput, setTextInput] = useState('');
@@ -56,6 +76,8 @@ const AudioTracks = ({ navigation }) => {
 
   useEffect(() => {
     getTodosFromUserDevice();
+    getMainGenreData();
+    getSubGenreData();
     //setupPlayer();
   }, []);
 
@@ -80,6 +102,48 @@ const AudioTracks = ({ navigation }) => {
     setchoose(updatedState);
   };
 
+  // Main Genere
+
+  // Get mainGenre data
+  const getMainGenreData = () => {
+    API({
+      url: `${baseURL}/GetmainGenre`,
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        //console.log('main genere data =>',val?.Data);
+        //alert('maingeneredata =>',val?.Data)
+        ///let testlang = 
+        setMainGenreData(val?.Data)
+      },
+      onError: val => console.log('Error:', val)
+    })
+  };
+
+  const getSubGenreData = () => {
+    API({
+      url: `${baseURL}/Getsubgenre`,
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        //console.log('main genere data =>',val?.Data);
+        //alert('maingeneredata =>',val?.Data)
+        ///let testlang = 
+        setSubGenreData(val?.Data)
+      },
+      onError: val => console.log('Error:', val)
+    })
+  };
+
+  const newMainGenre = mainGenreData.map(item => {
+    return { key: item.MainGenre_Id, value: item.MainGenre_Name };
+  });
+  const newSubGenre = subGenerData.map(item => {
+    return {key: item.SubGenre_Id, value: item.SubGenre_Name};
+    //console.log(item);
+  });
+  //console.log(' Genre => ', newSubGenre)
+
   // get remixer from user device.
   const getTodosFromUserDevice = async () => {
     try {
@@ -100,6 +164,8 @@ const AudioTracks = ({ navigation }) => {
   // useEffect(() => {
   //   saveTodoToUserDevice(todos);
   // }, [todos]);
+
+
 
 
   const ListItem = ({ todo }) => {
@@ -534,7 +600,7 @@ const AudioTracks = ({ navigation }) => {
         {renderAudioView()}
       </ScrollView>
       {loading && (
-        <View style={[styles.container, { height, width }]}>
+        <View style={[styles.container, { width, height }]}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: height / 6 }}
@@ -582,7 +648,7 @@ const AudioTracks = ({ navigation }) => {
                     marginHorizontal: SIZES.padding2,
                     borderRadius: 5
                   }}>
-                  <Text>1</Text>
+                  {count == 0 ? <Text>1</Text> : <Text>{count}</Text>}
                 </View>
               </View>
 
@@ -618,6 +684,7 @@ const AudioTracks = ({ navigation }) => {
               {/* Feature Artist */}
               <ReleaseInput
                 text='Feature Artist*:'
+                value={formData.featureArtist}
                 labelContainer={{
                   color: 'white',
                   fontWeight: 'bold'
@@ -627,6 +694,7 @@ const AudioTracks = ({ navigation }) => {
 
               <ReleaseInput
                 text='Display Artist:'
+                value={formData.displayArtist}
                 labelContainer={{
                   color: 'white',
                   fontWeight: 'bold'
@@ -635,11 +703,12 @@ const AudioTracks = ({ navigation }) => {
 
               <ReleaseInput
                 text='Title*:'
+                value={formData.releasetitle}
                 labelContainer={{
                   color: 'white',
                   fontWeight: 'bold'
                 }}
-                value={'title name'}
+                //value={'title name'}
               />
 
               {/* Mix Version */}
@@ -809,15 +878,18 @@ const AudioTracks = ({ navigation }) => {
               {/* Main Genre: */}
               <DropdownPicker
                 label="Main Genre:"
-                data={data}
+                data={newMainGenre}
                 setSelected={setSelected}
+                defaultOption={{ key: formData.mainGener, value: formData.mainGener }}
               />
 
               {/* Sub Gene */}
               <DropdownPicker
                 label="Sub Genre:"
-                data={data}
+                data={newSubGenre}
                 setSelected={setSelected}
+                onSelect
+                defaultOption={{ key: formData.subGener, value: formData.subGener }}
               />
 
 
@@ -861,7 +933,6 @@ const AudioTracks = ({ navigation }) => {
                   ))}
                 </View>
               </View>
-
 
 
 

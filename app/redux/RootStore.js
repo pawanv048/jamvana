@@ -1,14 +1,25 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { configureStore, createAsyncThunk } from '@reduxjs/toolkit'
+import thunk from 'redux-thunk'
 
-const RootStore = () => {
-  return (
-    <View>
-      <Text>RootStore</Text>
-    </View>
-  )
-}
+export const submitFormData = createAsyncThunk('submitFormData', async (formData, thunkAPI) => {
+    // do some async logic here, such as making a network request
+    // ...
+    // when the async logic is finished, return the data
+    return { formData }
+})
 
-export default RootStore
+const store = configureStore({
+    reducer: {
+        form: (state = { formData: {}, submitCount: 0 }, action) => {
+            switch (action.type) {
+                case submitFormData.fulfilled.type: {
+                    state.formData = action.payload.formData
+                    state.submitCount++
+                }
+            }
+        }
+    },
+    middleware: [thunk]
+})
 
-const styles = StyleSheet.create({})
+export default store

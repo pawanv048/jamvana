@@ -12,6 +12,8 @@ import {
 import { COLORS, SIZES } from '../Constants/theme';
 import icons from '../Constants/icons';
 
+
+//****************This module is not in use */
 const fullArrayData = [
   {
     id: 1,

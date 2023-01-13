@@ -14,6 +14,7 @@ import { LogBox } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 // import useDetailsData from '../context/useDetailsData';
 import { API } from '../apis/API';
+import moment from 'moment-timezone';
 import Toast from 'react-native-simple-toast';
 
 import { TextButton, ReleaseInput, RadioButton } from '../Custom/CustomComponent';
@@ -56,7 +57,7 @@ const ReleaseForm = ({ route, navigation }) => {
   const [loadingLabel, setLoadingLabel] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [selected, setSelected] = useState('');
-  //console.log('selected dropdown value=>',selected)
+  // console.log('selected dropdown value=>',selected)
 
 
   const [primaryArtist, setprimaryArtist] = useState(
@@ -71,7 +72,7 @@ const ReleaseForm = ({ route, navigation }) => {
 
   // storing image path
   const [filePath, setFilePath] = useState({});
-    // console.log('FilePath', filePath)
+  // console.log('FilePath', filePath)
 
   // Permission for gallery
   const requestExternalWritePermission = async () => {
@@ -158,10 +159,11 @@ const ReleaseForm = ({ route, navigation }) => {
   const chooseFile = async (type) => {
     let options = {
       mediaType: type,
-      maxWidth: 3000,
-      maxHeight: 3000,
+      maxWidth: SIZES.width / 3.9,
+      maxHeight: SIZES.height / 8.44,
       quality: 1,
     };
+    //console.log('height=>', options.maxHeight);
     let isStoragePermitted = await requestExternalWritePermission();
     if (isStoragePermitted) {
       try {
@@ -193,11 +195,11 @@ const ReleaseForm = ({ route, navigation }) => {
 
           // const desiredWidth = '3000px';
           // const desiredHeight = '3000px';
-
+          //console.log(response.assets[0]);
           if (response.assets[0].width >= options.maxWidth && response.assets[0].height >= options.maxHeight) {
             // image has the correct dimensions, proceed with processing the image
             setFilePath(response.assets[0]);
-            
+
           } else {
             // image does not have the correct dimensions, display an error message or prompt the user to select a different image
             alert("Size of the file should not be less than 3000*3000. Please select a different image.");
@@ -407,6 +409,7 @@ const ReleaseForm = ({ route, navigation }) => {
   const newMainGenre = mainGenreData.map(item => {
     return { key: item.MainGenre_Name, value: item.MainGenre_Name };
   });
+  //console.log('main data =>',newMainGenre);
   const newSubGenre = subGenreData.map(item => {
     return { key: item.Id, value: item.SubGenre_Name };
   });
@@ -423,6 +426,7 @@ const ReleaseForm = ({ route, navigation }) => {
     lyricist: `${releaseData?.Release?.Lyricist || ''}`,
     releasedes: 'Distributed by Jamvana - www.Jamvana.com',
     releasetitle: `${releaseData?.Release?.Release_ReleaseTitle || ''}`,
+    releasedate: `${moment(new Date(releaseData?.Release?.Date)).format('DD-MM-YYYY')}`,
     copyright: `${releaseData?.Release?.Copyrights}`,
     featureArtist: `${releaseData?.Release?.Release_FeaturedArtist || ''}`,
     composer: `${releaseData?.Release?.Composer || ''}`,
@@ -437,9 +441,9 @@ const ReleaseForm = ({ route, navigation }) => {
     upc_ean: `${releaseData?.Release?.Release_UPC}`,
   })
 
-  //console.log('show parental=>',editInput.upc_ean);
-
-
+  //console.log('newdate =>',editInput?.releasedate);
+  //const newDate = editInput?.releasedate
+  //console.log('newDate =>', newDate)
 
   // FORM VALIDATION
   const [errors, setErrors] = useState({});
@@ -505,16 +509,28 @@ const ReleaseForm = ({ route, navigation }) => {
       isValid = false;
     }
     if (isValid) {
-      navigation.navigate('audioTracks')
-      //console.log(editInput)
+      navigation.navigate('audioTracks', { formData: editInput })
+      //navigation.navigate('audioTracks')
+      //console.log('check dropdown=>',editInput)
+      //console.log(handleSelect())
     }
   }
+
+
+  //  console.log('dfgfdg =>',editInput)
 
   //handle user change inputs
   const handleOnChange = (text, editInput) => {
     setEditInput(prevState => ({ ...prevState, [editInput]: text }));
   }
-  //console.log('edited_entries =>',editInput)
+
+  const handleMainGenerSelect = (selected) => {
+    setEditInput({ ...editInput, mainGener: selected });
+  }
+
+  const handleSubGenerSelect = (selected) => {
+    setEditInput({ ...editInput, subGener: selected });
+  }
 
 
   // Error Messages
@@ -684,18 +700,40 @@ const ReleaseForm = ({ route, navigation }) => {
         <View>
           <Text style={[styles.langTxt, { marginLeft: SIZES.padding2 }]}>Main Genre:</Text>
           <SelectList
-            setSelected={setSelected}
+            setSelected={handleMainGenerSelect}
             boxStyles={styles.artistDropDown}
             //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
             data={newMainGenre}
+            save="value"
             //defaultOption={}
             defaultOption={{ key: editInput.mainGener, value: editInput.mainGener }}
             //placeholder="Select Maingenre"
-            //onSelect={() => alert(selected)}
+            //onSelect={handleSelect}
             //search={false}
             dropdownStyles={{
               backgroundColor: COLORS.gray,
               margin: SIZES.padding * 2,
+            }}
+          />
+        </View>
+
+        {/* Sub Genre */}
+
+        <View style={styles.langView}>
+          <Text style={styles.langTxt}>Sub Genre:</Text>
+          <SelectList
+            setSelected={handleSubGenerSelect}
+            boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0 }]}
+            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+            data={newSubGenre}
+            maxHeight={400}
+            defaultOption={{ key: editInput.subGener, value: editInput.subGener }}
+            //search={false}
+            //placeholder="Select subgenre"
+            //onSelect={() => console.log(selected)}
+            dropdownStyles={{
+              backgroundColor: COLORS.gray,
+              marginHorizontal: 0,
             }}
           />
         </View>
@@ -716,6 +754,9 @@ const ReleaseForm = ({ route, navigation }) => {
             </RadioButton>
           ))}
         </View>
+
+
+
 
 
         {/* Price Tiers */}
@@ -937,16 +978,17 @@ const ReleaseForm = ({ route, navigation }) => {
               }}>
               <Text>Choose File </Text>
             </TouchableOpacity>
-            {/* {chooseFile === null ? <Text>No file choose</Text> : <Text>{filePath.fileName}</Text>} */}
+            {/* {filePath.fileName === null ? <Text>No file choose</Text> : <Text>{filePath.fileName}</Text>} */}
             <Text style={{ marginRight: 60 }}>
               {
                 filePath.fileName == null
                   ? (
                     <Text
-                      //ellipsizeMode='tail'
-                      //numberOfLines={1}
+                      ellipsizeMode='middle'
+                      numberOfLines={1}
                     >
-                      {editInput.artwork.length > 25 ? `${editInput.artwork.substring(0, 25)}...` : editInput.artwork}
+                      shhs
+                      {/* {editInput.artwork.length > 20 ? `${editInput.artwork.substring(0, 20)}...` : editInput.artwork} */}
                     </Text>
                   )
                   : filePath.fileName
@@ -965,26 +1007,7 @@ const ReleaseForm = ({ route, navigation }) => {
           text='Cat Number:'
         />
 
-        {/* Sub Genre */}
 
-        <View style={styles.langView}>
-          <Text style={styles.langTxt}>Sub Genre:</Text>
-          <SelectList
-            setSelected={setSelected}
-            boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0 }]}
-            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-            data={newSubGenre}
-            maxHeight={400}
-            defaultOption={{ key: editInput.subGener, value: editInput.subGener }}
-            //search={false}
-            //placeholder="Select subgenre"
-            //onSelect={() => console.log(selected)}
-            dropdownStyles={{
-              backgroundColor: COLORS.gray,
-              marginHorizontal: 0,
-            }}
-          />
-        </View>
 
         {/* Do you Want UPC */}
 
@@ -1049,28 +1072,33 @@ const ReleaseForm = ({ route, navigation }) => {
               modal
               mode='date'
               open={open}
-              date={date}
+              date={editInput.releasedate}
               placeholder='Select date'
               confirmBtnText='Confirm'
               cancelBtnText='Cancel'
-
               format='MM/DD/YYYY'
               customStyles={{
                 dateIcon: {
                   display: 'none'
                 },
                 dateInput: {
-                  height: 50,
+                  height: 100,
                   //marginTop: 10,
                   borderWidth: 0,
                 }
               }}
               onDateChange={(date) => {
-                setDate(date);
+                setEditInput({
+                  ...editInput,
+                  releasedate : date
+                });
               }}
               onConfirm={(date) => {
                 setOpen(false)
-                setDate(date)
+                setEditInput({
+                  ...editInput,
+                  releasedate : date
+                });
               }}
               onCancel={() => {
                 setOpen(false)
@@ -1099,10 +1127,11 @@ const ReleaseForm = ({ route, navigation }) => {
         <TextButton
           //onPress={() => navigation.navigate('testing')}
           onPress={validatedForm}
+          //onPress={showAlert}
           //onPress={() => navigation.navigate('audioTracks')}
           label='Next'
-          // contentContainerStyle={styles.nextBtn}
-          // labelStyle={styles.nextTxt}
+        // contentContainerStyle={styles.nextBtn}
+        // labelStyle={styles.nextTxt}
         />
       </ScrollView>
 

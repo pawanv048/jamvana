@@ -1,14 +1,25 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { useDispatch } from 'react-redux'
+import { submitFormData } from './store'
 
-const Actions = () => {
-  return (
-    <View>
-      <Text>Actions</Text>
-    </View>
-  )
+function Form({ formData }) {
+    const dispatch = useDispatch()
+
+    const handleSubmit = () => {
+        dispatch(submitFormData(formData))
+    }
+
+    return (
+        <View>
+            {/* form inputs */}
+            <Button title="Submit" onPress={handleSubmit} />
+        </View>
+    )
 }
 
-export default Actions
 
-const styles = StyleSheet.create({})
+// import { useSelector } from 'react-redux'
+
+// function NextScreen() {
+//     const submitCount = useSelector(state => state.form.submitCount)
+
+//     return (
