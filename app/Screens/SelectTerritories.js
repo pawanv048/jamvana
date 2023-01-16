@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,42 +9,39 @@ import {
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { COLORS, SIZES } from '../Constants/theme';
+import { API } from '../apis/API';
 
-const country_list = [
-  { id: 1, name: 'India' },
-  { id: 2, name: 'china' },
-  { id: 3, name: 'sri Lanka' },
-  { id: 4, name: 'Australia' },
-  { id: 5, name: 'New York' },
-  { id: 6, name: 'Gabon' },
-  { id: 7, name: 'Gambia' },
-  { id: 8, name: 'Guadeloupe' },
-  { id: 9, name: 'Equatorial Guinea' },
-  { id: 10, name: 'Guatemala' },
-  { id: 11, name: 'Niger' },
-  { id: 12, name: 'Norfolk Island' },
-  { id: 13, name: 'Guadeloupe' },
-  { id: 14, name: 'Equatorial Guinea' },
-  { id: 1, name: 'India' },
-  { id: 2, name: 'china' },
-  { id: 3, name: 'sri Lanka' },
-  { id: 4, name: 'Australia' },
-  { id: 5, name: 'New York' },
-  { id: 6, name: 'Gabon' },
-  { id: 7, name: 'Gambia' },
-  { id: 8, name: 'Guadeloupe' },
-  { id: 9, name: 'Equatorial Guinea' },
-  { id: 10, name: 'Guatemala' },
-  { id: 11, name: 'Niger' },
-  { id: 12, name: 'Norfolk Island' },
-  { id: 13, name: 'Guadeloupe' },
-  { id: 14, name: 'Equatorial Guinea' },
-]
+// http://84.16.239.66/api/Release/GetAllCountry
+
 
 const SelectTerritories = ({ navigation }) => {
 
-  const [countryList, setCountryList] = useState(country_list)
+  const [territoriesList, setTerritoriesList] = useState([])
+  console.log('LIst=>', territoriesList);
+
   const [toggle, setoggle] = useState(true)
+
+
+  const getTerritoriesData = () => {
+    //console.log('calling api')
+    API({
+      url: `http://84.16.239.66/api/Release/GetAllCountry`,
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        setTerritoriesList(val?.Data)
+        //  console.log('Terri data ==>', val?.Data)
+        //setLoading(false)
+      },
+      onError: val => console.log('ERROR:', val),
+    });
+    //setLoading(true);
+  }
+
+  useEffect(() => {
+    getTerritoriesData();
+  }, []);
 
   // Particular country
   function renderItem({ item, index }) {
@@ -65,7 +62,7 @@ const SelectTerritories = ({ navigation }) => {
           onAnimationType='fade'
           animationDuration={0.3}
         />
-        <Text style={styles.countryTxt} onPress={() => setoggle(true)}>{item.name}</Text>
+        <Text style={styles.countryTxt} onPress={() => setoggle(true)}>{item.Country_Name}</Text>
       </View>
     )
   }
@@ -101,18 +98,17 @@ const SelectTerritories = ({ navigation }) => {
   // Country list
   function renderTerritoriesList() {
     return (
-      <>
+      <React.Fragment>
         <FlatList
-          data={countryList}
-          keyExtractor={(item) => `${item.id}`}
+          data={territoriesList}
+          keyExtractor={(item) => `${item.Country_Id}`}
           renderItem={renderItem}
           style={{ paddingLeft: SIZES.padding * 2 }}
           //ListFooterComponent={renderFooter()}
-
           contentContainerStyle={{ paddingBottom: SIZES.padding }}
         />
         {renderFooter()}
-      </>
+      </React.Fragment>
     )
   };
 

@@ -386,7 +386,7 @@ const ReleaseForm = ({ route, navigation }) => {
       url: `http://84.16.239.66/api/Release/GetAllPriceTires?UserId=${userReleaseId}`,
       headers: { 'Content-Type': 'application/json' },
       onSuccess: val => {
-        console.log('price tites=>', val.Data)
+        // console.log('price tites=>', val.Data)
         //setpriceTierData(val.Data)
       },
       onError: val => console.log('Something went wrong:', val)
@@ -443,7 +443,7 @@ const ReleaseForm = ({ route, navigation }) => {
 
   //console.log('newdate =>',editInput?.releasedate);
   //const newDate = editInput?.releasedate
-  //console.log('newDate =>', newDate)
+  //console.log('newDate =>', editInput?.releasedate)
 
   // FORM VALIDATION
   const [errors, setErrors] = useState({});
@@ -1056,7 +1056,7 @@ const ReleaseForm = ({ route, navigation }) => {
           <Text style={styles.langTxt}>Release Date:</Text>
           <View
             style={{
-              // marginVertical: SIZES.padding,
+              //marginVertical: SIZES.padding,
               //paddingLeft: 15,
               borderWidth: 0.4,
               borderColor: 'grey',
@@ -1075,7 +1075,7 @@ const ReleaseForm = ({ route, navigation }) => {
               placeholder='Select date'
               confirmBtnText='Confirm'
               cancelBtnText='Cancel'
-              format='MM/DD/YYYY'
+              format='DD-MM-YYYY'
               customStyles={{
                 dateIcon: {
                   display: 'none'

@@ -163,7 +163,7 @@ export const DropdownPicker = ({
   label,
   data,
   defaultOption,
-  
+  labelContainer
 }) => {
 
   const [selected, setSelected] = useState('')
@@ -177,6 +177,7 @@ export const DropdownPicker = ({
           marginVertical: SIZES.padding,
           marginLeft: SIZES.padding2,
           color: COLORS.white,
+          ...labelContainer
         }}>{label}</Text>
       <SelectList
         setSelected={setSelected}

@@ -41,7 +41,7 @@ const AudioTracks = ({ navigation, route }) => {
   const { height, width } = useWindowDimensions();
   //const audioTracksData = route?.params
   const {formData} = route.params;
-  console.log('formData =>',formData);
+  // console.log('formData =>',formData);
   // console.log('displayData =>',audioTracksData);
 
 
@@ -102,7 +102,42 @@ const AudioTracks = ({ navigation, route }) => {
     setchoose(updatedState);
   };
 
-  // Main Genere
+  
+// Picking audio tracks
+  const pickAudio = async () => {
+    try {
+      const result = await DocumentPicker.pick({
+        type: [DocumentPicker.types.audio],
+      });
+  
+      // Check if the file is a 16-bit wav at 44.1kHz
+      if (result.type !== 'audio/wav' || result.name !== '16bit') {
+        console.log('Invalid file format');
+        return;
+      }
+  
+      // Prepare the form data for the file upload
+      let formData = new FormData();
+      formData.append('audioFile', {
+        uri: result.uri,
+        name: result.name,
+        type: result.type
+      });
+  
+      let response = await RNFetchBlob.fetch('POST', 'https://your-server-url.com/upload', {
+        'Content-Type': 'multipart/form-data',
+      }, formData);
+  
+      let responseJson = await response.json();
+      console.log(responseJson);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log('User cancelled the picker');
+      } else {
+        throw err;
+      }
+    }
+  };
 
   // Get mainGenre data
   const getMainGenreData = () => {
@@ -1012,7 +1047,7 @@ const AudioTracks = ({ navigation, route }) => {
                 </Text>
 
                 <TextButton
-                  onPress={() => console.log('upload tacks')}
+                  onPress={pickAudio}
                   label='Select Tracks'
                 />
               </View>

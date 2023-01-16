@@ -1,9 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SIZES, COLORS } from '../Constants/theme';
 import * as Strings from '../Constants/strings';
 import SelectList from 'react-native-dropdown-select-list';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
+import { API } from '../apis/API';
+import { DropdownPicker } from '../Custom/CustomComponent';
+
+
+{/* Main Genre: */ }
+{/* <DropdownPicker
+label="Main Genre:"
+data={newMainGenre}
+setSelected={setSelected}
+defaultOption={{ key: formData.mainGener, value: formData.mainGener }}
+/> */}
+
+//http://84.16.239.66/api/Release/Exlusiveshop
+
 
 
 const data = [
@@ -15,17 +29,57 @@ const data = [
 const AdditionalOption = ({ navigation }) => {
 
   const [selected, setSelected] = useState('');
+  const [selectExclusiveShopData, setSelectExclusiveShopData] = useState([])
+  const [selectExclusiveForData, setSelectExclusiveForData] = useState([])
+
+  const getExclusiveShopData = () => {
+    API({
+      url: `http://84.16.239.66/api/Release/Exlusiveshop`,
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        //alert('maingeneredata =>',val?.Data)
+        ///let testlang = 
+        // console.log('Exclusiveshopdata => ', val?.Data);
+        setSelectExclusiveShopData(val?.Data)
+      },
+      onError: val => console.log('Error:', val)
+    })
+  };
+
+  const getExclusiveForData = () => {
+    API({
+      url: `http://84.16.239.66/api/Release/ExlusiveshopFor`,
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        //alert('maingeneredata =>',val?.Data)
+        ///let testlang = 
+        // console.log('Exclusiveshopdata => ', val?.Data);
+        setSelectExclusiveForData(val?.Data);
+      },
+      onError: val => console.log('Error:', val)
+    })
+  };
+
+  useEffect(() => {
+    getExclusiveShopData();
+    getExclusiveForData();
+  }, [])
+
+
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View
         style={{
-          margin: SIZES.padding
+          marginLeft: SIZES.padding,
+          marginVertical: SIZES.padding
         }}>
         <Text style={{
           fontSize: 18,
           fontWeight: '400',
-          marginBottom: 24
+          //marginBottom: 24
         }}>
           SET ADDITIONAL OPTIONS
         </Text>
@@ -33,45 +87,32 @@ const AdditionalOption = ({ navigation }) => {
 
       {/* Exclusives */}
 
-      <View style={{
-        flexDirection: 'column',
-        marginHorizontal: SIZES.padding
-      }}>
+      <View>
         <View style={{
           marginBottom: SIZES.padding
         }}>
-          <Text style={styles.exclusivesTxt}>
+          {/* <Text style={styles.exclusivesTxt}>
             {Strings.EOS}
-          </Text>
-          <SelectList
+          </Text> */}
+          <DropdownPicker
+            label="Exclusive on Shop:"
+            labelContainer={{color: COLORS.black}}
+            data={selectExclusiveShopData}
             setSelected={setSelected}
-            boxStyles={styles.exclusiveDropDown}
-            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-            data={data}
-            //placeholder="Select Some Option"
-            onSelect={() => console.log(selected)}
-            dropdownStyles={{
-              backgroundColor: 'white',
-              marginHorizontal: SIZES.padding * 2,
-            }}
+          // defaultOption={{ key: formData.mainGener, value: formData.mainGener }}
           />
         </View>
 
         <View>
-          <Text style={styles.exclusivesTxt}>
+          {/* <Text style={styles.exclusivesTxt}>
             {Strings.EF}
-          </Text>
-          <SelectList
+          </Text> */}
+          <DropdownPicker
+            label="Exclusive for:"
+            data={selectExclusiveForData}
             setSelected={setSelected}
-            boxStyles={styles.exclusiveDropDown}
-            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-            data={data}
-            //placeholder="Select Some Option"
-            onSelect={() => console.log(selected)}
-            dropdownStyles={{
-              backgroundColor: 'white',
-              marginHorizontal: SIZES.padding * 2,
-            }}
+            labelContainer={{color: COLORS.black}}
+          //defaultOption={{ key: formData.mainGener, value: formData.mainGener }}
           />
         </View>
       </View>

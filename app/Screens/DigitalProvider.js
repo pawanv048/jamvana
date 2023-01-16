@@ -1,50 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   FlatList,
   TouchableOpacity,
-  TouchableWithoutFeedback
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { COLORS, SIZES } from '../Constants/theme';
-
-const provider_list = [
-  { id: 1, name: 'Beatport' },
-  { id: 2, name: 'iTunes' },
-  { id: 3, name: 'Spotify' },
-  { id: 4, name: 'Juno' },
-  { id: 5, name: 'Deezer' },
-  { id: 6, name: 'Amazon' },
-  { id: 7, name: '7Digital' },
-  { id: 8, name: 'Aspiro' },
-  { id: 9, name: 'Anghami' },
-  { id: 10, name: 'Beats Music' },
-  { id: 11, name: 'BloomFM' },
-  { id: 12, name: 'Djshop.de' },
-  { id: 13, name: 'eMusic' },
-  { id: 14, name: 'Rdio' },
-  { id: 1, name: 'Beatport' },
-  { id: 2, name: 'iTunes' },
-  { id: 3, name: 'Spotify' },
-  { id: 4, name: 'Juno' },
-  { id: 5, name: 'Deezer' },
-  { id: 6, name: 'Amazon' },
-  { id: 7, name: '7Digital' },
-  { id: 8, name: 'Aspiro' },
-  { id: 9, name: 'Anghami' },
-  { id: 10, name: 'Beats Music' },
-  { id: 11, name: 'BloomFM' },
-  { id: 12, name: 'Djshop.de' },
-  { id: 13, name: 'eMusic' },
-  { id: 14, name: 'Rdio' },
-]
+import { API } from '../apis/API';
 
 const DigitalProvider = ({ navigation }) => {
 
-  const [providerList, setProviderList] = useState(provider_list)
+  const [providerList, setProviderList] = useState([])
   const [toggle, setoggle] = useState(true)
+
+  const getDigitalServiesData = () => {
+    //console.log('calling api')
+    API({
+      url: `http://84.16.239.66/api/Release/getdigitalservices`,
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+
+      onSuccess: val => {
+        setProviderList(val?.Data)
+        //  console.log('Terri data ==>', val?.Data)
+        //setLoading(false)
+      },
+      onError: val => console.log('ERROR:', val),
+    });
+    //setLoading(true);
+  }
+
+  useEffect(() => {
+    getDigitalServiesData();
+  }, []);
 
   // Particular provider
   function renderItem({ item, index }) {
@@ -65,7 +55,7 @@ const DigitalProvider = ({ navigation }) => {
           onAnimationType='fade'
           animationDuration={0.3}
         />
-        <Text style={styles.providerTxt} onPress={() => setoggle(true)}>{item.name}</Text>
+        <Text style={styles.providerTxt} onPress={() => setoggle(true)}>{item.ExclusiveOnShop_Name}</Text>
       </View>
     )
   }
@@ -103,7 +93,7 @@ const DigitalProvider = ({ navigation }) => {
     return (
       <>
         <FlatList data={providerList}
-          keyExtractor={(item) => `${item.id}`}
+          keyExtractor={(item) => `${item.ExclusiveOnShop_Id}`}
           renderItem={renderItem}
           style={{ paddingLeft: SIZES.padding * 2 }}
           //ListFooterComponent={renderFooter()}
