@@ -6,6 +6,7 @@ const cross = require("../../assets/icons/cross.png");
 const check = require("../../assets/icons/check.png");
 const play = require("../../assets/icons/play.png");
 const pause = require("../../assets/icons/pause.png");
+const attach = require("../../assets/icons/attach.png");
 
 
 const audi = require('../../assets/images/mixkit.wav')
@@ -21,5 +22,6 @@ export default {
     check,
     audi,
     play,
-    pause
+    pause,
+    attach
 }

@@ -63,6 +63,7 @@ export const ReleaseInput = props => {
     labelContainer,
     title,
     ContainerStyle,
+    releaseInputMainContainerStyle,
     onFocus = () => { },
     error
   } = props
@@ -72,7 +73,9 @@ export const ReleaseInput = props => {
       <View
         style={{
           marginHorizontal: SIZES.padding * 1.5,
-          marginVertical: SIZES.padding * 0.5
+          marginVertical: SIZES.padding * 0.5,
+          ...releaseInputMainContainerStyle,
+          // backgroundColor: 'red' 
         }}>
         <Text
           style={{
@@ -163,10 +166,11 @@ export const DropdownPicker = ({
   label,
   data,
   defaultOption,
-  labelContainer
+  labelContainer,
+  setSelected = () => {}
 }) => {
 
-  const [selected, setSelected] = useState('')
+  // const [selected, setSelected] = useState('')
   return (
     <View>
       <Text

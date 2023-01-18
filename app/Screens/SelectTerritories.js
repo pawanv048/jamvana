@@ -17,7 +17,7 @@ import { API } from '../apis/API';
 const SelectTerritories = ({ navigation }) => {
 
   const [territoriesList, setTerritoriesList] = useState([])
-  console.log('LIst=>', territoriesList);
+  // console.log('LIst=>', territoriesList);
 
   const [toggle, setoggle] = useState(true)
 
