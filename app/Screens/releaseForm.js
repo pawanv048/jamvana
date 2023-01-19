@@ -509,9 +509,14 @@ const ReleaseForm = ({ route, navigation }) => {
       isValid = false;
     }
     if (isValid) {
-      navigation.navigate('audioTracks', { formData: editInput })
+      navigation.navigate('audioTracks', 
+      { 
+        formData: editInput,
+        userLoginId: userReleaseId 
+    })
+      // userReleaseId
       //navigation.navigate('audioTracks')
-      //console.log('check dropdown=>',editInput)
+      // console.log('artist=>',userData: {userLoginId})
       //console.log(handleSelect())
     }
   }

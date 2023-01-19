@@ -39,69 +39,13 @@ const baseURL = 'http://84.16.239.66/api/';
 
 // Options data must contain 'item' & 'id' keys
 
-const K_OPTIONS = [
-   {
-      item: 'Juventus',
-      id: 'JUVE',
-   },
-   {
-      item: 'Real Madrid',
-      id: 'RM',
-   },
-   {
-      item: 'Barcelona',
-      id: 'BR',
-   },
-   {
-      item: 'PSG',
-      id: 'PSG',
-   },
-   {
-      item: 'FC Bayern Munich',
-      id: 'FBM',
-   },
-   {
-      item: 'Manchester United FC',
-      id: 'MUN',
-   },
-   {
-      item: 'Manchester City FC',
-      id: 'MCI',
-   },
-   {
-      item: 'Everton FC',
-      id: 'EVE',
-   },
-   {
-      item: 'Tottenham Hotspur FC',
-      id: 'TOT',
-   },
-   {
-      item: 'Chelsea FC',
-      id: 'CHE',
-   },
-   {
-      item: 'Liverpool FC',
-      id: 'LIV',
-   },
-   {
-      item: 'Arsenal FC',
-      id: 'ARS',
-   },
-
-   {
-      item: 'Leicester City FC',
-      id: 'LEI',
-   },
-]
-
 
 
 const AudioTracks = ({ navigation, route }) => {
    const { height, width } = useWindowDimensions();
    // const audioTracksData = route?.params
-   const { formData } = route.params;
-   // console.log('formData =>',formData);
+   const { formData, userLoginId } = route.params;
+   // console.log('userLoginId =>', userLoginId);
    // console.log('displayData =>',audioTracksData);
 
 
@@ -121,9 +65,6 @@ const AudioTracks = ({ navigation, route }) => {
 
    // counting
    const [count, setCount] = useState(0);
-
-   //Artist
-   const [selectedTeams, setSelectedTeams] = useState([])
 
    //remixer
    const [textInput, setTextInput] = useState('');
@@ -159,9 +100,6 @@ const AudioTracks = ({ navigation, route }) => {
 
    ];
 
-   function onMultiChange() {
-      return (item) => setSelectedTeams(xorBy(selectedTeams, [item], 'id'))
-   }
 
    //handle change
    const [addNewFormInput, setAddNewFormInput] = useState({
@@ -183,7 +121,8 @@ const AudioTracks = ({ navigation, route }) => {
       contributors: ''
    })
 
-
+   
+   
 
    const handleOnChangeForm = (text, addNewFormInput) => {
       setAddNewFormInput(prevState => ({ ...prevState, [addNewFormInput]: text }));
@@ -196,8 +135,6 @@ const AudioTracks = ({ navigation, route }) => {
    const handleSubGenerSelect = (selected) => {
       setAddNewFormInput({ ...addNewFormInput, subgener: selected });
    }
-
-
 
    const newMainGenre = mainGenreData.map(item => {
       return { key: item.MainGenre_Id, value: item.MainGenre_Name };
@@ -253,6 +190,40 @@ const AudioTracks = ({ navigation, route }) => {
    };
 
 
+   // Artist Data Of Logined user
+
+   // console.log('Id =>', userLoginId);
+   const [artistData, setArtistData] = useState([])
+   const [selectedArtists, setSelectedselectedArtists] = useState(artistData)
+   //console.log('selectedArtists=>',selectedArtists);
+   function onMultiChange() {
+      return (item) => setSelectedselectedArtists(xorBy(selectedArtists, [item], 'id'))
+   }
+   //console.log('artistData=>',artistData);
+
+   const getArtistData = () => {
+      API({
+         url: `http://84.16.239.66/api/GetAllArtistByUserId?UserId=${userLoginId}`,
+         headers: { 'Content-Type': 'application/json' },
+
+         onSuccess: val => {
+            // console.log('Artistdata=>',val?.Data);
+            let newArtistArrayList = val?.Data.map((items) => {
+               return { id: items.Id, item: items.ArtistName }
+            })
+            // console.log('Newartist=>',newArray);
+            //alert('maingeneredata =>',val?.Data)
+            setArtistData(newArtistArrayList)
+         },
+         onError: val => console.log('Error:', val)
+      })
+   };
+
+   useEffect(() => {
+      getArtistData()
+   }, [])
+
+
 
    // get remixer from user device.
    const getTodosFromUserDevice = async () => {
@@ -277,11 +248,11 @@ const AudioTracks = ({ navigation, route }) => {
 
    const ListItem = ({ todo }) => {
       return (
-         <View style={{
+         <View 
+         style={{
             flexDirection: 'row',
             marginHorizontal: SIZES.padding * 2,
             //paddingTop: 10,
-
          }}>
             <View style={{
                width: '75%',
@@ -496,10 +467,10 @@ const AudioTracks = ({ navigation, route }) => {
    // update inputs btn
    const handleUpdateTrack = () => {
       // need for tommarrow
-   //    if (!addNewFormInput.title) {
-   //       alert("Title is required");
-   //       return;
-   //   }
+      //    if (!addNewFormInput.title) {
+      //       alert("Title is required");
+      //       return;
+      //   }
       handleOnChangeForm()
       //console.log('Edit =>', addNewFormInput);
    }
@@ -511,9 +482,37 @@ const AudioTracks = ({ navigation, route }) => {
 
    // save click btn
    const handleSaveTrack = () => {
-      setMultipleFiles([...multipleFiles, { ...addNewFormInput }]);
-      setLoading(false);
-      // console.log('save =>', addNewFormInput);
+      let isValid = true;
+      if (selectedArtists.length === 0) {
+         alert('Please select artist');
+         return;
+      }
+      if (!addNewFormInput.composerfirstname) {
+         alert('Enter Composer First Name')
+         return;
+         // isValid = false;
+      }
+      if (!addNewFormInput.composerlastname) {
+         alert('Enter Composer last Name')
+         return;
+         // isValid = false;
+      }
+      if (!addNewFormInput.lyricistfirstname) {
+         alert('Enter Lyricist First Name')
+         return;
+         // isValid = false;
+      }
+      if (!addNewFormInput.lyricistlastname) {
+         alert('Enter Lyricist Last Name')
+         return;
+         // isValid = false;
+      }
+      if (isValid) {
+         setSelectTrackAudio([]);
+         setLoading(false);
+         setMultipleFiles([...multipleFiles, { ...addNewFormInput }]);
+      }
+        
       handleOnChangenNewForm()
       // Clear the form inputs
       setAddNewFormInput({
@@ -532,21 +531,28 @@ const AudioTracks = ({ navigation, route }) => {
          lyricistfirstname: '',
          lyricistlastname: '',
          publisher: '',
-         contributors: ''
+         contributors: '',
+         selectedArtists: ''
       });
+
+      // console.log('save =>', addNewFormInput);
    }
+
+   // console.log('show form data=>',addNewFormInput);
 
    // const [addNewFormInput, setAddNewFormInput] = useState([])
    // Add new Btn
-   const handleAddNew = (index) => {
+   const handleAddNew = () => {
       // setLabel('Save')
       //setEditingData(multipleFiles[index]);
       //setEditingIndex(index);
-      console.log(index);
+      //console.log(index);
+      setAddNewFormInput((prevState) => {
+         return {...prevState, selectedArtists}
+       })
       setIsEditing(false)
       setIsSaveDisabled(true)
       setLoading(true)
-      
    }
 
    const removeFile = (index) => {
@@ -568,7 +574,6 @@ const AudioTracks = ({ navigation, route }) => {
       // const handleOnChange = (text, editInput) => {
       //   setEditInput(prevState => ({ ...prevState, [editInput]: text }));
       // }
-
 
 
       return (
@@ -611,14 +616,6 @@ const AudioTracks = ({ navigation, route }) => {
                         }}
                      >
                         <Text style={styles.uri}>File Name: {file?.name}</Text>
-
-                        {/* <Text
-                  //key={index.toString()}
-                  style={styles.uri}
-                  numberOfLines={1}
-                  ellipsizeMode={'middle'}>
-                  File Url: {file?.uri}
-                </Text> */}
 
                         <Text style={styles.uri}>File Type: {file?.type}</Text>
                         {/* <Text style={styles.uri}>File size (kb): {file.size}</Text> */}
@@ -933,12 +930,12 @@ const AudioTracks = ({ navigation, route }) => {
 
                      {/* Artist- Need multiple selection box */}
 
-                     <View>
+                     <>
                         <Text style={[styles.artistTxt, { marginBottom: 0, marginVertical: 5 }]}>Artist*:</Text>
                         <SelectBox
                            label=""
-                           options={K_OPTIONS}
-                           selectedValues={selectedTeams}
+                           options={artistData}
+                           selectedValues={selectedArtists}
                            onMultiSelect={onMultiChange()}
                            onTapClose={onMultiChange()}
                            isMulti
@@ -950,6 +947,7 @@ const AudioTracks = ({ navigation, route }) => {
                               width: '93%',
                               borderWidth: 1,
                               marginLeft: SIZES.padding,
+                              marginBottom: SIZES.padding,
                               height: 55,
                               borderRadius: 5,
                               paddingHorizontal: 10,
@@ -965,7 +963,7 @@ const AudioTracks = ({ navigation, route }) => {
                            }}
                            optionContainerStyle={{
                               backgroundColor: '#fff',
-                              width: '94%',
+                              width: '93%',
                               //borderWidth: 1,
                               marginLeft: SIZES.padding,
                            }}
@@ -984,7 +982,7 @@ const AudioTracks = ({ navigation, route }) => {
                            toggleIconColor={COLORS.primary}
                            listEmptyText='NO ARTIST FOUND'
                         />
-                     </View>
+                     </>
 
                      {/* Feature Artist */}
                      <ReleaseInput
