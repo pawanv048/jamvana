@@ -66,7 +66,6 @@ const ReleaseForm = ({ route, navigation }) => {
 
 
   // Release Date
-  const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
 
 
@@ -222,7 +221,7 @@ const ReleaseForm = ({ route, navigation }) => {
   const [onClickYes, setOnClickYes] = useState(false);
   const [choose, setchoose] = useState([
     { id: 1, value: false, name: 'Yes', selected: false },
-    { id: 2, value: false, name: 'No', selected: false },
+    { id: 2, value: false, name: 'No', selected: true },
   ]);
 
   // Parental warning data
@@ -337,11 +336,11 @@ const ReleaseForm = ({ route, navigation }) => {
 
   const [selectedArtistList, setSelectedArtistList] = useState([]);
   const [dummyData, setDummyData] = useState([]);
-  //console.log(dummyData)
   const [prdata, setPrdata] = useState([])
+  // console.log('selectedArtistList', selectedArtistList)
 
   useEffect(() => {
-    if (primaryArtist.length !== 0) {
+    if (primaryArtist.length !== 0) {  
       var artistNames = primaryArtist;
       var artistList = artistNames.split(',');
       let data12 = [
@@ -439,9 +438,43 @@ const ReleaseForm = ({ route, navigation }) => {
     catNum: `${releaseData?.Release?.Release_CatNumber}`,
     artwork: `${releaseData?.Release?.Release_Artwork}`,
     upc_ean: `${releaseData?.Release?.Release_UPC}`,
+    //multiChoosenPrimaryArtist: selectedArtistList
   })
 
-  //console.log('newdate =>',editInput?.releasedate);
+// Coming back to Add New Screen to current screen release date is clear
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {
+  //     setEditInput({
+  //       ...editInput,
+  //       releasedate: ''
+  //     });
+  //   });
+
+  //   return unsubscribe;
+  // }, [navigation]);
+
+  // useEffect(() => {
+  //   const parent = navigation.dangerouslyGetParent();
+  //   const unsubscribe = navigation.addListener('focus', () => {
+  //     if (parent?.routeName !== 'Detail') {
+  //       setEditInput({
+  //         ...editInput,
+  //         releasedate: ''
+  //       });
+  //     } else {
+  //       setEditInput({
+  //         ...editInput,
+  //         releasedate: `${moment(new Date(releaseData?.Release?.Date)).format('DD-MM-YYYY')}`,
+  //       });
+  //     }
+  //   });
+
+  //   return unsubscribe;
+  // }, [navigation, releaseData]);
+
+  
+
+  // console.log('newdate =>',editInput?.priceTiers);
   //const newDate = editInput?.releasedate
   //console.log('newDate =>', editInput?.releasedate)
 
@@ -450,6 +483,53 @@ const ReleaseForm = ({ route, navigation }) => {
 
 
   const validatedForm = () => {
+    let isValid = true;
+    const fields = [
+        { name: 'displayArtist', error: 'Please Enter Display Artist' },
+        { name: 'remixer', error: 'Please Enter Remixer' },
+        { name: 'orchestra', error: 'Please Enter Orchestra' },
+        { name: 'actor', error: 'Please Enter Actor' },
+        { name: 'lyricist', error: 'Please Enter Lyricist' },
+        { name: 'catNum', error: 'Please Enter Catnum' },
+        { name: 'composer', error: 'Please Enter Composer' },
+        { name: 'arranger', error: 'Please Enter Arranger' },
+        { name: 'conductor', error: 'Please Enter Conductor' },
+        { name: 'copyright', error: 'Please Enter Copyright' },
+        { name: 'featureArtist', error: 'Please Enter FeatureArtist' },
+        { name: 'releasetitle', error: 'Please Enter Releasetitle' },
+        { name: 'releasedes', error: 'Please Enter Release Description' },
+        { name: 'upc_ean', error: 'Please Enter Release UPC/EAN' },
+    ];
+
+    if(editInput.releasedate === ''){
+      alert('Please Enter Release Date')
+      return
+    }
+
+    fields.forEach(field => {
+        if (!editInput[field.name]) {
+            handleError(field.error, field.name);
+            isValid = false;
+        }
+    });
+
+    if (isValid) {
+      console.log("input data=>", editInput);
+      navigation.navigate('audioTracks', 
+      { 
+        formData: editInput,
+        userLoginId: userReleaseId,
+        multiChoosenPrimaryArtist: selectedArtistList
+    })
+      // userReleaseId
+      //navigation.navigate('audioTracks')
+      // console.log('artist=>',userData: {userLoginId})
+      //console.log(handleSelect())
+    }
+
+  };
+
+  /* const validatedForm = () => {
     //console.log('validation Button Clicked')
     let isValid = true;
     if (!editInput.displayArtist) {
@@ -508,21 +588,26 @@ const ReleaseForm = ({ route, navigation }) => {
       handleError('Please Enter Release UPC/EAN', 'upc_ean')
       isValid = false;
     }
+    if(editInput.releasedate === ''){
+      alert('Please Enter Release Date')
+      return
+    }
     if (isValid) {
       navigation.navigate('audioTracks', 
       { 
         formData: editInput,
-        userLoginId: userReleaseId 
+        userLoginId: userReleaseId,
+        multiChoosenPrimaryArtist: selectedArtistList
     })
       // userReleaseId
       //navigation.navigate('audioTracks')
       // console.log('artist=>',userData: {userLoginId})
       //console.log(handleSelect())
     }
-  }
+  } */
 
 
-  //  console.log('dfgfdg =>',editInput)
+  //  console.log('Input-Fields =>',editInput)
 
   //handle user change inputs
   const handleOnChange = (text, editInput) => {
@@ -572,7 +657,7 @@ const ReleaseForm = ({ route, navigation }) => {
             }}
           />
 
-        </View >
+        </View>
 
         {/* Display Artists */}
         <ReleaseInput
@@ -761,12 +846,10 @@ const ReleaseForm = ({ route, navigation }) => {
 
 
 
-
-
         {/* Price Tiers */}
 
         <View style={{ marginTop: SIZES.padding }}>
-          <Text style={[styles.langTxt, { marginLeft: SIZES.padding2 }]}>Price Tiers:</Text>
+          <Text style={[styles.langTxt, { marginLeft: SIZES.padding2 }]}>Price Tiers: (for itunes only)</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <SelectList
               setSelected={setSelected}

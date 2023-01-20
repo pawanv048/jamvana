@@ -44,10 +44,9 @@ const baseURL = 'http://84.16.239.66/api/';
 const AudioTracks = ({ navigation, route }) => {
    const { height, width } = useWindowDimensions();
    // const audioTracksData = route?.params
-   const { formData, userLoginId } = route.params;
-   // console.log('userLoginId =>', userLoginId);
-   // console.log('displayData =>',audioTracksData);
-
+   const { formData, userLoginId, multiChoosenPrimaryArtist } = route.params;
+   // console.log('multiChoosenPrimaryArtist =>', multiChoosenPrimaryArtist);
+   // console.log('formData =>',formData);
 
    const [mainGenreData, setMainGenreData] = useState([])
    const [subGenerData, setSubGenreData] = useState([])
@@ -66,7 +65,7 @@ const AudioTracks = ({ navigation, route }) => {
    // counting
    const [count, setCount] = useState(0);
 
-   //remixer
+   // remixer
    const [textInput, setTextInput] = useState('');
    const [todos, setTodos] = useState([]);
 
@@ -100,7 +99,7 @@ const AudioTracks = ({ navigation, route }) => {
 
    ];
 
-
+   //${releaseData?.Release?.Release_PrimaryArtist
    //handle change
    const [addNewFormInput, setAddNewFormInput] = useState({
       featureartist: formData.featureArtist,
@@ -108,6 +107,7 @@ const AudioTracks = ({ navigation, route }) => {
       title: formData.releasetitle,
       maingener: formData.mainGener,
       subgener: formData.subGener,
+      //primartist: formData.
       mixversion: '',
       orchestra: '',
       actor: '',
@@ -119,9 +119,7 @@ const AudioTracks = ({ navigation, route }) => {
       lyricistlastname: '',
       publisher: '',
       contributors: ''
-   })
-
-   
+   });
    
 
    const handleOnChangeForm = (text, addNewFormInput) => {
@@ -136,6 +134,7 @@ const AudioTracks = ({ navigation, route }) => {
       setAddNewFormInput({ ...addNewFormInput, subgener: selected });
    }
 
+   
    const newMainGenre = mainGenreData.map(item => {
       return { key: item.MainGenre_Id, value: item.MainGenre_Name };
       //return item.MainGenre_Name;
@@ -194,10 +193,10 @@ const AudioTracks = ({ navigation, route }) => {
 
    // console.log('Id =>', userLoginId);
    const [artistData, setArtistData] = useState([])
-   const [selectedArtists, setSelectedselectedArtists] = useState(artistData)
+   const [selectedArtists, setSelectedArtists] = useState(artistData)
    //console.log('selectedArtists=>',selectedArtists);
    function onMultiChange() {
-      return (item) => setSelectedselectedArtists(xorBy(selectedArtists, [item], 'id'))
+      return (item) => setSelectedArtists(xorBy(selectedArtists, [item], 'id'))
    }
    //console.log('artistData=>',artistData);
 
@@ -248,12 +247,12 @@ const AudioTracks = ({ navigation, route }) => {
 
    const ListItem = ({ todo }) => {
       return (
-         <View 
-         style={{
-            flexDirection: 'row',
-            marginHorizontal: SIZES.padding * 2,
-            //paddingTop: 10,
-         }}>
+         <View
+            style={{
+               flexDirection: 'row',
+               marginHorizontal: SIZES.padding * 2,
+               //paddingTop: 10,
+            }}>
             <View style={{
                width: '75%',
                height: 50,
@@ -444,15 +443,14 @@ const AudioTracks = ({ navigation, route }) => {
       }
    }, [])
 
+
    const [editingIndex, setEditingIndex] = useState(null);
    const [editingData, setEditingData] = useState({});
-
 
    //  console.log('editingData=>', editingData);
 
    const handleEdit = (index) => {
       // code for handling the editing of the file
-      //handleOnChangeForm(text, addNewFormInput);
 
       setEditingIndex(index);
       // set the current editing data from the selected file
@@ -462,17 +460,28 @@ const AudioTracks = ({ navigation, route }) => {
       //setLabel("Update Track");
       //setIsSaveDisabled(false)
       setLoading(true);
+      setSelectedArtists(multipleFiles[index].artistList || []);
    }
 
-   // update inputs btn
-   const handleUpdateTrack = () => {
-      // need for tommarrow
-      //    if (!addNewFormInput.title) {
-      //       alert("Title is required");
-      //       return;
-      //   }
-      handleOnChangeForm()
-      //console.log('Edit =>', addNewFormInput);
+   // UPDATE TRACK
+   const handleUpdateTrack = (selected) => {
+      
+
+      let isValid = true;
+      if (selectedArtists.length === 0) {
+         alert('Please Select Artist')
+         isValid = false;
+      }
+      if (isValid) {
+         multipleFiles[editingIndex].artistList = selectedArtists;
+         //multipleFiles[editingIndex].artistList = selectedArtists.length > 0 ? selectedArtists : multiChoosenPrimaryArtist;
+         setMultipleFiles([...multipleFiles]);
+         setSelectTrackAudio([]);
+         setLoading(false);
+         setMultipleFiles([...multipleFiles, { ...addNewFormInput }]);
+      }
+    //  handleMainGenerSelect(selected)
+      //console.log(addNewFormInput.maingener);
    }
 
    // form input when Save button click
@@ -512,7 +521,7 @@ const AudioTracks = ({ navigation, route }) => {
          setLoading(false);
          setMultipleFiles([...multipleFiles, { ...addNewFormInput }]);
       }
-        
+
       handleOnChangenNewForm()
       // Clear the form inputs
       setAddNewFormInput({
@@ -543,13 +552,13 @@ const AudioTracks = ({ navigation, route }) => {
    // const [addNewFormInput, setAddNewFormInput] = useState([])
    // Add new Btn
    const handleAddNew = () => {
-      // setLabel('Save')
+      //setLabel('Save');
       //setEditingData(multipleFiles[index]);
       //setEditingIndex(index);
       //console.log(index);
       setAddNewFormInput((prevState) => {
-         return {...prevState, selectedArtists}
-       })
+         return { ...prevState, selectedArtists }
+      })
       setIsEditing(false)
       setIsSaveDisabled(true)
       setLoading(true)
@@ -680,7 +689,6 @@ const AudioTracks = ({ navigation, route }) => {
                               {/* 
                       sometime show error(not working properly)
                       see what thay have accept as a value
-                      // 
                      */}
                               <View style={{ width: '65%' }}>
                                  <Progress.Bar
@@ -806,22 +814,15 @@ const AudioTracks = ({ navigation, route }) => {
 
                            {/* Track Details */}
                            <View style={{ flex: 1 }}>
-                              <View style={{
-                                 flexDirection: 'row',
-                                 justifyContent: 'space-between',
-                                 marginBottom: 10
-                              }}>
-                                 <Text>Track: {index + 1}</Text>
-                                 <Text>Title: {formData.releasetitle}</Text>
+                              <View style={{ flexDirection: 'row' }}>
+                                 <Text style={{ fontWeight: "bold" }}>Track: </Text>
+                                 <Text>{index + 1}</Text>
                               </View>
-
-                              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                 <Text>Genre: {formData.mainGener}</Text>
-                                 <Text>Artist:alex b</Text>
-                              </View>
+                              <Text>Title: {formData.releasetitle}</Text>
+                              <Text>Genre: {addNewFormInput.maingener}</Text>
+                              <Text>Artist: {selectedArtists?.map(artist => artist?.item).join(', ') || multiChoosenPrimaryArtist?.map(artists => artists?.item).join(', ')} </Text>
+                              {/* <Text>Artist: {multipleFiles[editingIndex].artistList?.map(artist => artist?.item).join(', ')} </Text> */}
                            </View>
-
-
                         </View>
                      </View>
                   ))}
