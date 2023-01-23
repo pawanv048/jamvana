@@ -193,6 +193,7 @@ export const DropdownPicker = ({
           paddingVertical: SIZES.padding * 1.5,
         }}
         data={data}
+        save="value"
         //onSelect={() => console.log(selected)}
         dropdownStyles={{
           backgroundColor: 'white',

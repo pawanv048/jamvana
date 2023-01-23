@@ -1,37 +1,31 @@
+
+//LIBRARYS
 import React, { useState, useEffect } from 'react';
-import { COLORS, SIZES } from '../Constants/theme';
+import CheckBox from '@react-native-community/checkbox';
+import VedioPlayer from 'react-native-video';
+import DocumentPicker from 'react-native-document-picker';
+import * as Progress from 'react-native-progress';
+import SelectBox from 'react-native-multi-selectbox';
+import { xorBy } from 'lodash';
 import {
    StyleSheet,
    Text,
    View,
    TouchableOpacity,
-   TextInput,
    useWindowDimensions,
    ScrollView,
    Image,
-   FlatList,
    Alert,
-
 } from 'react-native';
-
-
+//LOCAL FILES
+import { COLORS, SIZES } from '../Constants/theme';
 import icons from '../Constants/icons';
 import { RadioButton } from '../Custom/CustomComponent';
 import * as Strings from '../Constants/strings';
-import CheckBox from '@react-native-community/checkbox';
 import SelectList from 'react-native-dropdown-select-list';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ReleaseInput, DropdownPicker, TextButton } from '../Custom/CustomComponent';
 import { API } from '../apis/API';
-
-// import Sound Component
-import Sound from 'react-native-sound';
-import VedioPlayer from 'react-native-video';
-import DocumentPicker from 'react-native-document-picker';
-import * as Progress from 'react-native-progress';
-import SelectBox from 'react-native-multi-selectbox'
-import { xorBy } from 'lodash'
-// import VideoPlayer from 'react-native-video-controls';
 
 
 //api services
@@ -39,12 +33,11 @@ const baseURL = 'http://84.16.239.66/api/';
 
 // Options data must contain 'item' & 'id' keys
 
-
-
 const AudioTracks = ({ navigation, route }) => {
+   const { formData, userLoginId, multiChoosenPrimaryArtist } = route.params;
+
    const { height, width } = useWindowDimensions();
    // const audioTracksData = route?.params
-   const { formData, userLoginId, multiChoosenPrimaryArtist } = route.params;
    // console.log('multiChoosenPrimaryArtist =>', multiChoosenPrimaryArtist);
    // console.log('formData =>',formData);
 
@@ -99,8 +92,8 @@ const AudioTracks = ({ navigation, route }) => {
 
    ];
 
-   //${releaseData?.Release?.Release_PrimaryArtist
-   //handle change
+
+   //ADD NEW TRACKS INPUTS
    const [addNewFormInput, setAddNewFormInput] = useState({
       featureartist: formData.featureArtist,
       displayartist: formData.displayArtist,
@@ -120,7 +113,9 @@ const AudioTracks = ({ navigation, route }) => {
       publisher: '',
       contributors: ''
    });
-   
+
+   //   console.log('maingenere' , addNewFormInput.maingener)
+
 
    const handleOnChangeForm = (text, addNewFormInput) => {
       setAddNewFormInput(prevState => ({ ...prevState, [addNewFormInput]: text }));
@@ -134,9 +129,9 @@ const AudioTracks = ({ navigation, route }) => {
       setAddNewFormInput({ ...addNewFormInput, subgener: selected });
    }
 
-   
+
    const newMainGenre = mainGenreData.map(item => {
-      return { key: item.MainGenre_Id, value: item.MainGenre_Name };
+      return { key: item.MainGenre_Name, value: item.MainGenre_Name };
       //return item.MainGenre_Name;
    });
    // console.log('update =>',addNewFormInput);
@@ -157,31 +152,26 @@ const AudioTracks = ({ navigation, route }) => {
    };
 
 
-   // Get mainGenre data
+   // MAIN GENRE DROPDOWN DATA
    const getMainGenreData = () => {
       API({
          url: `${baseURL}/GetmainGenre`,
          headers: { 'Content-Type': 'application/json' },
 
          onSuccess: val => {
-            //console.log('main genere data =>',val?.Data);
-            //alert('maingeneredata =>',val?.Data)
-            ///let testlang = 
             setMainGenreData(val?.Data)
          },
          onError: val => console.log('Error:', val)
       })
    };
 
+   // SUB GENRE DROPDOWN DATA
    const getSubGenreData = () => {
       API({
          url: `${baseURL}/Getsubgenre`,
          headers: { 'Content-Type': 'application/json' },
 
          onSuccess: val => {
-            //console.log('main genere data =>',val?.Data);
-            //alert('maingeneredata =>',val?.Data)
-            ///let testlang = 
             setSubGenreData(val?.Data)
          },
          onError: val => console.log('Error:', val)
@@ -189,17 +179,15 @@ const AudioTracks = ({ navigation, route }) => {
    };
 
 
-   // Artist Data Of Logined user
-
-   // console.log('Id =>', userLoginId);
    const [artistData, setArtistData] = useState([])
    const [selectedArtists, setSelectedArtists] = useState(artistData)
    //console.log('selectedArtists=>',selectedArtists);
    function onMultiChange() {
       return (item) => setSelectedArtists(xorBy(selectedArtists, [item], 'id'))
    }
-   //console.log('artistData=>',artistData);
 
+
+   // MULTISELECTION ARTIST LIST DATA
    const getArtistData = () => {
       API({
          url: `http://84.16.239.66/api/GetAllArtistByUserId?UserId=${userLoginId}`,
@@ -219,7 +207,7 @@ const AudioTracks = ({ navigation, route }) => {
    };
 
    useEffect(() => {
-      getArtistData()
+      getArtistData();
    }, [])
 
 
@@ -239,31 +227,27 @@ const AudioTracks = ({ navigation, route }) => {
    //   const AddNewTrack = ({visible = false}) => {
    const Separator = () => <View style={styles.separator} />;
 
-   //  save remixer useffect
-
-   // useEffect(() => {
-   //   saveTodoToUserDevice(todos);
-   // }, [todos]);
-
    const ListItem = ({ todo }) => {
       return (
          <View
             style={{
                flexDirection: 'row',
-               marginHorizontal: SIZES.padding * 2,
-               //paddingTop: 10,
+               marginHorizontal: SIZES.padding * 1.5,
+               marginBottom: SIZES.padding,
+               justifyContent: 'space-between',
             }}>
-            <View style={{
-               width: '75%',
-               height: 50,
-               backgroundColor: '#fff',
-               borderRadius: 5,
-               //margin: SIZES.padding,
-               marginTop: 5,
-               justifyContent: 'center',
-               //alignItems: 'center'
-               paddingLeft: SIZES.padding
-            }}>
+            <View
+               style={{
+                  width: SIZES.width / 1.4,
+                  height: 50,
+                  backgroundColor: '#fff',
+                  borderRadius: 5,
+                  //margin: SIZES.padding,
+                  // marginTop: 5,
+                  justifyContent: 'center',
+                  //alignItems: 'center'
+                  paddingLeft: SIZES.padding,
+               }}>
                <Text
                   style={{
                      fontWeight: 'bold',
@@ -288,7 +272,7 @@ const AudioTracks = ({ navigation, route }) => {
                )}
 
                <TouchableOpacity
-                  style={[styles.remixerInputBtn, { marginHorizontal: 15 }]}
+                  style={[styles.remixerInputBtn]}
                   onPress={() => deleteRemixer(todo.id)}>
                   <Text style={styles.remixerTxt}>-</Text>
                </TouchableOpacity>
@@ -417,7 +401,7 @@ const AudioTracks = ({ navigation, route }) => {
 
    //Audio file Multiple selection handler
    const [multipleFiles, setMultipleFiles] = useState([]);
-
+   // console.log('multipleFiles=>', multipleFiles);
    const selectMultipleFiles = React.useCallback(async () => {
       try {
          const results = await DocumentPicker.pick({
@@ -426,7 +410,8 @@ const AudioTracks = ({ navigation, route }) => {
             transitionStyle: 'coverVertical'
          });
          for (const res of results) {
-            setMultipleFiles(currentFiles => [...currentFiles, res])
+            //setMultipleFiles(prevState => [...prevState, res])
+            setMultipleFiles(currentFiles => [...currentFiles, { ...res, title: formData.releasetitle, maingener: formData.mainGener }])
          }
          //Setting the state to show the multiple file attributes
          //setMultipleFiles(results)
@@ -445,44 +430,50 @@ const AudioTracks = ({ navigation, route }) => {
 
 
    const [editingIndex, setEditingIndex] = useState(null);
+   //console.log(editingIndex);
    const [editingData, setEditingData] = useState({});
 
    //  console.log('editingData=>', editingData);
 
-   const handleEdit = (index) => {
+   const handleEdit = index => {
       // code for handling the editing of the file
-
       setEditingIndex(index);
       // set the current editing data from the selected file
       setEditingData(multipleFiles[index]);
       // set the loading state to true
-      setIsEditing(true)
+      setIsEditing(true);
+
       //setLabel("Update Track");
       //setIsSaveDisabled(false)
       setLoading(true);
       setSelectedArtists(multipleFiles[index].artistList || []);
-   }
+      // setTimeout(() => {
+      //    console.log('gvgvhvg==>>',selectedArtists);
+      // }, 2000);
+   };
 
-   // UPDATE TRACK
-   const handleUpdateTrack = (selected) => {
-      
-
+   // UPDATE TRACK ON EDIT
+   const handleUpdateTrack = selected => {
       let isValid = true;
       if (selectedArtists.length === 0) {
-         alert('Please Select Artist')
+         alert('Please Select Artist');
          isValid = false;
       }
       if (isValid) {
-         multipleFiles[editingIndex].artistList = selectedArtists;
-         //multipleFiles[editingIndex].artistList = selectedArtists.length > 0 ? selectedArtists : multiChoosenPrimaryArtist;
-         setMultipleFiles([...multipleFiles]);
+         //console.log(addNewFormInput)
+         let eList = multipleFiles;
+         eList[editingIndex].artistList = selectedArtists;
+         eList[editingIndex].title = addNewFormInput.title;
+         eList[editingIndex].maingener = addNewFormInput.maingener;
+         //eList[editingIndex].maingener = mainGenreData.find(genre => genre.MainGenre_Id === addNewFormInput.maingener).MainGenre_Name;
+         //console.log(addNewFormInput.maingener);
+         setMultipleFiles(eList);
+         //console.log('eList=>', eList);
          setSelectTrackAudio([]);
          setLoading(false);
-         setMultipleFiles([...multipleFiles, { ...addNewFormInput }]);
+
       }
-    //  handleMainGenerSelect(selected)
-      //console.log(addNewFormInput.maingener);
-   }
+   };
 
    // form input when Save button click
    const handleOnChangenNewForm = (text, inputKey) => {
@@ -517,6 +508,7 @@ const AudioTracks = ({ navigation, route }) => {
          // isValid = false;
       }
       if (isValid) {
+         //console.log('save =>',addNewFormInput);
          setSelectTrackAudio([]);
          setLoading(false);
          setMultipleFiles([...multipleFiles, { ...addNewFormInput }]);
@@ -544,24 +536,39 @@ const AudioTracks = ({ navigation, route }) => {
          selectedArtists: ''
       });
 
-      // console.log('save =>', addNewFormInput);
+      //console.log('save =>', addNewFormInput);
    }
 
    // console.log('show form data=>',addNewFormInput);
 
    // const [addNewFormInput, setAddNewFormInput] = useState([])
+
    // Add new Btn
    const handleAddNew = () => {
-      //setLabel('Save');
-      //setEditingData(multipleFiles[index]);
-      //setEditingIndex(index);
-      //console.log(index);
-      setAddNewFormInput((prevState) => {
-         return { ...prevState, selectedArtists }
-      })
+
+      setLoading(true)
+      setSelectedArtists([])
+      setAddNewFormInput({
+         featureartist: formData.featureArtist,
+         displayartist: formData.displayArtist,
+         title: formData.releasetitle,
+         maingener: formData.mainGener,
+         subgener: formData.subGener,
+         mixversion: '',
+         orchestra: '',
+         actor: '',
+         arranger: '',
+         conductor: '',
+         composerfirstname: '',
+         composerlastname: '',
+         lyricistfirstname: '',
+         lyricistlastname: '',
+         publisher: '',
+         contributors: '',
+         selectedArtists: ''
+      });
       setIsEditing(false)
       setIsSaveDisabled(true)
-      setLoading(true)
    }
 
    const removeFile = (index) => {
@@ -721,6 +728,7 @@ const AudioTracks = ({ navigation, route }) => {
                   {/* Multiple Tracks upload */}
 
                   {multipleFiles.map((item, index) => (
+
                      <View style={{
                         // backgroundColor: 'red',
                         margin: SIZES.padding * 0.5,
@@ -818,10 +826,17 @@ const AudioTracks = ({ navigation, route }) => {
                                  <Text style={{ fontWeight: "bold" }}>Track: </Text>
                                  <Text>{index + 1}</Text>
                               </View>
-                              <Text>Title: {formData.releasetitle}</Text>
-                              <Text>Genre: {addNewFormInput.maingener}</Text>
-                              <Text>Artist: {selectedArtists?.map(artist => artist?.item).join(', ') || multiChoosenPrimaryArtist?.map(artists => artists?.item).join(', ')} </Text>
-                              {/* <Text>Artist: {multipleFiles[editingIndex].artistList?.map(artist => artist?.item).join(', ')} </Text> */}
+                              <View style={{ flexDirection: 'row' }}>
+                                 <Text style={{ fontWeight: "bold" }}>Title:</Text>
+                                 <Text>{item?.title}</Text>
+                              </View>
+                              <View style={{ flexDirection: 'row' }}>
+                                 <Text style={{ fontWeight: "bold" }}>Genre:</Text>
+                                 <Text> {item?.maingener}</Text>
+                              </View>
+                              <Text>
+                                 <Text style={{ fontWeight: 'bold' }}>Artist: {' '}</Text>
+                                 {item?.artistList?.map(artist => artist?.item).join(', ')}{' '} </Text>
                            </View>
                         </View>
                      </View>
@@ -922,7 +937,7 @@ const AudioTracks = ({ navigation, route }) => {
                      {/* Track */}
                      <ReleaseInput
                         text='Track#*:'
-                        value={(editingIndex + 1).toString()}
+                        value={(multipleFiles.length + 1).toString()}
                         labelContainer={{
                            color: 'white',
                            fontWeight: 'bold'
@@ -1012,6 +1027,7 @@ const AudioTracks = ({ navigation, route }) => {
                            color: 'white',
                            fontWeight: 'bold'
                         }}
+                        onChangeText={(text) => handleOnChangeForm(text, 'title')}
                      //value={'title name'}
                      />
 
@@ -1054,9 +1070,6 @@ const AudioTracks = ({ navigation, route }) => {
                   }}>
                   OR Enter Remixer(s):
                 </Text> */}
-                     {todos.map((item, index) => (
-                        <ListItem key={index} todo={item} />
-                     ))}
 
 
                      <View
@@ -1064,16 +1077,16 @@ const AudioTracks = ({ navigation, route }) => {
                            flexDirection: 'row',
                            alignItems: 'center',
                            //backgroundColor: 'red',
-                           marginVertical: SIZES.padding
+                           marginVertical: SIZES.padding,
                         }}>
-
                         <ReleaseInput
-                           text='OR Enter Remixer(s):'
+                           text="OR Enter Remixer(s):"
+                           value={textInput}
                            onChangeText={text => setTextInput(text)}
                            ContainerStyle={{ width: SIZES.width / 1.4 }}
                            labelContainer={{
                               color: 'white',
-                              fontWeight: 'bold'
+                              fontWeight: 'bold',
                            }}
                         />
                         <TouchableOpacity
@@ -1085,10 +1098,9 @@ const AudioTracks = ({ navigation, route }) => {
                               paddingHorizontal: 20,
                               paddingVertical: 8,
                               position: 'absolute',
-                              right: 10,
+                              right: 15,
                               bottom: 5,
                               borderRadius: 5,
-
                            }}
                            onPress={addRemixer}>
                            <Text style={styles.remixerTxt}>+</Text>
@@ -1115,6 +1127,9 @@ const AudioTracks = ({ navigation, route }) => {
                   </View> */}
                      </View>
 
+                     {todos.map((item, index) => (
+                        <ListItem key={index} todo={item} />
+                     ))}
 
 
                      {/* Orchestra */}
@@ -1207,9 +1222,11 @@ const AudioTracks = ({ navigation, route }) => {
                      <DropdownPicker
                         label="Main Genre:"
                         data={newMainGenre}
+                        save
                         setSelected={handleMainGenerSelect}
                         defaultOption={{ key: formData.mainGener, value: formData.mainGener }}
                      />
+
 
                      {/* Sub Gene */}
                      <DropdownPicker
@@ -1528,7 +1545,7 @@ const styles = StyleSheet.create({
       paddingLeft: 20,
    },
    remixerInputBtn: {
-      backgroundColor: 'blue',
+      backgroundColor: COLORS.primary,
       justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: SIZES.padding * 2.2,

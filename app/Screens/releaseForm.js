@@ -340,7 +340,7 @@ const ReleaseForm = ({ route, navigation }) => {
   // console.log('selectedArtistList', selectedArtistList)
 
   useEffect(() => {
-    if (primaryArtist.length !== 0) {  
+    if (primaryArtist.length !== 0) {
       var artistNames = primaryArtist;
       var artistList = artistNames.split(',');
       let data12 = [
@@ -441,7 +441,7 @@ const ReleaseForm = ({ route, navigation }) => {
     //multiChoosenPrimaryArtist: selectedArtistList
   })
 
-// Coming back to Add New Screen to current screen release date is clear
+  // Coming back to Add New Screen to current screen release date is clear
   // useEffect(() => {
   //   const unsubscribe = navigation.addListener('focus', () => {
   //     setEditInput({
@@ -472,7 +472,7 @@ const ReleaseForm = ({ route, navigation }) => {
   //   return unsubscribe;
   // }, [navigation, releaseData]);
 
-  
+
 
   // console.log('newdate =>',editInput?.priceTiers);
   //const newDate = editInput?.releasedate
@@ -485,42 +485,42 @@ const ReleaseForm = ({ route, navigation }) => {
   const validatedForm = () => {
     let isValid = true;
     const fields = [
-        { name: 'displayArtist', error: 'Please Enter Display Artist' },
-        { name: 'remixer', error: 'Please Enter Remixer' },
-        { name: 'orchestra', error: 'Please Enter Orchestra' },
-        { name: 'actor', error: 'Please Enter Actor' },
-        { name: 'lyricist', error: 'Please Enter Lyricist' },
-        { name: 'catNum', error: 'Please Enter Catnum' },
-        { name: 'composer', error: 'Please Enter Composer' },
-        { name: 'arranger', error: 'Please Enter Arranger' },
-        { name: 'conductor', error: 'Please Enter Conductor' },
-        { name: 'copyright', error: 'Please Enter Copyright' },
-        { name: 'featureArtist', error: 'Please Enter FeatureArtist' },
-        { name: 'releasetitle', error: 'Please Enter Releasetitle' },
-        { name: 'releasedes', error: 'Please Enter Release Description' },
-        { name: 'upc_ean', error: 'Please Enter Release UPC/EAN' },
+      { name: 'displayArtist', error: 'Please Enter Display Artist' },
+      { name: 'remixer', error: 'Please Enter Remixer' },
+      { name: 'orchestra', error: 'Please Enter Orchestra' },
+      { name: 'actor', error: 'Please Enter Actor' },
+      { name: 'lyricist', error: 'Please Enter Lyricist' },
+      { name: 'catNum', error: 'Please Enter Catnum' },
+      { name: 'composer', error: 'Please Enter Composer' },
+      { name: 'arranger', error: 'Please Enter Arranger' },
+      { name: 'conductor', error: 'Please Enter Conductor' },
+      { name: 'copyright', error: 'Please Enter Copyright' },
+      { name: 'featureArtist', error: 'Please Enter FeatureArtist' },
+      { name: 'releasetitle', error: 'Please Enter Releasetitle' },
+      { name: 'releasedes', error: 'Please Enter Release Description' },
+      { name: 'upc_ean', error: 'Please Enter Release UPC/EAN' },
     ];
 
-    if(editInput.releasedate === ''){
+    if (editInput.releasedate === '') {
       alert('Please Enter Release Date')
       return
     }
 
     fields.forEach(field => {
-        if (!editInput[field.name]) {
-            handleError(field.error, field.name);
-            isValid = false;
-        }
+      if (!editInput[field.name]) {
+        handleError(field.error, field.name);
+        isValid = false;
+      }
     });
 
     if (isValid) {
-      console.log("input data=>", editInput);
-      navigation.navigate('audioTracks', 
-      { 
-        formData: editInput,
-        userLoginId: userReleaseId,
-        multiChoosenPrimaryArtist: selectedArtistList
-    })
+      //console.log("input data=>", editInput);
+      navigation.navigate('audioTracks',
+        {
+          formData: editInput,
+          userLoginId: userReleaseId,
+          multiChoosenPrimaryArtist: selectedArtistList
+        })
       // userReleaseId
       //navigation.navigate('audioTracks')
       // console.log('artist=>',userData: {userLoginId})
@@ -528,83 +528,6 @@ const ReleaseForm = ({ route, navigation }) => {
     }
 
   };
-
-  /* const validatedForm = () => {
-    //console.log('validation Button Clicked')
-    let isValid = true;
-    if (!editInput.displayArtist) {
-      handleError('Please Enter Display Artist', 'displayArtist')
-      isValid = false;
-    }
-    if (!editInput.remixer) {
-      handleError('Please Enter Remixer', 'remixer')
-      isValid = false;
-    }
-    if (!editInput.orchestra) {
-      handleError('Please Enter Orchestra', 'orchestra')
-      isValid = false;
-    }
-    if (!editInput.actor) {
-      handleError('Please Enter Actor', 'actor')
-      isValid = false;
-    }
-    if (!editInput.lyricist) {
-      handleError('Please Enter Lyricist', 'lyricist')
-      isValid = false;
-    }
-    if (!editInput.catNum) {
-      handleError('Please Enter Catnum', 'catnum')
-      isValid = false;
-    }
-    if (!editInput.composer) {
-      handleError('Please Enter Composer', 'composer')
-      isValid = false;
-    }
-    if (!editInput.arranger) {
-      handleError('Please Enter Arranger', 'arranger')
-      isValid = false;
-    }
-    if (!editInput.conductor) {
-      handleError('Please Enter Conductor', 'conductor')
-      isValid = false;
-    }
-    if (!editInput.copyright) {
-      handleError('Please Enter Copyright', 'copyright')
-      isValid = false;
-    }
-    if (!editInput.featureArtist) {
-      handleError('Please Enter FeatureArtist', 'featureArtist')
-      isValid = false;
-    }
-    if (!editInput.releasetitle) {
-      handleError('Please Enter Releasetitle', 'releasetitle')
-      isValid = false;
-    }
-    if (!editInput.releasedes) {
-      handleError('Please Enter Release Description', 'releasedes')
-      isValid = false;
-    }
-    if (!editInput.upc_ean) {
-      handleError('Please Enter Release UPC/EAN', 'upc_ean')
-      isValid = false;
-    }
-    if(editInput.releasedate === ''){
-      alert('Please Enter Release Date')
-      return
-    }
-    if (isValid) {
-      navigation.navigate('audioTracks', 
-      { 
-        formData: editInput,
-        userLoginId: userReleaseId,
-        multiChoosenPrimaryArtist: selectedArtistList
-    })
-      // userReleaseId
-      //navigation.navigate('audioTracks')
-      // console.log('artist=>',userData: {userLoginId})
-      //console.log(handleSelect())
-    }
-  } */
 
 
   //  console.log('Input-Fields =>',editInput)
@@ -617,6 +540,7 @@ const ReleaseForm = ({ route, navigation }) => {
   const handleMainGenerSelect = (selected) => {
     setEditInput({ ...editInput, mainGener: selected });
   }
+
 
   const handleSubGenerSelect = (selected) => {
     setEditInput({ ...editInput, subGener: selected });
@@ -1074,7 +998,7 @@ const ReleaseForm = ({ route, navigation }) => {
                       ellipsizeMode='middle'
                       numberOfLines={1}
                     >
-                      
+
                       {editInput.artwork.length > 20 ? `${editInput.artwork.substring(0, 20)}...` : editInput.artwork}
                     </Text>
                   )
@@ -1177,14 +1101,14 @@ const ReleaseForm = ({ route, navigation }) => {
               onDateChange={(date) => {
                 setEditInput({
                   ...editInput,
-                  releasedate : date
+                  releasedate: date
                 });
               }}
               onConfirm={(date) => {
                 setOpen(false)
                 setEditInput({
                   ...editInput,
-                  releasedate : date
+                  releasedate: date
                 });
               }}
               onCancel={() => {
