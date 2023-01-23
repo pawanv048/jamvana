@@ -1008,6 +1008,7 @@ const AudioTracks = ({ navigation, route }) => {
                            color: 'white',
                            fontWeight: 'bold'
                         }}
+                        onChangeText={(text) => handleOnChangeForm(text, 'featureartist')}
                      />
                      {/* Track */}
 
@@ -1018,6 +1019,7 @@ const AudioTracks = ({ navigation, route }) => {
                            color: 'white',
                            fontWeight: 'bold'
                         }}
+                        onChangeText={(text) => handleOnChangeForm(text, 'displayartist')}
                      />
 
                      <ReleaseInput

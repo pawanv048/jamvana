@@ -5,6 +5,7 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { COLORS, SIZES } from '../Constants/theme';
@@ -14,6 +15,11 @@ const DigitalProvider = ({ navigation }) => {
 
   const [providerList, setProviderList] = useState([])
   const [toggle, setoggle] = useState(true)
+  const [isLoading, setLoading] = useState(false)
+
+
+
+
 
   const getDigitalServiesData = () => {
     //console.log('calling api')
@@ -25,16 +31,25 @@ const DigitalProvider = ({ navigation }) => {
       onSuccess: val => {
         setProviderList(val?.Data)
         //  console.log('Terri data ==>', val?.Data)
-        //setLoading(false)
+        setLoading(false)
       },
       onError: val => console.log('ERROR:', val),
     });
-    //setLoading(true);
-  }
+    setLoading(true);
+  };
 
   useEffect(() => {
     getDigitalServiesData();
   }, []);
+
+
+  if (isLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size='large'/> 
+      </View>
+    );
+  }
 
   // Particular provider
   function renderItem({ item, index }) {

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Platform, Animated } from 'react-native';
 import React, { useState } from 'react';
 import { COLORS, SIZES } from '../Constants/theme';
 import SelectList from 'react-native-dropdown-select-list';
@@ -202,7 +202,44 @@ export const DropdownPicker = ({
       />
     </View>
   )
-}
+};
+
+
+
+
+
+export const CustomActivityIndicator = () => {
+  const [spinValue] = useState(new Animated.Value(0));
+
+  React.useEffect(() => {
+    Animated.loop(
+      Animated.timing(spinValue, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true
+      })
+    ).start();
+  }, []);
+
+  const spin = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg']
+  });
+
+  return (
+    <View style={{
+      flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+    }}>
+      <Animated.View style={[styles.circle, { transform: [{ rotate: spin }] }]} />
+    </View>
+  );
+};
+
+
+
+
 
 
 
@@ -424,9 +461,15 @@ const styles = StyleSheet.create({
   radioButtonText: {
     fontSize: 16,
     marginLeft: 16
+  },
+  circle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'blue'
   }
 })
 
-const CustomComponent = { Separator, TextButton, ReleaseInput, RadioButton, DropdownPicker };
+const CustomComponent = { Separator, TextButton, ReleaseInput, RadioButton, DropdownPicker, CustomActivityIndicator };
 
 export default CustomComponent;

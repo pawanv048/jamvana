@@ -5,6 +5,7 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator,
   TouchableWithoutFeedback
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
@@ -18,7 +19,7 @@ const SelectTerritories = ({ navigation }) => {
 
   const [territoriesList, setTerritoriesList] = useState([])
   // console.log('LIst=>', territoriesList);
-
+  const [isLoading, setLoading] = useState(true);
   const [toggle, setoggle] = useState(true)
 
 
@@ -32,16 +33,24 @@ const SelectTerritories = ({ navigation }) => {
       onSuccess: val => {
         setTerritoriesList(val?.Data)
         //  console.log('Terri data ==>', val?.Data)
-        //setLoading(false)
+        setLoading(false)
       },
       onError: val => console.log('ERROR:', val),
     });
-    //setLoading(true);
+    setLoading(true);
   }
 
   useEffect(() => {
     getTerritoriesData();
   }, []);
+
+  if (isLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size='large'/> 
+      </View>
+    );
+  }
 
   // Particular country
   function renderItem({ item, index }) {
