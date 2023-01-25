@@ -1,4 +1,3 @@
-
 //LIBRARYS
 import React, { useState, useEffect } from 'react';
 import CheckBox from '@react-native-community/checkbox';
@@ -44,6 +43,7 @@ const AudioTracks = ({ navigation, route }) => {
    const [mainGenreData, setMainGenreData] = useState([])
    const [subGenerData, setSubGenreData] = useState([])
    const [isSaveDisabled, setIsSaveDisabled] = useState(true);
+   const [isTrackVisible, setTrackVisible] = useState(false)
 
    const [label, setLabel] = useState('Save')
    const [isEditing, setIsEditing] = useState(false);
@@ -311,7 +311,7 @@ const AudioTracks = ({ navigation, route }) => {
       setTodos(newTodosItem);
    };
 
-   // deleting remixer
+   // // deleting remixer
    const deleteRemixer = todoId => {
       const newTodosItem = todos.filter(item => item.id != todoId);
       setTodos(newTodosItem);
@@ -354,71 +354,61 @@ const AudioTracks = ({ navigation, route }) => {
 
 
 
-   // Picking audio tracks
-   const [selectTrackAudio, setSelectTrackAudio] = useState([])
-   // console.log('selected tracks =>', selectTrackAudio);
-   const pickAudio = async () => {
+
+   const [selectedTrack, setSelectedTrack] = useState({});
+   const selectedTrackArr = [selectedTrack];
+   //console.log(selectedTrack);
+
+   const selectSingleFile = async () => {
       try {
          const result = await DocumentPicker.pick({
             type: [DocumentPicker.types.audio],
-            allowMultiSelection: true,
+            allowMultiSelection: false,
             transitionStyle: 'coverVertical'
          });
-
-         // Check if the file is a 16-bit wav at 44.1kHz
-         // if (result.type !== 'audio/wav' || result.name !== '16bit') {
-         //   console.log('Invalid file format');
-         //   return;
-         // }
-         //console.log('res : ' + JSON.stringify(result));
-         setSelectTrackAudio(result)
+         //console.log(result);
+         //setMultipleFiles([{...result, title: formData.releasetitle, maingener: formData.mainGener }]);
+         //setMultipleFiles(result)
+         setSelectedTrack(result)
          setIsSaveDisabled(false);
-         // Prepare the form data for the file upload
-         //let formData = new FormData();
 
-         // formData.append('audioFile', {
-         //   uri: result.uri,
-         //   name: result.name,
-         //   type: result.type
-         // });
-
-         // let response = await RNFetchBlob.fetch('POST', 'https://your-server-url.com/upload', {
-         //   'Content-Type': 'multipart/form-data',
-         // }, formData);
-
-         //let responseJson = await response.json();
-         //console.log(responseJson);
       } catch (err) {
-         if (DocumentPicker.isCancel(err)) {
-            console.log('User cancelled the picker');
-         } else {
-            throw err;
-         }
+         // handle error
       }
-   };
+   }
 
 
 
    //Audio file Multiple selection handler
    const [multipleFiles, setMultipleFiles] = useState([]);
    // console.log('multipleFiles=>', multipleFiles);
-   const selectMultipleFiles = React.useCallback(async () => {
+   const selectMultipleFiles = React.useCallback(async (isUpload) => {
       try {
          const results = await DocumentPicker.pick({
             type: [DocumentPicker.types.audio],
             allowMultiSelection: true,
             transitionStyle: 'coverVertical'
          });
-         for (const res of results) {
-            //setMultipleFiles(prevState => [...prevState, res])
-            setMultipleFiles(currentFiles => [...currentFiles, { ...res, title: formData.releasetitle, maingener: formData.mainGener }])
+
+         if (isUpload) {
+            for (const res of results) {
+               setMultipleFiles(currentFiles => [...currentFiles,
+               {
+                  ...res,
+                  title: formData.releasetitle,
+                  maingener: formData.mainGener
+               }])
+            }
+         } else {
+            //setMultipleFiles([{ ...results, title: formData.releasetitle, maingener: formData.mainGener }])
+            setMultipleFiles(results)
+            setIsSaveDisabled(false);
          }
-         //Setting the state to show the multiple file attributes
-         //setMultipleFiles(results)
+
       } catch (err) {
          //Handle any exception (if any)
          if (DocumentPicker.isCancel(err)) {
-            // if document cancel 
+            // if document cancel
             alert('Empty Selection')
          } else {
             // For Unknown Error
@@ -426,7 +416,9 @@ const AudioTracks = ({ navigation, route }) => {
             throw err;
          }
       }
-   }, [])
+   }, []);
+
+
 
 
    const [editingIndex, setEditingIndex] = useState(null);
@@ -465,11 +457,9 @@ const AudioTracks = ({ navigation, route }) => {
          eList[editingIndex].artistList = selectedArtists;
          eList[editingIndex].title = addNewFormInput.title;
          eList[editingIndex].maingener = addNewFormInput.maingener;
-         //eList[editingIndex].maingener = mainGenreData.find(genre => genre.MainGenre_Id === addNewFormInput.maingener).MainGenre_Name;
-         //console.log(addNewFormInput.maingener);
          setMultipleFiles(eList);
          //console.log('eList=>', eList);
-         setSelectTrackAudio([]);
+         // setSelectTrackAudio([]);
          setLoading(false);
 
       }
@@ -508,36 +498,23 @@ const AudioTracks = ({ navigation, route }) => {
          // isValid = false;
       }
       if (isValid) {
-         //console.log('save =>',addNewFormInput);
-         setSelectTrackAudio([]);
-         setLoading(false);
+         //console.log('new save =>',addNewFormInput);
+         //let newfile =  { ...addNewFormInput }
+         //setSelectTrackAudio([]);
+         //Trying to load empty source.
          setMultipleFiles([...multipleFiles, { ...addNewFormInput }]);
+         // setMultipleFiles([...multipleFiles, Object.assign({}, {...results},{...addNewFormInput})]);
+         // setMultipleFiles(currentFiles => multipleFiles.merge([...currentFiles], { ...addNewFormInput }));
+         //console.log(newfile);
+
+         //console.log('check=>', [...multipleFiles, newfile]);
+         setLoading(false);
       }
+   };
 
-      handleOnChangenNewForm()
-      // Clear the form inputs
-      setAddNewFormInput({
-         featureartist: formData.featureArtist,
-         displayartist: formData.displayArtist,
-         title: formData.releasetitle,
-         maingener: formData.mainGener,
-         subgener: formData.subGener,
-         mixversion: '',
-         orchestra: '',
-         actor: '',
-         arranger: '',
-         conductor: '',
-         composerfirstname: '',
-         composerlastname: '',
-         lyricistfirstname: '',
-         lyricistlastname: '',
-         publisher: '',
-         contributors: '',
-         selectedArtists: ''
-      });
-
-      //console.log('save =>', addNewFormInput);
-   }
+   //    useEffect(() => {
+   //       setMultipleFiles()
+   //   }, [addNewFormInput])
 
    // console.log('show form data=>',addNewFormInput);
 
@@ -569,8 +546,10 @@ const AudioTracks = ({ navigation, route }) => {
       });
       setIsEditing(false)
       setIsSaveDisabled(true)
+
    }
 
+   // REMOVE TRACK
    const removeFile = (index) => {
       const newFiles = [...multipleFiles];
       newFiles.splice(index, 1);
@@ -613,7 +592,7 @@ const AudioTracks = ({ navigation, route }) => {
 
                {/* Upload Multiple Tracks */}
                <TouchableOpacity
-                  onPress={selectMultipleFiles}
+                  onPress={() => selectMultipleFiles(true)}
                   style={styles.addNewBtn}>
                   <Text style={styles.addtxt}>{Strings.MultiTrack}</Text>
                </TouchableOpacity>
@@ -694,9 +673,9 @@ const AudioTracks = ({ navigation, route }) => {
                            />
                            <View>
                               {/* 
-                      sometime show error(not working properly)
-                      see what thay have accept as a value
-                     */}
+                           sometime show error(not working properly)
+                           see what thay have accept as a value
+                           */}
                               <View style={{ width: '65%' }}>
                                  <Progress.Bar
                                     progress={audioTime.currentTime / audioTime.endTime}
@@ -1360,45 +1339,58 @@ const AudioTracks = ({ navigation, route }) => {
                         </Text>
 
                         <TextButton
-                           onPress={pickAudio}
+                           onPress={() => selectMultipleFiles(false)}
                            label='Select Tracks'
                         />
+                        {/* <Text>{selectedTrack.name}</Text> */}
                      </View>
 
                      {/* select Track */}
-                     {selectTrackAudio.map((file, index) => (
-                        <View
-                           key={index.toString()}
-                           style={{
-                              flexDirection: 'row',
-                              //backgroundColor: 'lightgrey',
-                              marginHorizontal: SIZES.padding2 * 2,
-                              padding: 5,
-                              borderWidth: 1.2,
-                              borderColor: 'blue'
-                           }}
-                        >
-                           <Image
-                              source={icons.attach}
-                              style={{
-                                 height: 13,
-                                 width: 13,
-                                 tintColor: 'black',
-                                 marginRight: 20
-                              }}
-                           />
-                           <Text
-                              style={{
-                                 color: COLORS.white,
-                                 fontSize: 15,
-                                 fontWeight: '600'
-                              }}>{file?.name}</Text>
 
-                           {/* <Text style={styles.uri}>File Type: {file?.type}</Text> */}
-                           {/* <Text style={styles.uri}>File size (kb): {file.size}</Text> */}
-
+                     {/* {selectedTrack.map((file, index) => (
+                        <View key={index}>
+                           <Text>{file.name}</Text>
                         </View>
-                     ))}
+                     ))} */}
+
+                     {
+
+                        multipleFiles.map((file, index) => (
+                           <View
+                              key={index.toString()}
+                              style={{
+                                 flexDirection: 'row',
+                                 //backgroundColor: 'lightgrey',
+                                 marginHorizontal: SIZES.padding2 * 2,
+                                 padding: 5,
+                                 borderWidth: 1.2,
+                                 borderColor: 'blue'
+                              }}
+                           >
+                              <Image
+                                 source={icons.attach}
+                                 style={{
+                                    height: 13,
+                                    width: 13,
+                                    tintColor: 'black',
+                                    marginRight: 20
+                                 }}
+                              />
+                              <Text
+                                 style={{
+                                    color: COLORS.white,
+                                    fontSize: 15,
+                                    fontWeight: '600'
+                                 }}>{file?.name}
+                              </Text>
+
+                              {/* <Text style={styles.uri}>File Type: {file?.type}</Text> */}
+                              {/* <Text style={styles.uri}>File size (kb): {file.size}</Text> */}
+
+                           </View>
+                        ))
+
+                     }
 
 
                      <View
@@ -1453,9 +1445,6 @@ const AudioTracks = ({ navigation, route }) => {
    );
 };
 
-
-
-export default AudioTracks;
 
 const styles = StyleSheet.create({
    audioview: {
@@ -1574,4 +1563,8 @@ const styles = StyleSheet.create({
       //paddingHorizontal: SIZES.padding * 2.4,
       fontSize: 13,
    }
-})
+});
+
+
+
+export default AudioTracks;

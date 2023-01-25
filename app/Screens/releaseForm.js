@@ -21,7 +21,6 @@ import { TextButton, ReleaseInput, RadioButton } from '../Custom/CustomComponent
 import SelectBox from 'react-native-multi-selectbox';
 import { xorBy } from 'lodash';
 
-
 import {
   StyleSheet,
   Text,

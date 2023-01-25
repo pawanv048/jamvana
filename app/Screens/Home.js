@@ -8,10 +8,9 @@ import {
   TouchableOpacity,
   Platform,
   StyleSheet,
-
 } from 'react-native';
-import {API} from '../apis/API';
 import moment from 'moment-timezone';
+import {API} from '../apis/API';
 import * as Strings from '../Constants/strings';
 import { COLORS, SIZES } from '../Constants/theme';
 
@@ -57,7 +56,7 @@ const Home = ({ navigation }) => {
 
 
 
-  function renderHomeReleaseItem({ item }) {
+  function renderHomeReleaseItem({ item, index }) {
     return (
       <View
         style={{
@@ -69,7 +68,7 @@ const Home = ({ navigation }) => {
         }}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Detail', { data: item })}
-        >
+        >   
           <Text style={styles.releaseTxt}>{Strings.t1} {item.Release_ReleaseTitle}</Text>
           <Text style={[styles.releaseTxt, { marginVertical: SIZES.padding * 2 }]}>{Strings.t2} {item.Release_PrimaryArtist}</Text>
           <Text style={styles.releaseTxt}>{Strings.t3} {moment(new Date(item?.Release_ReleaseDate)).format("DD-MM-YYYY")}</Text>
