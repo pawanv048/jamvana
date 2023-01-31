@@ -70,7 +70,7 @@ const ReleaseForm = ({ route, navigation }) => {
 
   // storing image path
   const [filePath, setFilePath] = useState({});
-  // console.log('FilePath', filePath)
+  //console.log('FilePath', filePath.fileName)
 
   // Permission for gallery
   const requestExternalWritePermission = async () => {
@@ -167,6 +167,7 @@ const ReleaseForm = ({ route, navigation }) => {
       try {
         launchImageLibrary(options, (response) => {
           // console.log('Response = ', response);
+          
 
           if (response.didCancel) {
             alert('cancelled camera picker');
@@ -502,6 +503,10 @@ const ReleaseForm = ({ route, navigation }) => {
 
     if (editInput.releasedate === '') {
       alert('Please Enter Release Date')
+      return
+    }
+    if(!filePath.fileName){
+      alert('Select a file to upload')
       return
     }
 
@@ -994,14 +999,18 @@ const ReleaseForm = ({ route, navigation }) => {
                 filePath.fileName == null
                   ? (
                     <Text
-                      ellipsizeMode='middle'
-                      numberOfLines={1}
+                    // ellipsizeMode='middle'
+                    // numberOfLines={1}
                     >
-
-                      {editInput.artwork.length > 20 ? `${editInput.artwork.substring(0, 20)}...` : editInput.artwork}
+                      No file chosen
+                      {/* {editInput.artwork.length > 20 ? `${editInput.artwork.substring(0, 20)}...` : editInput.artwork} */}
                     </Text>
                   )
-                  : filePath.fileName
+                  : <Text>
+                    {editInput.artwork.length > 20 
+                    ?  `${editInput.artwork.substring(0, 20)}...` 
+                    : filePath.fileName}
+                  </Text>
               }
             </Text>
           </View>
@@ -1016,8 +1025,6 @@ const ReleaseForm = ({ route, navigation }) => {
           onChangeText={text => handleOnChange(text, 'catNum')}
           text='Cat Number:'
         />
-
-
 
         {/* Do you Want UPC */}
 

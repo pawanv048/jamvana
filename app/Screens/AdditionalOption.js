@@ -31,6 +31,9 @@ const AdditionalOption = ({ navigation }) => {
   const [selected, setSelected] = useState('');
   const [selectExclusiveShopData, setSelectExclusiveShopData] = useState([])
   const [selectExclusiveForData, setSelectExclusiveForData] = useState([])
+  const [toggleCheckBox, setToggleCheckBox] = useState(false)
+  const [preOrderColor, setPreOrderColor] = useState(false)
+
 
   const getExclusiveShopData = () => {
     API({
@@ -61,6 +64,14 @@ const AdditionalOption = ({ navigation }) => {
       onError: val => console.log('Error:', val)
     })
   };
+
+  const handleFinishPress = () => {
+    //console.log('button click');
+    if(toggleCheckBox == false){
+      //console.log('string need to be red');
+      setPreOrderColor(true)
+    }
+  }
 
   useEffect(() => {
     getExclusiveShopData();
@@ -96,7 +107,7 @@ const AdditionalOption = ({ navigation }) => {
           </Text> */}
           <DropdownPicker
             label="Exclusive on Shop:"
-            labelContainer={{color: COLORS.black}}
+            labelContainer={{ color: COLORS.black }}
             data={selectExclusiveShopData}
             setSelected={setSelected}
           // defaultOption={{ key: formData.mainGener, value: formData.mainGener }}
@@ -111,7 +122,7 @@ const AdditionalOption = ({ navigation }) => {
             label="Exclusive for:"
             data={selectExclusiveForData}
             setSelected={setSelected}
-            labelContainer={{color: COLORS.black}}
+            labelContainer={{ color: COLORS.black }}
           //defaultOption={{ key: formData.mainGener, value: formData.mainGener }}
           />
         </View>
@@ -141,7 +152,6 @@ const AdditionalOption = ({ navigation }) => {
         style={{
           marginHorizontal: SIZES.padding,
           marginVertical: SIZES.padding * 2,
-
         }}>
         <CheckBox
           style={{
@@ -151,12 +161,19 @@ const AdditionalOption = ({ navigation }) => {
           boxType='square'
           onCheckColor='white'
           onFillColor='#006CF6'
+          value={toggleCheckBox}
+          onValueChange={(value) => {
+            setToggleCheckBox(value);
+            value && setPreOrderColor(false);
+          }}
         />
-        <Text style={{
-          marginVertical: 10,
-          fontWeight: 'bold',
-          fontSize: 16
-        }}>
+        <Text
+          style={{
+            marginVertical: 10,
+            fontWeight: 'bold',
+            fontSize: 16,
+            color: preOrderColor ? 'red' : 'black'
+          }}>
           {Strings.ReviewAll}
         </Text>
       </View>
@@ -186,8 +203,11 @@ const AdditionalOption = ({ navigation }) => {
         >
           <Text style={styles.selectUnselectTxt}>Previous</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.selectUnselectBtn}>
-          <Text style={styles.selectUnselectTxt}>Finish</Text>
+        <TouchableOpacity
+          onPress={handleFinishPress}
+          style={styles.selectUnselectBtn}
+        >
+          <Text style={[styles.selectUnselectTxt]}>Finish</Text>
         </TouchableOpacity>
       </View>
 
@@ -210,11 +230,13 @@ const styles = StyleSheet.create({
   preorderTxt: {
     marginLeft: 25,
     fontSize: 15,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+
   },
   policyTxt: {
     fontSize: 14,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+
   },
   selectUnselectBtn: {
     backgroundColor: COLORS.primary,

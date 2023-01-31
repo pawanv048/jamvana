@@ -453,8 +453,8 @@ const AudioTracks = ({ navigation, route }) => {
       setIsEditing(true);
       setLoading(true);
       setSelectedArtists(multipleFiles[index].artistList || []);
-      setSelectedTrack([{ name: multipleFiles[index].name }]);
-
+      //setSelectedTrack([{ name: multipleFiles[index].name }]);
+      setSelectedTrack([])
       //console.log([multipleFiles[index].name]);
       //console.log('index', multipleFiles[index]);  
       //console.log('index', multipleFiles[index]);  
@@ -467,24 +467,28 @@ const AudioTracks = ({ navigation, route }) => {
          alert('Please Select Artist');
          isValid = false;
       }
+      //console.log(`Selected file : ${JSON.stringify(selectedTrack)}`);
+      //console.log(`Selected file name: ${selectedTrack[0].name}`);
       if (isValid) {
          // track changes on edit
          let eList = multipleFiles;
          eList[editingIndex].artistList = selectedArtists;
          eList[editingIndex].title = addNewFormInput.title;
-         eList[editingIndex].maingener = addNewFormInput.maingener;
-         eList[editingIndex].mixversion = addNewFormInput.mixversion;
-         eList[editingIndex].featureartist = addNewFormInput.featureartist;
-         eList[editingIndex].orchestra = addNewFormInput.orchestra;
-         eList[editingIndex].actor = addNewFormInput.actor;
-         eList[editingIndex].arranger = addNewFormInput.arranger;
-         eList[editingIndex].composerfirstname = addNewFormInput.composerfirstname;
-         eList[editingIndex].composerlastname = addNewFormInput.composerlastname;
-         eList[editingIndex].lyricistfirstname = addNewFormInput.lyricistfirstname;
-         eList[editingIndex].lyricistlastname = addNewFormInput.lyricistlastname;
-         eList[editingIndex].publisher = addNewFormInput.publisher;
-         eList[editingIndex].contributors = addNewFormInput.contributors;
-         eList[editingIndex].conductor = addNewFormInput.conductor;
+         eList[editingIndex].maingener = addNewFormInput?.maingener;
+         eList[editingIndex].mixversion = addNewFormInput?.mixversion;
+         eList[editingIndex].featureartist = addNewFormInput?.featureartist;
+         eList[editingIndex].orchestra = addNewFormInput?.orchestra;
+         eList[editingIndex].actor = addNewFormInput?.actor;
+         eList[editingIndex].arranger = addNewFormInput?.arranger;
+         eList[editingIndex].composerfirstname = addNewFormInput?.composerfirstname;
+         eList[editingIndex].composerlastname = addNewFormInput?.composerlastname;
+         eList[editingIndex].lyricistfirstname = addNewFormInput?.lyricistfirstname;
+         eList[editingIndex].lyricistlastname = addNewFormInput?.lyricistlastname;
+         eList[editingIndex].publisher = addNewFormInput?.publisher;
+         eList[editingIndex].contributors = addNewFormInput?.contributors;
+         eList[editingIndex].conductor = addNewFormInput?.conductor;
+         eList[editingIndex].name = selectedTrack[0]?.name;
+         eList[editingIndex].uri = selectedTrack[0]?.uri;
          //eList[editingIndex].selectedTrack = selectedTrack.name;
          setMultipleFiles(eList);
          setAddNewFormInput({
