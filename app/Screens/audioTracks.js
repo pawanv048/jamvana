@@ -119,6 +119,7 @@ const AudioTracks = ({ navigation, route }) => {
 
    const handleOnChangeForm = (text, addNewFormInput) => {
       setAddNewFormInput(prevState => ({ ...prevState, [addNewFormInput]: text }));
+      //setAddNewFormInput({ ...addNewFormInput, [text]: text });
    }
 
    const handleMainGenerSelect = (selected) => {
@@ -287,7 +288,7 @@ const AudioTracks = ({ navigation, route }) => {
    // Add remixer
    const addRemixer = () => {
       if (textInput == '') {
-         Alert.alert('Error', 'Please add any remixer');
+         alert('Enter Remixer');
       } else {
          const newRemixer = {
             id: Math.random(),
@@ -382,49 +383,6 @@ const AudioTracks = ({ navigation, route }) => {
 
    //Audio file Multiple selection handler
    const [multipleFiles, setMultipleFiles] = useState([]);
-   // console.log('multipleFiles=>', multipleFiles);
-   // const selectMultipleFiles = React.useCallback(async () => {
-   //    try {
-   //       const results = await DocumentPicker.pick({
-   //          type: [DocumentPicker.types.audio],
-   //          allowMultiSelection: true,
-   //          transitionStyle: 'coverVertical'
-   //       });
-
-   //       //if (isUpload) {
-   //          for (const res of results) {
-   //             setMultipleFiles(currentFiles => [...currentFiles,
-   //             {
-   //                ...res,
-   //                title: formData.releasetitle,
-   //                maingener: formData.mainGener
-   //             }])
-   //             setSelectedTrack([...selectedTrack, ...res]);
-   //          }
-   //      // } else {
-   //          //setMultipleFiles([{ ...results, title: formData.releasetitle, maingener: formData.mainGener }])
-   //         // setMultipleFiles(results);
-   //          setIsSaveDisabled(false);
-   //       //}
-
-   //    } catch (err) {
-   //       //Handle any exception (if any)
-   //       if (DocumentPicker.isCancel(err)) {
-   //          // if document cancel
-   //          alert('Empty Selection')
-   //       } else {
-   //          switch (err.code) {
-   //            case DocumentPicker.ApiNotAvailableError:
-   //              alert('API not available on this device');
-   //              break;
-   //            default:
-   //              alert('An unknown error occurred: ' + JSON.stringify(err));
-   //          }
-   //        }
-   //    }
-   // }, []);
-
-
 
    const selectMultipleFiles = React.useCallback(async () => {
       try {
@@ -462,35 +420,44 @@ const AudioTracks = ({ navigation, route }) => {
    }, []);
 
 
-
+   // console.log('addnew', addNewFormInput);
 
    const [editingIndex, setEditingIndex] = useState(null);
-   const currentEditingIndex = React.useMemo(() => editingIndex, [editingIndex]);
-   //console.log(editingIndex);
    const [editingData, setEditingData] = useState({});
 
-   // console.log('editingData=>', editingData);
+   //console.log('editingData=>', editingData);
 
-   const handleEdit = index => {
+   const handleEdit = (index) => {
       // code for handling the editing of the file
       setEditingIndex(index);
-      //console.log('index=>', editingIndex);
-      // set the current editing data from the selected file
-      if (currentEditingIndex === index) {
-         //setEditingData(prevState => ({ ...prevState, ...multipleFiles[index] }));
-         setEditingData(multipleFiles[index]);
-      }
-      //console.log('nextindex=>', editingData);
-      // set the loading state to true
+      setEditingData(multipleFiles[index]);
+      setAddNewFormInput({
+         // set the changes on edit
+         featureartist: multipleFiles[index].featureArtist,
+         displayartist: multipleFiles[index].displayArtist,
+         title: multipleFiles[index].releasetitle,
+         maingener: multipleFiles[index].mainGener,
+         subgener: multipleFiles[index].subGener,
+         mixversion: multipleFiles[index].mixversion,
+         orchestra: multipleFiles[index].orchestra,
+         actor: multipleFiles[index].actor,
+         arranger: multipleFiles[index].arranger,
+         conductor: multipleFiles[index].conductor,
+         composerfirstname: multipleFiles[index].composerfirstname,
+         composerlastname: multipleFiles[index].composerlastname,
+         lyricistfirstname: multipleFiles[index].lyricistfirstname,
+         lyricistlastname: multipleFiles[index].lyricistlastname,
+         publisher: multipleFiles[index].publisher,
+         contributors: multipleFiles[index].contributors
+      })
       setIsEditing(true);
-      //setLabel("Update Track");
-      //setIsSaveDisabled(false)
       setLoading(true);
       setSelectedArtists(multipleFiles[index].artistList || []);
-      //console.log(multipleFiles[index].artistList);
-      // setTimeout(() => {
-      //    console.log('gvgvhvg=>',selectedArtists);
-      // }, 2000);
+      setSelectedTrack([{ name: multipleFiles[index].name }]);
+
+      //console.log([multipleFiles[index].name]);
+      //console.log('index', multipleFiles[index]);  
+      //console.log('index', multipleFiles[index]);  
    };
 
    // UPDATE TRACK ON EDIT
@@ -501,16 +468,31 @@ const AudioTracks = ({ navigation, route }) => {
          isValid = false;
       }
       if (isValid) {
-         //console.log(addNewFormInput)
+         // track changes on edit
          let eList = multipleFiles;
          eList[editingIndex].artistList = selectedArtists;
          eList[editingIndex].title = addNewFormInput.title;
          eList[editingIndex].maingener = addNewFormInput.maingener;
+         eList[editingIndex].mixversion = addNewFormInput.mixversion;
+         eList[editingIndex].featureartist = addNewFormInput.featureartist;
+         eList[editingIndex].orchestra = addNewFormInput.orchestra;
+         eList[editingIndex].actor = addNewFormInput.actor;
+         eList[editingIndex].arranger = addNewFormInput.arranger;
+         eList[editingIndex].composerfirstname = addNewFormInput.composerfirstname;
+         eList[editingIndex].composerlastname = addNewFormInput.composerlastname;
+         eList[editingIndex].lyricistfirstname = addNewFormInput.lyricistfirstname;
+         eList[editingIndex].lyricistlastname = addNewFormInput.lyricistlastname;
+         eList[editingIndex].publisher = addNewFormInput.publisher;
+         eList[editingIndex].contributors = addNewFormInput.contributors;
+         eList[editingIndex].conductor = addNewFormInput.conductor;
+         //eList[editingIndex].selectedTrack = selectedTrack.name;
          setMultipleFiles(eList);
-         //console.log('eList=>', eList);
-         // setSelectTrackAudio([]);
-         setLoading(false);
+         setAddNewFormInput({
+            ...eList[editingIndex],
+            //selectedTrackName: multipleFiles[editingIndex].file.name
+         });
 
+         setLoading(false);
       }
    };
 
@@ -605,10 +587,13 @@ const AudioTracks = ({ navigation, route }) => {
 
    // REMOVE TRACK
    const removeFile = (index) => {
+     // console.log(editingIndex);
+     // console.log(index);
       const newFiles = [...multipleFiles];
       newFiles.splice(index, 1);
       setMultipleFiles(newFiles);
       setEditingIndex(null);
+      
    }
 
    function renderAudioView() {
@@ -774,7 +759,7 @@ const AudioTracks = ({ navigation, route }) => {
 
                         }}>
                            <View style={{ flexDirection: 'row' }}>
-                              <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => removeFile()}>
+                              <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => removeFile(index)}>
                                  <Text>Remove</Text>
                               </TouchableOpacity>
                               <TouchableOpacity onPress={() => handleEdit(index)}>
