@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback
 } from 'react-native';
+// import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import CheckBox from '@react-native-community/checkbox';
 import { COLORS, SIZES } from '../Constants/theme';
 import { API } from '../apis/API';
@@ -20,7 +21,9 @@ const SelectTerritories = ({ navigation }) => {
   const [territoriesList, setTerritoriesList] = useState([])
   // console.log('LIst=>', territoriesList);
   const [isLoading, setLoading] = useState(true);
-  const [toggle, setoggle] = useState(true)
+ // const [toggle, setoggle] = useState(true)
+  const [checkboxStates, setCheckboxStates] = useState({});
+
 
 
   const getTerritoriesData = () => {
@@ -40,6 +43,36 @@ const SelectTerritories = ({ navigation }) => {
     setLoading(true);
   }
 
+  // NEXT BUTTON
+  const handleNext = () => {
+    //console.log('button click');
+    navigation.navigate('DigitalProvider')
+  }
+
+  // SELECT INDIVIDUAL COUNTRIES
+  const handleCheckboxPress = (itemName) => {
+    setCheckboxStates({
+      ...checkboxStates,
+      [itemName]: !checkboxStates[itemName],
+    });
+    //console.log(checkboxStates[itemName] ? `Unchecked: ${itemName}` : `Checked: ${itemName}`);
+  };
+
+  // SELECT ALL COUNTRIES
+  const handleSelectAll = () => {
+    const newStates = {};
+    territoriesList.forEach((item) => {
+      newStates[item.Country_Name] = true;
+    });
+    setCheckboxStates(newStates);
+  };
+  
+
+  // UNSELECT ALL COUNTRIES
+  const handleUnselectAll = () => {
+    setCheckboxStates({});
+  };
+
   useEffect(() => {
     getTerritoriesData();
   }, []);
@@ -52,29 +85,69 @@ const SelectTerritories = ({ navigation }) => {
     );
   }
 
-  // Particular country
-  function renderItem({ item, index }) {
+  const Item = React.memo(({ item, index }) => {
     return (
       <View style={styles.countryItem}>
         <CheckBox
-          value={toggle}
-          style={{
-            height: 15,
-            width: 15,
-            borderWidth: 0.3,
-            borderColor: '#006CF6'
-          }}
-          boxType='square'
-          onFillColor='#006CF6'
-          onTintColor='#006CF6'
-          onCheckColor='white'
-          onAnimationType='fade'
-          animationDuration={0.3}
-        />
-        <Text style={styles.countryTxt} onPress={() => setoggle(true)}>{item.Country_Name}</Text>
-      </View>
-    )
+        value={checkboxStates[item.Country_Name] || false}
+        style={{
+          height: 15,
+          width: 15,
+          borderWidth: 0.3,
+          borderColor: '#006CF6'
+        }}
+        boxType='square'
+        onFillColor='#006CF6'
+        onTintColor='#006CF6'
+        onCheckColor='white'
+        onAnimationType='fade'
+        animationDuration={0.3}
+        // onValueChange={() => {
+        //   setoggle(true);
+        //   //console.log(toggle ? `Unchecked: ${item.Country_Name}` : `Checked: ${item.Country_Name}`);
+        // }}
+        onValueChange={() => handleCheckboxPress(item.Country_Name)}
+      />
+      <Text style={styles.countryTxt} >{item.Country_Name}</Text>
+    </View>
+
+    );
+  });
+
+
+
+  function renderItem({ item, index }) {
+    return <Item item={item} index={index} />;
   }
+
+  // Particular country
+  // function renderItem({ item, index }) {
+  //   return (
+  //     <View style={styles.countryItem}>
+  //       <CheckBox
+  //         value={checkboxStates[item.Country_Name] || false}
+  //         style={{
+  //           height: 15,
+  //           width: 15,
+  //           borderWidth: 0.3,
+  //           borderColor: '#006CF6'
+  //         }}
+  //         boxType='square'
+  //         onFillColor='#006CF6'
+  //         onTintColor='#006CF6'
+  //         onCheckColor='white'
+  //         onAnimationType='fade'
+  //         animationDuration={0.3}
+  //         // onValueChange={() => {
+  //         //   setoggle(true);
+  //         //   //console.log(toggle ? `Unchecked: ${item.Country_Name}` : `Checked: ${item.Country_Name}`);
+  //         // }}
+  //         onValueChange={() => handleCheckboxPress(item.Country_Name)}
+  //       />
+  //       <Text style={styles.countryTxt} >{item.Country_Name}</Text>
+  //     </View>
+  //   )
+  // }
 
   // 
   function renderHeader() {
@@ -89,14 +162,14 @@ const SelectTerritories = ({ navigation }) => {
         }}>
         <TouchableOpacity
           style={styles.selectUnselectBtn}
-          onPress={() => setoggle(true)}
+          onPress={handleSelectAll}
         >
           <Text style={styles.selectUnselectTxt}>Select All</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.selectUnselectBtn}
-          onPress={() => setoggle(false)}
+          onPress={handleUnselectAll}
         >
           <Text style={styles.selectUnselectTxt}>Unselect All</Text>
         </TouchableOpacity>
@@ -139,7 +212,8 @@ const SelectTerritories = ({ navigation }) => {
           <Text style={styles.selectUnselectTxt}>Previous</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate('DigitalProvider')}
+          // onPress={() => navigation.navigate('DigitalProvider')}
+          onPress={handleNext}
           style={styles.selectUnselectBtn}
         >
           <Text style={[styles.selectUnselectTxt, { marginHorizontal: 12 }]}>Next</Text>
@@ -152,7 +226,6 @@ const SelectTerritories = ({ navigation }) => {
       <Text style={styles.headerTxt}>Select Territories</Text>
       {renderHeader()}
       {renderTerritoriesList()}
-
     </View>
   )
 }
@@ -162,7 +235,6 @@ export default SelectTerritories
 const styles = StyleSheet.create({
   container: {
     flex: 1
-
   },
   headerTxt: {
     fontSize: 18,
@@ -173,7 +245,6 @@ const styles = StyleSheet.create({
   countryItem: {
     flexDirection: 'row',
     alignItems: 'center',
-
   },
   countryTxt: {
     marginLeft: 10,

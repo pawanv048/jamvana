@@ -453,8 +453,8 @@ const AudioTracks = ({ navigation, route }) => {
       setIsEditing(true);
       setLoading(true);
       setSelectedArtists(multipleFiles[index].artistList || []);
-      //setSelectedTrack([{ name: multipleFiles[index].name }]);
-      setSelectedTrack([])
+      setSelectedTrack([{ name: multipleFiles[index].name }]);
+      //setSelectedTrack([])
       //console.log([multipleFiles[index].name]);
       //console.log('index', multipleFiles[index]);  
       //console.log('index', multipleFiles[index]);  
@@ -495,15 +495,14 @@ const AudioTracks = ({ navigation, route }) => {
             ...eList[editingIndex],
             //selectedTrackName: multipleFiles[editingIndex].file.name
          });
-
          setLoading(false);
       }
    };
 
    // form input when Save button click
-   const handleOnChangenNewForm = (text, inputKey) => {
-      setAddNewFormInput(prevState => ({ ...prevState, [inputKey]: text }));
-   }
+   // const handleOnChangenNewForm = (text, inputKey) => {
+   //    setAddNewFormInput(prevState => ({ ...prevState, [inputKey]: text }));
+   // }
 
    // save click btn
    const handleSaveTrack = async () => {
@@ -629,6 +628,7 @@ const AudioTracks = ({ navigation, route }) => {
                {/* Upload Single Tracks */}
                <TouchableOpacity
                   onPress={handleSingleDocumentSelection}
+                  //onPress={selectSingleFile}
                   style={styles.addNewBtn}>
                   <Text style={styles.addtxt}>{Strings.SingleTrack}</Text>
                </TouchableOpacity>
@@ -654,7 +654,6 @@ const AudioTracks = ({ navigation, route }) => {
                         }}
                      >
                         <Text style={styles.uri}>File Name: {file?.name}</Text>
-
                         <Text style={styles.uri}>File Type: {file?.type}</Text>
                         {/* <Text style={styles.uri}>File size (kb): {file.size}</Text> */}
 
@@ -669,7 +668,6 @@ const AudioTracks = ({ navigation, route }) => {
                            {isPlay ? (
                               <TouchableOpacity onPress={() => setisPlay(false)}
                                  style={{
-
                                     backgroundColor: 'grey',
                                     height: 40,
                                     width: 40,
@@ -752,15 +750,17 @@ const AudioTracks = ({ navigation, route }) => {
                   {multipleFiles.map((item, index) => (
 
                      <View style={{
+                        
                         // backgroundColor: 'red',
                         margin: SIZES.padding * 0.5,
                      }}>
-                        <View style={{
+                        <View 
+                        key={index.toString()}
+                        style={{
                            flexDirection: 'row',
                            marginLeft: SIZES.padding * 2,
                            justifyContent: 'space-between',
                            paddingRight: SIZES.padding * 2,
-
                         }}>
                            <View style={{ flexDirection: 'row' }}>
                               <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => removeFile(index)}>

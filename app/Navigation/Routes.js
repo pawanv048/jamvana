@@ -21,7 +21,6 @@ const Drawer = createDrawerNavigator();
 
 function Root() {
   return (
-    
     <Drawer.Navigator>
       <Drawer.Screen name="Home" component={Home} options={{title: 'Releases'}}/>
       <Drawer.Screen name="Agreements" component={Agreements} />
@@ -55,5 +54,3 @@ function Routes() {
 }
 
 export default Routes;
-
-

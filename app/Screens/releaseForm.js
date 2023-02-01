@@ -518,7 +518,7 @@ const ReleaseForm = ({ route, navigation }) => {
     });
 
     if (isValid) {
-      //console.log("input data=>", editInput);
+      console.log("input data=>", editInput);
       navigation.navigate('audioTracks',
         {
           formData: editInput,
