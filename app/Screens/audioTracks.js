@@ -433,27 +433,29 @@ const AudioTracks = ({ navigation, route }) => {
       setEditingData(multipleFiles[index]);
       setAddNewFormInput({
          // set the changes on edit
-         featureartist: multipleFiles[index].featureArtist,
-         displayartist: multipleFiles[index].displayArtist,
-         title: multipleFiles[index].releasetitle,
-         maingener: multipleFiles[index].mainGener,
-         subgener: multipleFiles[index].subGener,
-         mixversion: multipleFiles[index].mixversion,
-         orchestra: multipleFiles[index].orchestra,
-         actor: multipleFiles[index].actor,
-         arranger: multipleFiles[index].arranger,
-         conductor: multipleFiles[index].conductor,
-         composerfirstname: multipleFiles[index].composerfirstname,
-         composerlastname: multipleFiles[index].composerlastname,
-         lyricistfirstname: multipleFiles[index].lyricistfirstname,
-         lyricistlastname: multipleFiles[index].lyricistlastname,
-         publisher: multipleFiles[index].publisher,
-         contributors: multipleFiles[index].contributors
+         featureartist: editingData.featureArtist,
+         displayartist: editingData.displayArtist,
+         title: editingData.releasetitle,
+         maingener: editingData.mainGener,
+         subgener: editingData.subGener,
+         mixversion: editingData.mixversion,
+         orchestra: editingData.orchestra,
+         actor: editingData.actor,
+         arranger: editingData.arranger,
+         conductor: editingData.conductor,
+         composerfirstname: editingData.composerfirstname,
+         composerlastname: editingData.composerlastname,
+         lyricistfirstname: editingData.lyricistfirstname,
+         lyricistlastname: editingData.lyricistlastname,
+         publisher: editingData.publisher,
+         contributors: editingData.contributors
       })
       setIsEditing(true);
       setLoading(true);
       setSelectedArtists(multipleFiles[index].artistList || []);
-      setSelectedTrack([{ name: multipleFiles[index].name }]);
+      setSelectedTrack(multipleFiles[index].name ? [] : [{ name: multipleFiles[index].name }]);
+
+      //console.log('Edited data => ', addNewFormInput);
       //setSelectedTrack([])
       //console.log([multipleFiles[index].name]);
       //console.log('index', multipleFiles[index]);  
@@ -590,13 +592,13 @@ const AudioTracks = ({ navigation, route }) => {
 
    // REMOVE TRACK
    const removeFile = (index) => {
-     // console.log(editingIndex);
-     // console.log(index);
+      // console.log(editingIndex);
+      // console.log(index);
       const newFiles = [...multipleFiles];
       newFiles.splice(index, 1);
       setMultipleFiles(newFiles);
       setEditingIndex(null);
-      
+
    }
 
    function renderAudioView() {
@@ -750,18 +752,18 @@ const AudioTracks = ({ navigation, route }) => {
                   {multipleFiles.map((item, index) => (
 
                      <View style={{
-                        
+
                         // backgroundColor: 'red',
                         margin: SIZES.padding * 0.5,
                      }}>
-                        <View 
-                        key={index.toString()}
-                        style={{
-                           flexDirection: 'row',
-                           marginLeft: SIZES.padding * 2,
-                           justifyContent: 'space-between',
-                           paddingRight: SIZES.padding * 2,
-                        }}>
+                        <View
+                           key={index.toString()}
+                           style={{
+                              flexDirection: 'row',
+                              marginLeft: SIZES.padding * 2,
+                              justifyContent: 'space-between',
+                              paddingRight: SIZES.padding * 2,
+                           }}>
                            <View style={{ flexDirection: 'row' }}>
                               <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => removeFile(index)}>
                                  <Text>Remove</Text>

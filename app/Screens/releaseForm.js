@@ -6,6 +6,9 @@ import { Picker } from '@react-native-picker/picker';
 // import RadioButton from '../Custom/RadioButton';
 import ModalPicker from '../Custom/ModalPicker';
 // import LabelModalPicker from '../Custom/LabelModalPicker';
+ import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
+//import Permissions from 'react-native-permissions';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Strings from '../Constants/strings';
 import SelectList from 'react-native-dropdown-select-list';
@@ -16,6 +19,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { API } from '../apis/API';
 import moment from 'moment-timezone';
 import Toast from 'react-native-simple-toast';
+
 
 import { TextButton, ReleaseInput, RadioButton } from '../Custom/CustomComponent';
 import SelectBox from 'react-native-multi-selectbox';
@@ -29,9 +33,12 @@ import {
   TouchableOpacity,
   Modal,
   Button,
+  Linking,
   TextInput,
   ScrollView,
   Alert,
+  PermissionsIOS,
+  PermissionsAndroid,
   Keyboard
 } from 'react-native';
 
@@ -72,26 +79,79 @@ const ReleaseForm = ({ route, navigation }) => {
   const [filePath, setFilePath] = useState({});
   //console.log('FilePath', filePath.fileName)
 
-  // Permission for gallery
-  const requestExternalWritePermission = async () => {
-    if (Platform.OS === 'android') {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          {
-            title: 'External Storage Write Permission',
-            message: 'App needs write permission',
-          },
-        );
-        // If WRITE_EXTERNAL_STORAGE Permission is granted
-        return granted === PermissionsAndroid.RESULTS.GRANTED;
-      } catch (err) {
-        console.warn(err);
-        alert('Write permission err', err);
+  // PHOTOLIBRARY PERMISSIONS
+
+const requestExternalWritePermission = async () => {
+  if (Platform.OS === 'android') {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'External Storage Write Permission',
+          message: 'App needs write permission',
+        },
+      );
+      // If WRITE_EXTERNAL_STORAGE Permission is granted
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      Alert.alert('Permission Error', 'Could not grant write permission, please go to app settings and grant the permission manually');
+    }
+    return false;
+  } else if (Platform.OS === 'ios') {
+    try {
+      const result = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+
+      switch (result) {
+        case RESULTS.UNAVAILABLE:
+          console.log('This feature is not available (on this device / in this context)');
+          break;
+        case RESULTS.DENIED:
+          console.log('The permission has not been requested / is denied but requestable');
+          const permissionResult = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+          if (permissionResult === RESULTS.GRANTED) {
+            return true;
+          } else {
+            Alert.alert('Permission Error', 'Please grant permission to access photo library.', [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Open Settings',
+                onPress: () => Linking.openSettings(),
+              },
+            ]);
+            return false;
+          }
+          break;
+        case RESULTS.GRANTED:
+          console.log('The permission is granted');
+          return true;
+        case RESULTS.BLOCKED:
+          console.log('The permission is denied and not requestable anymore');
+          Alert.alert('Permission Error', 'Please grant permission to access photo library.', [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'Open Settings',
+              onPress: () => Linking.openSettings(),
+            },
+          ]);
+          return false;
       }
+    } catch (err) {
+      console.warn(err);
+      Alert.alert('Permission Error', 'An error occurred while requesting permission. Please try again later.');
       return false;
-    } else return true;
-  };
+    }
+  } else {
+    return true;
+  }
+};
+
 
   const [lableData, setLableData] = useState([]);
 
@@ -154,6 +214,7 @@ const ReleaseForm = ({ route, navigation }) => {
 
 
   // Select File from gallery
+
   const chooseFile = async (type) => {
     let options = {
       mediaType: type,
@@ -166,8 +227,7 @@ const ReleaseForm = ({ route, navigation }) => {
     if (isStoragePermitted) {
       try {
         launchImageLibrary(options, (response) => {
-          // console.log('Response = ', response);
-          
+          // console.log('Response = ', response);          
 
           if (response.didCancel) {
             alert('cancelled camera picker');
@@ -236,6 +296,8 @@ const ReleaseForm = ({ route, navigation }) => {
     { id: 2, value: false, name: 'Album', selected: false },
     { id: 3, value: false, name: 'Mix', selected: false },
   ]);
+
+  
   let userReleasetype = releaseData?.Release?.Release_ReleaseType;
   const [updateReleaseType, setUpdateReleaseType] = useState(userReleasetype)
   useEffect(() => {
@@ -518,7 +580,7 @@ const ReleaseForm = ({ route, navigation }) => {
     });
 
     if (isValid) {
-      console.log("input data=>", editInput);
+      //console.log("input data=>", editInput);
       navigation.navigate('audioTracks',
         {
           formData: editInput,
@@ -982,7 +1044,7 @@ const ReleaseForm = ({ route, navigation }) => {
             }}
           >
             <TouchableOpacity
-              onPress={() => chooseFile('photo')}
+              onPress={() => chooseFile()}
               activeOpacity={0.5}
               style={{
                 backgroundColor: '#EDEDED',

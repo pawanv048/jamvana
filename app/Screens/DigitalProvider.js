@@ -19,8 +19,6 @@ const DigitalProvider = ({ navigation }) => {
 
 
 
-
-
   const getDigitalServiesData = () => {
     //console.log('calling api')
     API({
@@ -150,7 +148,6 @@ const DigitalProvider = ({ navigation }) => {
       <Text style={styles.headerTxt}>CHOOSE DIGITAL SERVICE PROVIDERS</Text>
       {renderHeader()}
       {renderTerritoriesList()}
-
     </View>
   )
 }

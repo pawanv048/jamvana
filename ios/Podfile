@@ -19,6 +19,12 @@ target 'Jamvana' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  # Add PermissionHandlers pod for react-native-permissions
+  # pod 'PermissionHandlers', :path => '../node_modules/react-native-permissions/ios'
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+  
+
   target 'JamvanaTests' do
     inherit! :complete
     # Pods for testing

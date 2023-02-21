@@ -20,6 +20,7 @@ const Detail = ({route}) => {
   const { data, setData } = useDetailsData();
   const [isLoading, setLoading] = useState(true);
 
+  //console.log("data=>", data);
   const getRelease = async () => {
     try {
       const resp = await fetch(

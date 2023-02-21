@@ -16,46 +16,75 @@ import {
 const ReleaseScreen = ({ navigation }) => {
 
   const { data, setData } = useDetailsData();
+  //console.log(data[0]);
   const [releaseData, setreleaseData] = useState([]);
   const [showModal, setShowModal] = useState(false)
   const [headline, setHeadline] = useState('')
 
 
-  const postUser = (status, comment) => {
+  // const postUser = (status, comment) => {
 
+  //   const requestOptions = {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({
+  //       "ReleaseId": data[0]?.Release?.Release_Id,
+  //       "Status": status,
+  //       "Comment": `${comment}`
+  //     }),
+
+  //   };
+
+  //   fetch(
+  //     'http://84.16.239.66/api/PublishRelease',
+  //     requestOptions,
+  //   )
+  //     .then(response => response.json())
+  //     .then(json => {
+  //       console.log('Fetch API Response', json);
+  //       Alert.alert(
+  //         'Release Id: ' +
+  //         data[0]?.Release?.Release_Id +
+  //         `\n status : ${status}`
+  //         + '\n' +
+
+  //         comment,
+  //         [{ t: 'ok', onPress: () => console.log('ok pressed') }],
+
+  //       );
+  //     })
+  //     .catch(error => {
+  //       console.error(error);
+  //     });
+  // };
+
+  const postUser = async (status, comment) => {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         "ReleaseId": data[0]?.Release?.Release_Id,
         "Status": status,
-        "Comment": `${comment}`
+        "Comment": `${comment}`,
       }),
-
     };
-
-    fetch(
-      'http://84.16.239.66/api/PublishRelease',
-      requestOptions,
-    )
-      .then(response => response.json())
-      .then(json => {
-        console.log('Fetch API Response', json);
-        Alert.alert(
-          'Release Id: ' +
-          data[0]?.Release?.Release_Id +
-          `\n status : ${status}`
-          + '\n' +
-
-          comment,
-          [{ t: 'ok', onPress: () => console.log('ok pressed') }],
-          
-        );
-      })
-      .catch(error => {
-        console.error(error);
-      });
+  
+    try {
+      const response = await fetch('http://84.16.239.66/api/PublishRelease', requestOptions);
+      const json = await response.json();
+      console.log('Fetch API Response', json);
+      Alert.alert(
+        `Release Id: ${data[0]?.Release?.Release_Id} 
+        \nstatus: ${status} 
+        \n${comment}`,
+        [{ t: 'ok', onPress: () => console.log('ok pressed') }],
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
+  
+//  console.log('DAta=>', data[0]?.Release?.Release_Id)
 
   function getReleaseItem() {
     return (
@@ -107,6 +136,7 @@ const ReleaseScreen = ({ navigation }) => {
         >
           <Text style={{ color: 'white', fontWeight: 'bold' }}>Edit</Text>
         </TouchableOpacity>
+        {/* <Button title='displaydata' onPress={() => console.log('button press')}/> */}
       </View>
     )
   };
@@ -136,7 +166,7 @@ const ReleaseScreen = ({ navigation }) => {
 const ModalFunction = ({ showModal, setShowModal, onPress }) => {
 
   const [headline, setHeadline] = useState(" ");
-  
+
   return (
     <Modal
       animationType={'slide'}

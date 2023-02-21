@@ -27,7 +27,6 @@ export const TextButton = ({
         marginHorizontal: SIZES.padding * 1.5,
         marginVertical: SIZES.padding,
         borderRadius: 7,
-
         ...contentContainerStyle                      //pass style on customcomonent
       }}
       disabled={disabled}

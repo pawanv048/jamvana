@@ -16,7 +16,7 @@ import { COLORS, SIZES } from '../Constants/theme';
 
 
 const API_ALLRELEASE_URL = 'http://84.16.239.66/api/Release/GetAllReleases';
-const pageSize = 10;
+// const pageSize = 10;
 
 const Home = ({ navigation }) => {
   const [isLoading, setLoading] = useState(true);
@@ -67,11 +67,12 @@ const Home = ({ navigation }) => {
         <ActivityIndicator size='large' />
       </View>
     );
-  }
+  };
 
 
 
   function renderHomeReleaseItem({ item, index }) {
+    //console.log('index =>', index);
     return (
       <View
         style={{
@@ -80,6 +81,7 @@ const Home = ({ navigation }) => {
           backgroundColor: '#1B1A17',
           marginBottom: 10,
           borderRadius: 15,
+          overflow: 'hidden',  
         }}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Detail', { data: item })}
@@ -92,14 +94,15 @@ const Home = ({ navigation }) => {
     )
   };
 
-  return (
 
+  return (
     <FlatList
       data={data}
       showsVerticalScrollIndicator={true}
-      keyExtractor={(item) => `${item.Release_Id}`}
+      keyExtractor={item => item.Release_Id}
       renderItem={renderHomeReleaseItem}
       contentContainerStyle={{ padding: SIZES.padding * 2 }}
+      removeClippedSubviews={true}
       // onEndReached={handleLoadMore}
       // onEndReachedThreshold={0.5}
     />
