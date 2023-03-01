@@ -5,6 +5,7 @@ const DetailsContext = React.createContext();
 
 export const DetailsDataProvider = ({children}) => {
   const [data, setData] = useState([]);
+  
   return (
     <DetailsContext.Provider value={{data, setData}}>
       {children}

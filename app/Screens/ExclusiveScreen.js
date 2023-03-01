@@ -13,7 +13,7 @@ const ExclusiveScreen = () => {
       <Text>{Strings.t45} {data[0]?.Mice?.Misc_AllowPreOrdersOnITunes}</Text>
     </View>
   )
-}
+};
 
 export default ExclusiveScreen;
 

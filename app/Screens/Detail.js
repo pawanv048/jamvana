@@ -12,12 +12,14 @@ import {
 
 const Tabs = createMaterialTopTabNavigator();
 
+//Need to work on this
 const Detail = ({route}) => {
 
   const detailsData = route.params.data;
   //console.log(detailsData);
   
   const { data, setData } = useDetailsData();
+  // console.log(data)
   const [isLoading, setLoading] = useState(true);
 
   //console.log("data=>", data);
@@ -60,7 +62,7 @@ const Detail = ({route}) => {
         tabBarIndicatorStyle: {backgroundColor: 'powderblue'},
       }}
     >
-      <Tabs.Screen name="Release" component={ReleaseScreen} />
+      <Tabs.Screen name="Release" component={ReleaseScreen} initialParams={{ releaseId: data }}/>
       <Tabs.Screen name="Track" component={TrackScreen} />
       <Tabs.Screen name="Shop" component={ShopScreen} />
       <Tabs.Screen name="Exclusive" component={ExclusiveScreen} />

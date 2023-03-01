@@ -905,17 +905,18 @@ const AudioTracks = ({ navigation, route }) => {
             {renderAudioView()}
          </ScrollView>
          {loading && (
-            <View style={[styles.container, { width, height }]}>
+            <View style={[styles.container, { width, height }, {padding: 20} ]}>
                <ScrollView
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{ paddingBottom: height / 6 }}
                   scrollsToTop={false}
-                  bounces={false}>
+                  bounces={false}
+               >
                   <View
                      style={{
                         flexDirection: 'row',
                         alignItems: 'center',
-                        margin: SIZES.padding * 1.5,
+                        margin: SIZES.padding,
                         justifyContent: 'space-between',
                      }}>
                      <Text style={styles.addNewTxt}>Add New Track</Text>
@@ -943,14 +944,14 @@ const AudioTracks = ({ navigation, route }) => {
                               fontWeight: 'bold',
                               color: COLORS.white,
                               marginVertical: 7,
-                              marginLeft: SIZES.padding,
+                             // marginLeft: SIZES.padding,
                               marginTop: 20
                            }}>Disc*:</Text>
                         <View
                            style={{
                               backgroundColor: COLORS.white,
                               padding: SIZES.padding * 1.5,
-                              marginHorizontal: SIZES.padding2,
+                              //marginHorizontal: SIZES.padding2,
                               borderRadius: 5
                            }}>
                            {count == 0 ? <Text>1</Text> : <Text>{count}</Text>}
@@ -971,7 +972,7 @@ const AudioTracks = ({ navigation, route }) => {
                      {/* Artist- Need multiple selection box */}
 
                      <>
-                        <Text style={[styles.artistTxt, { marginBottom: 0, marginVertical: 5 }]}>Artist*:</Text>
+                        <Text style={[styles.artistTxt, {marginBottom: 0, marginLeft: 0}]}>Artist*:</Text>
                         <SelectBox
                            label=""
                            options={artistData}
@@ -984,9 +985,9 @@ const AudioTracks = ({ navigation, route }) => {
                            containerStyle={{
                               backgroundColor: COLORS.white,
                               //alignItems: 'center',
-                              width: '93%',
+                              //width: '93%',
                               borderWidth: 1,
-                              marginLeft: SIZES.padding,
+                              //marginLeft: SIZES.padding,
                               marginBottom: SIZES.padding,
                               height: 55,
                               borderRadius: 5,
@@ -1071,15 +1072,15 @@ const AudioTracks = ({ navigation, route }) => {
                      {/* Choose Remixer */}
 
                      <View>
-                        <Text style={styles.artistTxt}>Choose Remixer:</Text>
+                        <Text style={[styles.artistTxt, {marginLeft: 0}]}>Choose Remixer:</Text>
                         <SelectList
                            setSelected={setSelected}
-                           boxStyles={styles.artistDropDown}
+                           boxStyles={[styles.artistDropDown, {marginHorizontal: 0, borderRadius: 5}]}
                            data={data}
                            onSelect={() => alert(selected)}
                            dropdownStyles={{
                               backgroundColor: 'white',
-                              marginHorizontal: SIZES.padding * 2,
+                              //marginHorizontal: SIZES.padding * 2,
                            }}
                         />
                      </View>
@@ -1121,12 +1122,12 @@ const AudioTracks = ({ navigation, route }) => {
                               backgroundColor: COLORS.primary,
                               justifyContent: 'center',
                               alignItems: 'center',
+                              paddingVertical: 7,
                               paddingHorizontal: 20,
-                              paddingVertical: 8,
                               position: 'absolute',
-                              right: 15,
-                              bottom: 5,
-                              borderRadius: 5,
+                              right: 0,
+                              bottom: 0,
+                              borderRadius: 3,
                            }}
                            onPress={addRemixer}>
                            <Text style={styles.remixerTxt}>+</Text>
@@ -1287,11 +1288,12 @@ const AudioTracks = ({ navigation, route }) => {
                      />
 
                      {/* ISRC */}
-                     <View style={styles.irscView}>
+                     <View>
                         <Text style={{
                            color: '#fff',
                            fontWeight: 'bold',
-                           fontSize: 20
+                           fontSize: 20,
+                           marginTop: 10
                         }}>{Strings.isrc}</Text>
                         <View
                            style={{
@@ -1313,24 +1315,21 @@ const AudioTracks = ({ navigation, route }) => {
 
                      {/* Album Only */}
 
-                     <View
-                        style={{
-                           paddingVertical: SIZES.padding,
-                        }}>
+                     <View>
                         <Text
                            style={{
                               marginVertical: 9,
                               fontSize: 16,
                               fontWeight: '700',
                               color: COLORS.white,
-                              marginLeft: SIZES.padding2,
+                             // marginLeft: SIZES.padding2,
                            }}>
                            Album Only?
                         </Text>
                         <View
                            style={{
                               flexDirection: 'row',
-                              marginHorizontal: SIZES.padding * 2,
+                              marginHorizontal: SIZES.padding * 0.1,
                               alignItems: 'center',
                            }}>
                            <View>
@@ -1436,11 +1435,7 @@ const AudioTracks = ({ navigation, route }) => {
                         ))
                      }
 
-
-                     <View
-                        style={{
-                           marginHorizontal: SIZES.padding * 2,
-                        }}>
+                     <View>
                         <Text style={[styles.addNewTxt, { marginVertical: 10 }]}>
                            Explicit
                         </Text>
@@ -1450,6 +1445,7 @@ const AudioTracks = ({ navigation, route }) => {
                               width: 15,
                               height: 15,
                               tintColor: COLORS.primary,
+                              marginLeft: 5
                            }}
                            boxType="square"
                            onFillColor="#fff"

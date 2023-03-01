@@ -58,7 +58,8 @@
     "react-native-video-controls": "^2.8.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.4.1"
+    "redux-thunk": "^2.4.1",
+    "yup": "^1.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

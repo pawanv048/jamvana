@@ -6,7 +6,7 @@ import { Picker } from '@react-native-picker/picker';
 // import RadioButton from '../Custom/RadioButton';
 import ModalPicker from '../Custom/ModalPicker';
 // import LabelModalPicker from '../Custom/LabelModalPicker';
- import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
+import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
 //import Permissions from 'react-native-permissions';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -65,7 +65,6 @@ const ReleaseForm = ({ route, navigation }) => {
   const [selected, setSelected] = useState('');
   // console.log('selected dropdown value=>',selected)
 
-
   const [primaryArtist, setprimaryArtist] = useState(
     `${releaseData?.Release?.Release_PrimaryArtist || ''}`
   );
@@ -81,37 +80,55 @@ const ReleaseForm = ({ route, navigation }) => {
 
   // PHOTOLIBRARY PERMISSIONS
 
-const requestExternalWritePermission = async () => {
-  if (Platform.OS === 'android') {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'External Storage Write Permission',
-          message: 'App needs write permission',
-        },
-      );
-      // If WRITE_EXTERNAL_STORAGE Permission is granted
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
-    } catch (err) {
-      console.warn(err);
-      Alert.alert('Permission Error', 'Could not grant write permission, please go to app settings and grant the permission manually');
-    }
-    return false;
-  } else if (Platform.OS === 'ios') {
-    try {
-      const result = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+  const requestExternalWritePermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'External Storage Write Permission',
+            message: 'App needs write permission',
+          },
+        );
+        // If WRITE_EXTERNAL_STORAGE Permission is granted
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        Alert.alert('Permission Error', 'Could not grant write permission, please go to app settings and grant the permission manually');
+      }
+      return false;
+    } else if (Platform.OS === 'ios') {
+      try {
+        const result = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
 
-      switch (result) {
-        case RESULTS.UNAVAILABLE:
-          console.log('This feature is not available (on this device / in this context)');
-          break;
-        case RESULTS.DENIED:
-          console.log('The permission has not been requested / is denied but requestable');
-          const permissionResult = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
-          if (permissionResult === RESULTS.GRANTED) {
+        switch (result) {
+          case RESULTS.UNAVAILABLE:
+            console.log('This feature is not available (on this device / in this context)');
+            break;
+          case RESULTS.DENIED:
+            console.log('The permission has not been requested / is denied but requestable');
+            const permissionResult = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+            if (permissionResult === RESULTS.GRANTED) {
+              return true;
+            } else {
+              Alert.alert('Permission Error', 'Please grant permission to access photo library.', [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'Open Settings',
+                  onPress: () => Linking.openSettings(),
+                },
+              ]);
+              return false;
+            }
+            break;
+          case RESULTS.GRANTED:
+            console.log('The permission is granted');
             return true;
-          } else {
+          case RESULTS.BLOCKED:
+            console.log('The permission is denied and not requestable anymore');
             Alert.alert('Permission Error', 'Please grant permission to access photo library.', [
               {
                 text: 'Cancel',
@@ -123,34 +140,16 @@ const requestExternalWritePermission = async () => {
               },
             ]);
             return false;
-          }
-          break;
-        case RESULTS.GRANTED:
-          console.log('The permission is granted');
-          return true;
-        case RESULTS.BLOCKED:
-          console.log('The permission is denied and not requestable anymore');
-          Alert.alert('Permission Error', 'Please grant permission to access photo library.', [
-            {
-              text: 'Cancel',
-              style: 'cancel',
-            },
-            {
-              text: 'Open Settings',
-              onPress: () => Linking.openSettings(),
-            },
-          ]);
-          return false;
+        }
+      } catch (err) {
+        console.warn(err);
+        Alert.alert('Permission Error', 'An error occurred while requesting permission. Please try again later.');
+        return false;
       }
-    } catch (err) {
-      console.warn(err);
-      Alert.alert('Permission Error', 'An error occurred while requesting permission. Please try again later.');
-      return false;
+    } else {
+      return true;
     }
-  } else {
-    return true;
-  }
-};
+  };
 
 
   const [lableData, setLableData] = useState([]);
@@ -160,7 +159,7 @@ const requestExternalWritePermission = async () => {
   let test1;
   //const key = lableList?.Label_Id
   let list = [];
-
+  console.log(list);
   if (lableData.length > 0) {
     const dataLbl = JSON.parse(lableData);
     test1 = dataLbl.map((lableList) => lableList);
@@ -297,7 +296,7 @@ const requestExternalWritePermission = async () => {
     { id: 3, value: false, name: 'Mix', selected: false },
   ]);
 
-  
+
   let userReleasetype = releaseData?.Release?.Release_ReleaseType;
   const [updateReleaseType, setUpdateReleaseType] = useState(userReleasetype)
   useEffect(() => {
@@ -567,7 +566,7 @@ const requestExternalWritePermission = async () => {
       alert('Please Enter Release Date')
       return
     }
-    if(!filePath.fileName){
+    if (!filePath.fileName) {
       alert('Select a file to upload')
       return
     }
@@ -624,8 +623,7 @@ const requestExternalWritePermission = async () => {
         {/* Language */}
 
         <View>
-          <Text style={[styles.langTxt, { marginLeft: SIZES.padding2, marginTop: 20 }]}>Language:</Text>
-          {/* <Button title='submit' onPress={getDataUsingAsyncAwaitGetCall}/> */}
+          <Text style={styles.langTxt}>Language:</Text>
           <SelectList
             //key={languageData.map((item) => item.Id)}
             setSelected={setSelected}
@@ -634,7 +632,6 @@ const requestExternalWritePermission = async () => {
             //search={false}
             defaultOption={{ key: 'English', value: 'English' }}
             data={newLanguage}
-            //data={data}
             maxHeight={300}
             //placeholder="Select Language"
             notFoundText="NO Language found"
@@ -646,261 +643,15 @@ const requestExternalWritePermission = async () => {
               margin: SIZES.padding * 2,
             }}
           />
-
         </View>
-
-        {/* Display Artists */}
-        <ReleaseInput
-          text='Display Artists (optional):'
-          value={editInput.displayArtist}
-          //error='this is the errror'
-          error={errors.displayArtist}
-          onFocus={() => handleError(null, 'displayArtist')}
-          onChangeText={text => handleOnChange(text, 'displayArtist')}
-        //onChangeText={text => handleOnChange(text)}
-        />
-
-        {/* Remixer */}
-
-        <ReleaseInput
-          text='Remixer:'
-          value={editInput.remixer}
-          error={errors.remixer}
-          onFocus={() => handleError(null, 'remixer')}
-          onChangeText={text => handleOnChange(text, 'remixer')}
-        />
-        {/* Orchestra */}
-
-        <ReleaseInput
-          text='Orchestra:'
-          value={editInput.orchestra}
-          error={errors.orchestra}
-          onFocus={() => handleError(null, 'orchestra')}
-          onChangeText={text => handleOnChange(text, 'orchestra')}
-        />
-
-        {/* Actor */}
-
-        <ReleaseInput
-          text='Actor:'
-          value={editInput.actor}
-          error={errors.actor}
-          onFocus={() => handleError(null, 'actor')}
-          onChangeText={text => handleOnChange(text, 'actor')}
-        />
-
-        {/* Lyricist */}
-
-        <ReleaseInput
-          value={editInput.lyricist}
-          text='Lyricist:'
-          error={errors.lyricist}
-          onFocus={() => handleError(null, 'lyricist')}
-          onChangeText={text => handleOnChange(text, 'lyricist')}
-        //errorMessage={Toast.show('This is a long toast.', Toast.LONG)}
-        />
-
-        {/* LABLE INPUT */}
-
-        <View style={styles.langView}>
-          <Text style={styles.langTxt}>Lable:</Text>
-          <View style={{
-            flexDirection: 'row',
-            //justifyContent: 'space-between',
-            //paddingHorizontal: 40,
-            alignItems: 'center',
-            //backgroundColor: 'red'
-          }}>
-            <View>
-              {/* <Button title='labeldata' onPress={getUserLableData}/> */}
-
-              {list.length != 0 && (
-                <SelectList
-                  setSelected={setSelected}
-                  boxStyles={[
-                    styles.artistDropDown,
-                    {
-                      marginHorizontal: 0,
-                      marginVertical: 0,
-                      width: SIZES.width / 1.08,
-                    },
-                  ]}
-                  //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-                  data={list}
-                  //data={labelData.map((item) => console.log(''))}
-                  defaultOption={list.filter(
-                    (item, index) =>
-                      //item?.key == console.log('show lab=>>',releaseData?.Release?.Release_Label) ,
-                      item?.key == releaseData?.Release?.Release_Label,
-                  )[0]}
-                  //defaultOption={{ key: releaseData?.Release?.Release_Label, value: console.log('label value:',list[list.findIndex(x=>x.key==releaseData?.Release?.Release_Label)])  }}
-                  //defaultOption={list[]}
-                  //placeholder={releaseData?.Release?.Release_Label}
-                  //onSelect={() => }
-                  dropdownStyles={{
-                    backgroundColor: COLORS.gray,
-                    marginHorizontal: 0,
-                  }}
-                />
-              )}
-
-              {list.length == 0 && (
-                <SelectList data={list}
-                  setSelected={setSelected}
-                  boxStyles={[
-                    styles.artistDropDown,
-                    {
-                      marginHorizontal: 0,
-                      marginVertical: 0,
-                      width: SIZES.width / 1.08,
-                    },
-                  ]}
-                />
-              )}
-            </View>
-
-
-            {/* Add New Label Button */}
-
-            {/* <TouchableOpacity
-              onPress={() => setLoadingLabel(true)}
-              style={[styles.addnewBtn, { justifyContent: 'center', alignItems: 'center' }]}
-            >
-              <Text style={styles.addnewTxt}>Add New</Text>
-            </TouchableOpacity> */}
-          </View>
-
-        </View>
-
-
-
-        {/* Main Genre */}
-
-        <View>
-          <Text style={[styles.langTxt, { marginLeft: SIZES.padding2 }]}>Main Genre:</Text>
-          <SelectList
-            setSelected={handleMainGenerSelect}
-            boxStyles={styles.artistDropDown}
-            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-            data={newMainGenre}
-            save="value"
-            //defaultOption={}
-            defaultOption={{ key: editInput.mainGener, value: editInput.mainGener }}
-            //placeholder="Select Maingenre"
-            //onSelect={handleSelect}
-            //search={false}
-            dropdownStyles={{
-              backgroundColor: COLORS.gray,
-              margin: SIZES.padding * 2,
-            }}
-          />
-        </View>
-
-        {/* Sub Genre */}
-
-        <View style={styles.langView}>
-          <Text style={styles.langTxt}>Sub Genre:</Text>
-          <SelectList
-            setSelected={handleSubGenerSelect}
-            boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0 }]}
-            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-            data={newSubGenre}
-            maxHeight={400}
-            defaultOption={{ key: editInput.subGener, value: editInput.subGener }}
-            //search={false}
-            //placeholder="Select subgenre"
-            //onSelect={() => console.log(selected)}
-            dropdownStyles={{
-              backgroundColor: COLORS.gray,
-              marginHorizontal: 0,
-            }}
-          />
-        </View>
-
-        {/* Release Type */}
-
-        <View style={{
-          paddingLeft: 15
-        }}>
-          <Text style={styles.langTxt}>Release Type:</Text>
-          {isLiked.map((item) => (
-            <RadioButton
-              onPress={() => onRadioBtnClick(item)}
-              selected={item.selected}
-              key={item.id}
-            >
-              {item.name}
-            </RadioButton>
-          ))}
-        </View>
-
-
-
-        {/* Price Tiers */}
-
-        <View style={{ marginTop: SIZES.padding }}>
-          <Text style={[styles.langTxt, { marginLeft: SIZES.padding2 }]}>Price Tiers: (for itunes only)</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <SelectList
-              setSelected={setSelected}
-              boxStyles={[styles.artistDropDown, { width: SIZES.width / 1.3 }]}
-              //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
-              data={newpriceTiers}
-              //defaultOption={}
-              defaultOption={{ key: editInput.priceTiers, value: editInput.priceTiers }}
-              //placeholder="Select Maingenre"
-              onSelect={() => console.log(selected)}
-
-              //search={false}
-              dropdownStyles={{
-                backgroundColor: COLORS.gray,
-                margin: SIZES.padding * 2,
-
-              }}
-            />
-
-            <View style={{ position: 'absolute', right: 30, top: 22 }}>
-              <TouchableOpacity
-                onPress={() => setShowInfo(true)}
-                style={{
-                  marginHorizontal: 5
-                }}>
-                <Image source={icons.infobutton}
-                  style={{
-                    height: 20,
-                    width: 20,
-                    tintColor: COLORS.primary,
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
-        {/* Release Description */}
-
-        <ReleaseInput
-          text='Release Description:'
-          value={editInput.releasedes}
-          error={errors.releasedes}
-          onFocus={() => handleError(null, 'releasedes')}
-          onChangeText={text => handleOnChange(text, 'releasedes')}
-          multiline={false}
-          numberOfLines={2}
-          maxLength={200}
-        />
 
         {/* Choose Primary Artist  */}
 
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text
-              style={{
-                marginHorizontal: SIZES.padding * 1.2,
-                marginTop: SIZES.padding * 0.8,
-                fontWeight: 'bold',
-                fontSize: 16
-              }}>
+              style={[styles.langTxt, { marginBottom: 0 }]}
+            >
               Choose Primary Artist:
             </Text>
             {/* <TouchableOpacity onPress={() => navigation.navigate('AddNewArtist')}>
@@ -916,7 +667,7 @@ const requestExternalWritePermission = async () => {
               </Text>
             </TouchableOpacity> */}
           </View>
-          <View style={{ marginHorizontal: SIZES.padding * 0.5 }}>
+          <View>
             <SelectBox
               label=" "
               //options={selectedArtistList}
@@ -934,9 +685,10 @@ const requestExternalWritePermission = async () => {
               containerStyle={{
                 backgroundColor: COLORS.white,
                 //alignItems: 'center',
-                width: '95%',
+                // width: '95%',
                 borderWidth: 1,
-                marginLeft: SIZES.padding,
+                //marginLeft: SIZES.padding,
+                marginBottom: 5,
                 height: 55,
                 borderRadius: 5,
                 paddingHorizontal: 10,
@@ -955,9 +707,10 @@ const requestExternalWritePermission = async () => {
               }}
               optionContainerStyle={{
                 backgroundColor: '#fff',
-                width: '94%',
+
+                //width: '95%',
                 //borderWidth: 1,
-                marginLeft: SIZES.padding,
+                //marginLeft: SIZES.padding,
               }}
               multiOptionContainerStyle={{
                 backgroundColor: COLORS.primary,
@@ -980,6 +733,16 @@ const requestExternalWritePermission = async () => {
           </View>
         </View>
 
+        {/* Display Artists */}
+        <ReleaseInput
+          text='Display Artists (optional):'
+          value={editInput.displayArtist}
+          //error='this is the errror'
+          error={errors.displayArtist}
+          onFocus={() => handleError(null, 'displayArtist')}
+          onChangeText={text => handleOnChange(text, 'displayArtist')}
+        //onChangeText={text => handleOnChange(text)}
+        />
 
         {/* Feature Artist */}
 
@@ -1001,6 +764,16 @@ const requestExternalWritePermission = async () => {
           onChangeText={text => handleOnChange(text, 'composer')}
         />
 
+        {/* Orchestra */}
+
+        <ReleaseInput
+          text='Orchestra:'
+          value={editInput.orchestra}
+          error={errors.orchestra}
+          onFocus={() => handleError(null, 'orchestra')}
+          onChangeText={text => handleOnChange(text, 'orchestra')}
+        />
+
         {/* Arranger */}
 
         <ReleaseInput
@@ -1010,6 +783,17 @@ const requestExternalWritePermission = async () => {
           onFocus={() => handleError(null, 'arranger')}
           onChangeText={text => handleOnChange(text, 'arranger')}
         />
+
+        {/* Actor */}
+
+        <ReleaseInput
+          text='Actor:'
+          value={editInput.actor}
+          error={errors.actor}
+          onFocus={() => handleError(null, 'actor')}
+          onChangeText={text => handleOnChange(text, 'actor')}
+        />
+
         {/* Conductor */}
 
         <ReleaseInput
@@ -1018,6 +802,17 @@ const requestExternalWritePermission = async () => {
           error={errors.conductor}
           onFocus={() => handleError(null, 'conductor')}
           onChangeText={text => handleOnChange(text, 'conductor')}
+        />
+
+        {/* Lyricist */}
+
+        <ReleaseInput
+          value={editInput.lyricist}
+          text='Lyricist:'
+          error={errors.lyricist}
+          onFocus={() => handleError(null, 'lyricist')}
+          onChangeText={text => handleOnChange(text, 'lyricist')}
+        //errorMessage={Toast.show('This is a long toast.', Toast.LONG)}
         />
 
         {/* Release Title */}
@@ -1032,10 +827,7 @@ const requestExternalWritePermission = async () => {
 
         {/* ArtWork */}
 
-        <View style={{
-          marginHorizontal: SIZES.padding * 1.5,
-          marginVertical: SIZES.padding * 1.5
-        }}>
+        <View style={{ marginTop: 10 }}>
           <Text style={styles.langTxt}>Artwork:</Text>
           <View
             style={{
@@ -1069,13 +861,66 @@ const requestExternalWritePermission = async () => {
                     </Text>
                   )
                   : <Text>
-                    {editInput.artwork.length > 20 
-                    ?  `${editInput.artwork.substring(0, 20)}...` 
-                    : filePath.fileName}
+                    {editInput.artwork.length > 20
+                      ? `${editInput.artwork.substring(0, 20)}...`
+                      : filePath.fileName}
                   </Text>
               }
             </Text>
           </View>
+        </View>
+
+
+        {/* LABLE INPUT */}
+
+        <View>
+          <Text style={[styles.langTxt, { marginTop: 10 }]}>Lable:</Text>
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+            <View>
+              {/* <Button title='labeldata' onPress={getUserLableData}/> */}
+              {list.length != 0 && (
+                <SelectList
+                  setSelected={setSelected}
+                  boxStyles={[styles.artistDropDown, { width: SIZES.width / 1.12 }]}
+                  //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+                  data={list}
+                  //data={labelData.map((item) => console.log(''))}
+                  defaultOption={list.filter(
+                    (item, index) =>
+                      //item?.key == console.log('show lab=>>',releaseData?.Release?.Release_Label) ,
+                      item?.key == releaseData?.Release?.Release_Label,
+                  )[0]}
+                  //defaultOption={{ key: releaseData?.Release?.Release_Label, value: console.log('label value:',list[list.findIndex(x=>x.key==releaseData?.Release?.Release_Label)])  }}
+                  //defaultOption={list[]}
+                  //placeholder={releaseData?.Release?.Release_Label}
+                  //onSelect={() => }
+                  dropdownStyles={{
+                    backgroundColor: COLORS.gray,
+                    marginHorizontal: 0,
+                  }}
+                />
+              )}
+
+              {list.length == 0 && (
+                <SelectList data={list}
+                  setSelected={setSelected}
+                />
+              )}
+            </View>
+
+            {/* Add New Label Button */}
+
+            {/* <TouchableOpacity
+              onPress={() => setLoadingLabel(true)}
+              style={[styles.addnewBtn, { justifyContent: 'center', alignItems: 'center' }]}
+            >
+              <Text style={styles.addnewTxt}>Add New</Text>
+            </TouchableOpacity> */}
+          </View>
+
         </View>
 
         {/* Cat number */}
@@ -1088,12 +933,69 @@ const requestExternalWritePermission = async () => {
           text='Cat Number:'
         />
 
+
+        {/* Main Genre */}
+
+        <View>
+          <Text style={[styles.langTxt, {marginTop: 10}]}>Main Genre:</Text>
+          <SelectList
+            setSelected={handleMainGenerSelect}
+            boxStyles={styles.artistDropDown}
+            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+            data={newMainGenre}
+            save="value"
+            //defaultOption={}
+            defaultOption={{ key: editInput.mainGener, value: editInput.mainGener }}
+            //placeholder="Select Maingenre"
+            //onSelect={handleSelect}
+            //search={false}
+            dropdownStyles={{
+              backgroundColor: COLORS.gray,
+              margin: SIZES.padding * 2,
+            }}
+          />
+        </View>
+
+        {/* Sub Genre */}
+
+        <View>
+          <Text style={styles.langTxt}>Sub Genre:</Text>
+          <SelectList
+            setSelected={handleSubGenerSelect}
+            boxStyles={[styles.artistDropDown, { marginHorizontal: 0, marginVertical: 0 }]}
+            //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+            data={newSubGenre}
+            maxHeight={400}
+            defaultOption={{ key: editInput.subGener, value: editInput.subGener }}
+            //search={false}
+            //placeholder="Select subgenre"
+            //onSelect={() => console.log(selected)}
+            dropdownStyles={{
+              backgroundColor: COLORS.gray,
+              marginHorizontal: 0,
+            }}
+          />
+        </View>
+
+        {/* Release Type */}
+
+        <View>
+          <Text style={[styles.langTxt, {marginTop: 10}]}>Release Type:</Text>
+          {isLiked.map((item) => (
+            <RadioButton
+              onPress={() => onRadioBtnClick(item)}
+              selected={item.selected}
+              key={item.id}
+            >
+              {item.name}
+            </RadioButton>
+          ))}
+        </View>
+
         {/* Do you Want UPC */}
 
-        <View style={{
-          paddingLeft: 15
-        }}>
-          <Text style={styles.langTxt}>Do you Want UPC:</Text>
+        <View>
+          <Text style={[styles.langTxt, {marginTop: 10}]}>Do you Want UPC:</Text>
           {choose.map((item) => (
             <RadioButton
               onPress={() => onRadioBtnPress(item)}
@@ -1116,24 +1018,24 @@ const requestExternalWritePermission = async () => {
 
         </View>}
 
-        {/* Copyrights */}
-        <View style={{ marginTop: 10 }}>
-          <ReleaseInput
-            value={editInput.copyright}
-            text='Copyrights:'
-            error={errors.copyright}
-            onFocus={() => handleError(null, 'copyright')}
-            onChangeText={(text) => handleOnChange(text, 'copyright')}
-          />
-        </View>
+
+        {/* Remixer */}
+
+        <ReleaseInput
+          text='Remixer:'
+          value={editInput.remixer}
+          error={errors.remixer}
+          onFocus={() => handleError(null, 'remixer')}
+          onChangeText={text => handleOnChange(text, 'remixer')}
+        />
+
 
         {/* Release Date */}
 
         <TouchableOpacity
-          activeOpacity={1}
-          style={styles.langView}
+          activeOpacity={0.5}
         >
-          <Text style={styles.langTxt}>Release Date:</Text>
+          <Text style={[styles.langTxt, {marginVertical: 10}]}>Release Date:</Text>
           <View
             style={{
               //marginVertical: SIZES.padding,
@@ -1186,8 +1088,59 @@ const requestExternalWritePermission = async () => {
           </View>
         </TouchableOpacity>
 
+
+        {/* Copyrights */}
+          <ReleaseInput
+            value={editInput.copyright}
+            text='Copyrights:'
+            labelContainer={{marginTop: 15}}
+            error={errors.copyright}
+            onFocus={() => handleError(null, 'copyright')}
+            onChangeText={(text) => handleOnChange(text, 'copyright')}
+          />
+
+
+        {/* Price Tiers */}
+
         <View>
-          <Text style={[styles.langTxt, { marginLeft: SIZES.padding * 1.5 }]}>Parental Warning Types:</Text>
+          <Text style={[styles.langTxt, {marginTop:10}]}>Price Tiers: (for itunes only)</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <SelectList
+              setSelected={setSelected}
+              boxStyles={[styles.artistDropDown, { width: SIZES.width / 1.3 }]}
+              //arrowicon={<FontAwesome name="chevron-down" size={12} color={'black'} />}
+              data={newpriceTiers}
+              //defaultOption={}
+              defaultOption={{ key: editInput.priceTiers, value: editInput.priceTiers }}
+              //placeholder="Select Maingenre"
+              onSelect={() => console.log(selected)}
+              //search={false}
+              dropdownStyles={{
+                backgroundColor: COLORS.gray,
+                margin: SIZES.padding * 2,
+              }}
+            />
+
+            <View style={{ position: 'absolute',right:0, top: 25 }}>
+              <TouchableOpacity
+                onPress={() => setShowInfo(true)}
+                >
+                <Image source={icons.infobutton}
+                  style={{
+                    height: 20,
+                    width: 20,
+                    tintColor: COLORS.primary,
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        {/* Parental Warning */}
+
+        <View>
+          <Text style={[styles.langTxt, { marginTop: 10}]}>Parental Warning Types:</Text>
           <SelectList
             setSelected={setSelected}
             boxStyles={styles.artistDropDown}
@@ -1203,6 +1156,20 @@ const requestExternalWritePermission = async () => {
             }}
           />
         </View>
+
+        {/* Release Description */}
+
+        <ReleaseInput
+          text='Release Description:'
+          value={editInput.releasedes}
+          error={errors.releasedes}
+          onFocus={() => handleError(null, 'releasedes')}
+          onChangeText={text => handleOnChange(text, 'releasedes')}
+          multiline={false}
+          numberOfLines={2}
+          maxLength={200}
+        />
+
         <TextButton
           //onPress={() => navigation.navigate('testing')}
           onPress={validatedForm}
@@ -1298,7 +1265,7 @@ const requestExternalWritePermission = async () => {
       {/* INFO BUTTON */}
 
       {showInfo && (
-        <View style={[styles.container, { width: SIZES.width, height: SIZES.height }]}>
+        <View style={styles.container}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
@@ -1385,7 +1352,9 @@ export default ReleaseForm
 
 const styles = StyleSheet.create({
   mainContainer: {
-    flex: 1
+    flex: 1,
+   // backgroundColor: 'red',
+    margin: 20
   },
   langView: {
     paddingHorizontal: SIZES.padding * 1.5,
@@ -1429,7 +1398,11 @@ const styles = StyleSheet.create({
   },
   container: {
     position: 'absolute',
+    left: -20,
+    top: -20,
     backgroundColor: 'rgba(0,0,0,0.5)',
+    width: SIZES.width,
+    height: SIZES.height
   },
   separator: {
     marginHorizontal: SIZES.padding2,
@@ -1454,7 +1427,7 @@ const styles = StyleSheet.create({
   },
   artistDropDown: {
     backgroundColor: COLORS.white,
-    marginHorizontal: SIZES.padding2 * 1.2,
+    // marginHorizontal: SIZES.padding2 * 1.2,
     //marginVertical: SIZES.padding * 0.8,
     paddingVertical: SIZES.padding * 1.5,
     marginVertical: SIZES.padding,

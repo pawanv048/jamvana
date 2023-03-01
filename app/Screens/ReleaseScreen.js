@@ -16,14 +16,13 @@ import {
 const ReleaseScreen = ({ navigation }) => {
 
   const { data, setData } = useDetailsData();
-  //console.log(data[0]);
+  //console.log(data.Release_Id);
   const [releaseData, setreleaseData] = useState([]);
-  const [showModal, setShowModal] = useState(false)
-  const [headline, setHeadline] = useState('')
+  const [showModal, setShowModal] = useState(false);
+  const [headline, setHeadline] = useState('');
 
 
   // const postUser = (status, comment) => {
-
   //   const requestOptions = {
   //     method: 'POST',
   //     headers: { 'Content-Type': 'application/json' },
@@ -32,9 +31,7 @@ const ReleaseScreen = ({ navigation }) => {
   //       "Status": status,
   //       "Comment": `${comment}`
   //     }),
-
   //   };
-
   //   fetch(
   //     'http://84.16.239.66/api/PublishRelease',
   //     requestOptions,
@@ -47,10 +44,8 @@ const ReleaseScreen = ({ navigation }) => {
   //         data[0]?.Release?.Release_Id +
   //         `\n status : ${status}`
   //         + '\n' +
-
   //         comment,
   //         [{ t: 'ok', onPress: () => console.log('ok pressed') }],
-
   //       );
   //     })
   //     .catch(error => {
@@ -68,7 +63,7 @@ const ReleaseScreen = ({ navigation }) => {
         "Comment": `${comment}`,
       }),
     };
-  
+
     try {
       const response = await fetch('http://84.16.239.66/api/PublishRelease', requestOptions);
       const json = await response.json();
@@ -83,12 +78,13 @@ const ReleaseScreen = ({ navigation }) => {
       console.error(error);
     }
   };
-  
-//  console.log('DAta=>', data[0]?.Release?.Release_Id)
+
+  //  console.log('DAta=>', data[0]?.Release?.Release_Id)
 
   function getReleaseItem() {
     return (
       <View>
+        {/* <Text>{data.Release_Id}</Text> */}
         <Text>{Strings.t4} {data[0]?.Release?.Release_Id}</Text>
         <Text>{Strings.t5} {data[0]?.Release?.Release_PrimaryArtist}</Text>
         <Text>{Strings.t6} {data[0]?.Release?.Release_DisplayArtist}</Text>
@@ -127,7 +123,10 @@ const ReleaseScreen = ({ navigation }) => {
         >
           <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t21}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionBtn}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('testing')}
+          style={styles.actionBtn}
+        >
           <Text style={{ color: 'white', fontWeight: 'bold' }}>{Strings.t22}</Text>
         </TouchableOpacity>
         <TouchableOpacity

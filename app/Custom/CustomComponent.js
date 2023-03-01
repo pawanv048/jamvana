@@ -7,7 +7,6 @@ import Toast from 'react-native-simple-toast';
 
 
 
-
 export const Separator = () => <View style={styles.separator} />
 
 export const TextButton = ({
@@ -24,8 +23,8 @@ export const TextButton = ({
         justifyContent: 'center',
         backgroundColor: COLORS.primary,
         padding: 15,
-        marginHorizontal: SIZES.padding * 1.5,
-        marginVertical: SIZES.padding,
+        //marginHorizontal: SIZES.padding * 1.5,
+        marginVertical: SIZES.padding * 1.5,
         borderRadius: 7,
         ...contentContainerStyle                      //pass style on customcomonent
       }}
@@ -71,14 +70,15 @@ export const ReleaseInput = props => {
     return (
       <View
         style={{
-          marginHorizontal: SIZES.padding * 1.5,
-          marginVertical: SIZES.padding * 0.5,
+          //marginHorizontal: SIZES.padding * 1.5,
+          //marginVertical: SIZES.padding * 0.5,
           ...releaseInputMainContainerStyle,
           // backgroundColor: 'red' 
         }}>
         <Text
           style={{
             marginBottom: 9,
+            marginTop: 10,
             fontSize: 16,
             fontWeight: '600',
             ...labelContainer
@@ -178,7 +178,7 @@ export const DropdownPicker = ({
           fontSize: 16,
           fontWeight: '800',
           marginVertical: SIZES.padding,
-          marginLeft: SIZES.padding2,
+          //marginLeft: SIZES.padding2,
           color: COLORS.white,
           ...labelContainer
         }}>{label}</Text>
@@ -187,7 +187,7 @@ export const DropdownPicker = ({
         defaultOption={defaultOption}
         boxStyles={{
           backgroundColor: '#fff',
-          marginHorizontal: SIZES.padding2,
+          //marginHorizontal: SIZES.padding2,
           //marginVertical: SIZES.padding * 0.8,
           paddingVertical: SIZES.padding * 1.5,
         }}

@@ -72,7 +72,7 @@ const Home = ({ navigation }) => {
 
 
   function renderHomeReleaseItem({ item, index }) {
-    //console.log('index =>', index);
+    //console.log('index =>', index, item.Release_Id);
     return (
       <View
         style={{
